@@ -1,17 +1,18 @@
 import SwiftUI
 
-struct ContentView: View {
+struct HomeScreenView: View {
     var body: some View {
         VStack {
-            Image(systemName: "globe")
+            Image(systemName: "cloud.rain")
                 .imageScale(.large)
                 .foregroundStyle(.tint)
-            Text("Hello, world!")
+            Text("Weather app")
+                .bold()
         }
         .padding()
     }
 }
 
 #Preview {
-    ContentView()
+    HomeScreenView()
 }
