@@ -1,15 +1,15 @@
 import SwiftUI
 
-class HomeScreenViewModel: ObservableObject {
+class CityScreenViewModel: ObservableObject {
 
     private let apiKey = "ff4cd4d2c654b4100a2712f4cbaeb732" // remove
 
     @Published var weather: WeatherModel?
 
-    func fetchWeatherZagreb() async {
+    func fetchWeather(cityName: String) async {
         var urlComponents = URLComponents(string: "https://api.openweathermap.org/data/2.5/weather")!
         urlComponents.queryItems = [
-            URLQueryItem(name: "q", value: "Zagreb"),
+            URLQueryItem(name: "q", value: cityName),
             URLQueryItem(name: "appid", value: apiKey),
             URLQueryItem(name: "units", value: "metric")
         ]

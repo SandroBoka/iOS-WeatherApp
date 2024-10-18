@@ -1,14 +1,15 @@
 import SwiftUI
 
-struct HomeScreenView: View {
-    @ObservedObject var homeScreenViewModel = HomeScreenViewModel()
+struct CityScreenView: View {
+    let city: City
+    @ObservedObject var cityScreenViewModel = CityScreenViewModel()
     var body: some View {
         VStack {
-            Text("Weather in Zagreb")
+            Text("Weather in \(city.name)")
                 .font(.title)
                 .padding()
 
-            if let weather = homeScreenViewModel.weather {
+            if let weather = cityScreenViewModel.weather {
                 Text("Temperature: \(String(format: "%.1f", weather.main.temp))°C")
                     .padding()
                 Text("Feels Like: \(String(format: "%.1f", weather.main.feelsLike))°C")
@@ -19,9 +20,9 @@ struct HomeScreenView: View {
                     .padding()
                 Text("Wind Speed: \(String(format: "%.1f", weather.wind.speed)) m/s")
                     .padding()
-                Text("Sunrise: \(homeScreenViewModel.formatTimeFromUnix(weather.sys.sunrise, timeZoneOffset: 3600))")
+                Text("Sunrise: \(cityScreenViewModel.formatTimeFromUnix(weather.sys.sunrise, timeZoneOffset: 3600))")
                     .padding()
-                Text("Sunset: \(homeScreenViewModel.formatTimeFromUnix(weather.sys.sunset, timeZoneOffset: 3600))")
+                Text("Sunset: \(cityScreenViewModel.formatTimeFromUnix(weather.sys.sunset, timeZoneOffset: 3600))")
                     .padding()
             } else {
                 Text("Loading weather data...")
@@ -31,7 +32,7 @@ struct HomeScreenView: View {
         }
         .padding()
         .task {
-            await homeScreenViewModel.fetchWeatherZagreb()
+            await cityScreenViewModel.fetchWeather(cityName: "New York")
         }
         .frame(maxWidth: .infinity)
         .background(Color.blue.opacity(0.6).ignoresSafeArea())
@@ -40,5 +41,5 @@ struct HomeScreenView: View {
 }
 
 #Preview {
-    HomeScreenView()
+    CityScreenView(city: City(name: "Atlantic City", temperature: 20.2))
 }
