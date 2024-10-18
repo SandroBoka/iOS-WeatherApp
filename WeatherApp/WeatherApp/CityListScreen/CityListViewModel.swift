@@ -7,10 +7,19 @@ class CityListViewModel: ObservableObject {
         City(name: "Paris"),
         City(name: "New York"),
         City(name: "Tokyo"),
-        City(name: "London")
+        City(name: "London"),
+        City(name: "Los Angeles"),
+        City(name: "Toronto"),
+        City(name: "Split")
     ]
 
     private let apiKey = "ff4cd4d2c654b4100a2712f4cbaeb732" // remove
+
+    private let router: RouterProtocol
+
+    init(router: RouterProtocol) {
+        self.router = router
+    }
 
     func fetchTemperature(for city: City) async {
         var urlComponents = URLComponents(string: "https://api.openweathermap.org/data/2.5/weather")!
@@ -39,5 +48,9 @@ class CityListViewModel: ObservableObject {
         for city in cities {
             await fetchTemperature(for: city)
         }
+    }
+
+    func showDetailsForCity(city: City) {
+        router.showCityWeather(city: city)
     }
 }

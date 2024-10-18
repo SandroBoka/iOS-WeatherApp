@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct CityListView: View {
-    @StateObject private var viewModel = CityListViewModel()
+    @StateObject var viewModel: CityListViewModel
 
         var body: some View {
             NavigationView {
@@ -17,6 +17,9 @@ struct CityListView: View {
                             ProgressView()
                         }
                     }
+                    .onTapGesture {
+                        viewModel.showDetailsForCity(city: city)
+                    }
                     .padding(.vertical, 8)
                 }
                 .navigationTitle("City Temperatures")
@@ -28,5 +31,5 @@ struct CityListView: View {
 }
 
 #Preview {
-    CityListView()
+    CityListView(viewModel: CityListViewModel(router: Router(navigationController: UINavigationController())))
 }

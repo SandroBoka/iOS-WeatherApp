@@ -6,7 +6,7 @@ protocol RouterProtocol {
     func goBack()
 
     func showCityList()
-    func showCityWeather()
+    func showCityWeather(city: City)
 }
 
 class Router: RouterProtocol {
@@ -29,13 +29,16 @@ class Router: RouterProtocol {
     }
 
     func showCityList() {
-        let viewModel = CityListViewModel()
-        let view = CityListView()
+        let viewModel = CityListViewModel(router: self)
+        let view = CityListView(viewModel: viewModel)
         let viewController = UIHostingController(rootView: view)
         navigationController.setViewControllers([viewController], animated: false)
     }
 
-    func showCityWeather() {
-        return
+    func showCityWeather(city: City) {
+        let viewModel = CityScreenViewModel(router: self, city: city.name)
+        let view = CityScreenView(viewModel: viewModel)
+        let viewController = UIHostingController(rootView: view)
+        navigationController.pushViewController(viewController, animated: false)
     }
 }

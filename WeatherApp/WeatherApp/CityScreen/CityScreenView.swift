@@ -1,15 +1,14 @@
 import SwiftUI
 
 struct CityScreenView: View {
-    let city: City
-    @ObservedObject var cityScreenViewModel = CityScreenViewModel()
+    @ObservedObject var viewModel: CityScreenViewModel
     var body: some View {
         VStack {
-            Text("Weather in \(city.name)")
+            Text("Weather in \(viewModel.city)")
                 .font(.title)
                 .padding()
 
-            if let weather = cityScreenViewModel.weather {
+            if let weather = viewModel.weather {
                 Text("Temperature: \(String(format: "%.1f", weather.main.temp))°C")
                     .padding()
                 Text("Feels Like: \(String(format: "%.1f", weather.main.feelsLike))°C")
@@ -20,9 +19,9 @@ struct CityScreenView: View {
                     .padding()
                 Text("Wind Speed: \(String(format: "%.1f", weather.wind.speed)) m/s")
                     .padding()
-                Text("Sunrise: \(cityScreenViewModel.formatTimeFromUnix(weather.sys.sunrise, timeZoneOffset: 3600))")
+                Text("Sunrise: \(viewModel.formatTimeFromUnix(weather.sys.sunrise, timeZoneOffset: 3600))")
                     .padding()
-                Text("Sunset: \(cityScreenViewModel.formatTimeFromUnix(weather.sys.sunset, timeZoneOffset: 3600))")
+                Text("Sunset: \(viewModel.formatTimeFromUnix(weather.sys.sunset, timeZoneOffset: 3600))")
                     .padding()
             } else {
                 Text("Loading weather data...")
@@ -32,14 +31,14 @@ struct CityScreenView: View {
         }
         .padding()
         .task {
-            await cityScreenViewModel.fetchWeather(cityName: "New York")
+            await viewModel.fetchWeather()
         }
         .frame(maxWidth: .infinity)
-        .background(Color.blue.opacity(0.6).ignoresSafeArea())
+        .background(LinearGradient(gradient: Gradient(colors: [.white, .blue, .black]), startPoint: .top, endPoint: .bottom).ignoresSafeArea())
 
     }
 }
 
 #Preview {
-    CityScreenView(city: City(name: "Atlantic City", temperature: 20.2))
+    CityScreenView(viewModel: CityScreenViewModel(router: Router(navigationController: UINavigationController()), city: "Atlantic City"))
 }
