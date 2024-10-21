@@ -2,30 +2,21 @@ import SwiftUI
 
 class CityScreenViewModel: ObservableObject {
 
-    private let apiKey = "ff4cd4d2c654b4100a2712f4cbaeb732" // remove
     private let router: RouterProtocol
+    private let weatherService: WeatherServiceProtocol
 
     @Published var city: String
     @Published var weather: WeatherModel?
 
-    init(router: RouterProtocol, city: String) {
+    init(router: RouterProtocol, service: WeatherServiceProtocol, city: String) {
         self.router = router
+        self.weatherService = service
         self.city = city
     }
 
     func fetchWeather() async {
-        var urlComponents = URLComponents(string: "https://api.openweathermap.org/data/2.5/weather")!
-        urlComponents.queryItems = [
-            URLQueryItem(name: "q", value: city),
-            URLQueryItem(name: "appid", value: apiKey),
-            URLQueryItem(name: "units", value: "metric")
-        ]
-
-        guard let url = urlComponents.url else { return }
-
         do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            let decodedData = try JSONDecoder().decode(WeatherModel.self, from: data)
+            let decodedData = try await weatherService.fetchWeather(for: city)
             DispatchQueue.main.async {
                 self.weather = decodedData
             }
