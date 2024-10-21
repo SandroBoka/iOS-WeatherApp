@@ -30,7 +30,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		90DC38BA2CC291D2006720E3 /* Exceptions for "WeatherApp" folder in "WeatherApp" target */ = {
+		90A915902CC6D0810097D02C /* Exceptions for "WeatherApp" folder in "WeatherApp" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -43,7 +43,7 @@
 		901CC53B2CC13D07002E1508 /* WeatherApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				90DC38BA2CC291D2006720E3 /* Exceptions for "WeatherApp" folder in "WeatherApp" target */,
+				90A915902CC6D0810097D02C /* Exceptions for "WeatherApp" folder in "WeatherApp" target */,
 			);
 			path = WeatherApp;
 			sourceTree = "<group>";
@@ -112,10 +112,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 901CC55D2CC13D10002E1508 /* Build configuration list for PBXNativeTarget "WeatherApp" */;
 			buildPhases = (
+				901CC5662CC13FCC002E1508 /* SwfitLint */,
 				901CC5352CC13D07002E1508 /* Sources */,
 				901CC5362CC13D07002E1508 /* Frameworks */,
 				901CC5372CC13D07002E1508 /* Resources */,
-				901CC5662CC13FCC002E1508 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -246,7 +246,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		901CC5662CC13FCC002E1508 /* ShellScript */ = {
+		901CC5662CC13FCC002E1508 /* SwfitLint */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -256,6 +256,7 @@
 			);
 			inputPaths = (
 			);
+			name = SwfitLint;
 			outputFileListPaths = (
 			);
 			outputPaths = (
