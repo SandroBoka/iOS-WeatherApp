@@ -6,19 +6,21 @@ struct CityListView: View {
         var body: some View {
             NavigationView {
                 List(viewModel.cities) { city in
-                    HStack {
-                        Text(city.name)
-                            .font(.headline)
-                        Spacer()
-                        if let temperature = city.temperature {
-                            Text("\(temperature, specifier: "%.1f")°C")
-                                .foregroundColor(.gray)
-                        } else {
-                            ProgressView()
-                        }
-                    }
-                    .onTapGesture {
+                    Button {
                         viewModel.showDetailsForCity(city: city)
+                    } label: {
+                        HStack {
+                            Text(city.name)
+                                .font(.headline)
+                                .foregroundStyle(.black)
+                            Spacer()
+                            if let temperature = city.temperature {
+                                Text("\(temperature, specifier: "%.1f")°C")
+                                    .foregroundColor(.gray)
+                            } else {
+                                ProgressView()
+                            }
+                        }
                     }
                     .padding(.vertical, 8)
                 }
@@ -31,5 +33,7 @@ struct CityListView: View {
 }
 
 #Preview {
-    CityListView(viewModel: CityListViewModel(router: Router(navigationController: UINavigationController())))
+    CityListView(viewModel: CityListViewModel(
+        router: Router(navigationController: UINavigationController()),
+        service: WeatherService()))
 }

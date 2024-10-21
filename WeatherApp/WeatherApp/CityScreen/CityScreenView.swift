@@ -34,11 +34,15 @@ struct CityScreenView: View {
             await viewModel.fetchWeather()
         }
         .frame(maxWidth: .infinity)
-        .background(LinearGradient(gradient: Gradient(colors: [.white, .blue, .black]), startPoint: .top, endPoint: .bottom).ignoresSafeArea())
+        .background(LinearGradient(gradient: Gradient(colors: [.white, .blue, .gray]),
+                                   startPoint: .top, endPoint: .bottom).ignoresSafeArea())
 
     }
 }
 
 #Preview {
-    CityScreenView(viewModel: CityScreenViewModel(router: Router(navigationController: UINavigationController()), city: "Atlantic City"))
+    CityScreenView(viewModel: CityScreenViewModel(
+        router: Router(navigationController: UINavigationController()),
+        service: WeatherService(),
+        city: "Atlantic City"))
 }

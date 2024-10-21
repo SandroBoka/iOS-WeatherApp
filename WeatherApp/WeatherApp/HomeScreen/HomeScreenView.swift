@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct HomeScreenView: View {
-    @ObservedObject var homeScreenViewModel = HomeScreenViewModel()
+    @ObservedObject var homeScreenViewModel: HomeScreenViewModel
     var body: some View {
         VStack {
             Text("Weather in Zagreb")
@@ -34,11 +34,13 @@ struct HomeScreenView: View {
             await homeScreenViewModel.fetchWeatherZagreb()
         }
         .frame(maxWidth: .infinity)
-        .background(Color.blue.opacity(0.6).ignoresSafeArea())
+        .background(LinearGradient(gradient: Gradient(colors: [.white, .blue, .gray]),
+                                   startPoint: .top, endPoint: .bottom).ignoresSafeArea())
 
     }
 }
 
 #Preview {
-    HomeScreenView()
+    HomeScreenView(homeScreenViewModel: HomeScreenViewModel(router: Router(navigationController: UINavigationController()),
+                                                            weatherService: WeatherService()))
 }
