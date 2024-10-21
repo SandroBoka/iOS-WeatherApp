@@ -6,8 +6,13 @@ protocol WeatherServiceProtocol {
 
 class WeatherService: WeatherServiceProtocol {
 
-    private let apiKey = "ff4cd4d2c654b4100a2712f4cbaeb732"
     private let baseURL = "https://api.openweathermap.org/data/2.5/weather"
+    private var apiKey: String {
+            guard let apiKey = Bundle.main.infoDictionary?["API_KEY"] as? String else {
+                return "API Key not found"
+            }
+            return apiKey
+        }
 
     func fetchWeather(for cityName: String) async throws -> WeatherModel {
         var urlComponents = URLComponents(string: baseURL)!

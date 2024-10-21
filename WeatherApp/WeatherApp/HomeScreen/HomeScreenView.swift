@@ -41,6 +41,9 @@ struct HomeScreenView: View {
 }
 
 #Preview {
-    HomeScreenView(homeScreenViewModel: HomeScreenViewModel(router: Router(navigationController: UINavigationController()),
-                                                            weatherService: WeatherService()))
+    HomeScreenView(
+        homeScreenViewModel: HomeScreenViewModel(
+            router: Router(navigationController: UINavigationController()),
+            weatherService: WeatherService())
+    )
 }
