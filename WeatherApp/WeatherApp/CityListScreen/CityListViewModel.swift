@@ -35,7 +35,7 @@ class CityListViewModel: ObservableObject {
 
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
-            let decodedData = try JSONDecoder().decode(WeatherModel.self, from: data)
+            let decodedData = try JSONDecoder().decode(CurrentWeatherResponse.self, from: data)
             if let index = cities.firstIndex(where: { $0.id == city.id }) {
                 DispatchQueue.main.async { [ weak self ] in
                     self?.cities[index].temperature = decodedData.main.temp

@@ -6,7 +6,7 @@ class CityScreenViewModel: ObservableObject {
     private let router: RouterProtocol
 
     @Published private(set) var city: String
-    @Published private(set) var weather: WeatherModel?
+    @Published private(set) var weather: CurrentWeatherResponse?
 
     init(router: RouterProtocol, city: String) {
         self.router = router
@@ -27,7 +27,7 @@ class CityScreenViewModel: ObservableObject {
 
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
-            let decodedData = try JSONDecoder().decode(WeatherModel.self, from: data)
+            let decodedData = try JSONDecoder().decode(CurrentWeatherResponse.self, from: data)
             DispatchQueue.main.async { [weak self] in
                 self?.weather = decodedData
             }

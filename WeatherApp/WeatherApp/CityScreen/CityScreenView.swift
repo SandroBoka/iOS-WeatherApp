@@ -3,7 +3,7 @@ import SwiftUI
 struct CityScreenView: View {
 
     @ObservedObject var viewModel: CityScreenViewModel
-    
+
     var body: some View {
         VStack {
             Text("Weather in \(viewModel.city)")
