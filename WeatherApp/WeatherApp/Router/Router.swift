@@ -8,6 +8,7 @@ protocol RouterProtocol {
     func showHomeScreen()
     func showCityList()
     func showCityWeather(city: City)
+
 }
 
 class Router: RouterProtocol {
@@ -32,8 +33,8 @@ class Router: RouterProtocol {
     }
 
     func showHomeScreen() {
-        let viewModel = HomeScreenViewModel(router: self, weatherService: weatherService)
-        let view = HomeScreenView(homeScreenViewModel: viewModel)
+        let viewModel = CityScreenViewModel(router: self, service: weatherService, city: "Zagreb")
+        let view = CityScreenView(viewModel: viewModel)
         let viewController = UIHostingController(rootView: view)
         navigationController.pushViewController(viewController, animated: false)
     }
@@ -51,4 +52,5 @@ class Router: RouterProtocol {
         let viewController = UIHostingController(rootView: view)
         navigationController.pushViewController(viewController, animated: false)
     }
+    
 }
