@@ -6,19 +6,22 @@ class CityScreenViewModel: ObservableObject {
     private let weatherService: WeatherServiceProtocol
 
     @Published var city: String
-    @Published var weather: WeatherModel?
+    @Published var weather: CurrentWeatherResponse?
 
     init(router: RouterProtocol, service: WeatherServiceProtocol, city: String) {
         self.router = router
         self.weatherService = service
         self.city = city
+        Task {
+            await fetchWeather()
+        }
     }
 
     func fetchWeather() async {
         do {
             let decodedData = try await weatherService.fetchWeather(for: city)
-            DispatchQueue.main.async {
-                self.weather = decodedData
+            DispatchQueue.main.async { [ weak self ] in
+                self?.weather = decodedData
             }
         } catch {
             print("Error fetching weather data: \(error)")
