@@ -17,8 +17,8 @@ class CityScreenViewModel: ObservableObject {
     func fetchWeather() async {
         do {
             let decodedData = try await weatherService.fetchWeather(for: city)
-            DispatchQueue.main.async {
-                self.weather = decodedData
+            DispatchQueue.main.async { [ weak self ] in
+                self?.weather = decodedData
             }
         } catch {
             print("Error fetching weather data: \(error)")
