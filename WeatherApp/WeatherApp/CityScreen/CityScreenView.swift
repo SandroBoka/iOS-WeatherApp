@@ -1,16 +1,16 @@
 import SwiftUI
 
-struct HomeScreenView: View {
+struct CityScreenView: View {
 
-    @StateObject private var homeScreenViewModel = HomeScreenViewModel()
+    @ObservedObject var viewModel: CityScreenViewModel
 
     var body: some View {
         VStack {
-            Text("Weather in Zagreb")
+            Text("Weather in \(viewModel.city)")
                 .font(.title)
                 .padding()
 
-            if let weather = homeScreenViewModel.weather {
+            if let weather = viewModel.weather {
                 Text("Temperature: \(String(format: "%.1f", weather.main.temp))°C")
                     .padding()
 
@@ -25,6 +25,12 @@ struct HomeScreenView: View {
 
                 Text("Wind Speed: \(String(format: "%.1f", weather.wind.speed)) m/s")
                     .padding()
+
+                Text("Sunrise: \(viewModel.formatTimeFromUnix(weather.sys.sunrise, timeZoneOffset: 3600))")
+                    .padding()
+
+                Text("Sunset: \(viewModel.formatTimeFromUnix(weather.sys.sunset, timeZoneOffset: 3600))")
+                    .padding()
             } else {
                 Text("Loading weather data...")
             }
@@ -34,9 +40,7 @@ struct HomeScreenView: View {
         .padding()
         .frame(maxWidth: .infinity)
         .background {
-            Color
-                .blue
-                .opacity(0.6)
+            LinearGradient(gradient: Gradient(colors: [.white, .blue, .black]), startPoint: .top, endPoint: .bottom)
                 .ignoresSafeArea()
         }
     }
@@ -44,5 +48,7 @@ struct HomeScreenView: View {
 }
 
 #Preview {
-    HomeScreenView()
+    CityScreenView(viewModel: CityScreenViewModel(
+        router: Router(navigationController: UINavigationController()),
+        city: "Atlantic City"))
 }
