@@ -50,6 +50,6 @@ struct CityScreenView: View {
 #Preview {
     CityScreenView(viewModel: CityScreenViewModel(
         router: Router(navigationController: UINavigationController()),
-        service: WeatherService(),
+        service: WeatherService(client: NetworkClient()),
         city: "Atlantic City"))
 }

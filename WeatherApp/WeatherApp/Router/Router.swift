@@ -18,7 +18,7 @@ class Router: RouterProtocol {
 
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
-        self.weatherService = WeatherService()
+        self.weatherService = WeatherService(client: NetworkClient())
     }
 
     func start(in window: UIWindow) {

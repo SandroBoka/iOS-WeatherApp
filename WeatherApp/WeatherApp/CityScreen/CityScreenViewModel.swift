@@ -28,6 +28,18 @@ class CityScreenViewModel: ObservableObject {
         }
     }
 
+    func getWeatherWithCompletion() {
+        weatherService.fetchWeather(for: city) { result in
+            switch result {
+            case .success(let weatherResponse):
+                print("Weather: \(weatherResponse)")
+            case .failure(let error):
+                print("Error fetching weather: \(error)")
+            }
+        }
+    }
+
+
     func formatTimeFromUnix(_ unixTime: Int, timeZoneOffset: Int) -> String {
         let date = Date(timeIntervalSince1970: TimeInterval(unixTime + timeZoneOffset))
         let formatter = DateFormatter()

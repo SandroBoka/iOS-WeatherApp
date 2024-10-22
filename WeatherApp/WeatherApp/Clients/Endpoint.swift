@@ -22,16 +22,3 @@ extension Endpoint {
     }
     
 }
-
-class WeatherEndpoint: Endpoint {
-
-    var path: String
-    var queryItems: [URLQueryItem]
-    var baseURL = "https://api.openweathermap.org"
-
-    init(path: String, queryItems: [URLQueryItem]) {
-        self.path = path
-        self.queryItems = queryItems
-    }
-
-}
