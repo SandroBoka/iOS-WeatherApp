@@ -2,7 +2,7 @@ import Foundation
 
 protocol WeatherServiceProtocol {
 
-    func fetchWeather(for cityName: String) async throws -> WeatherModel
+    func fetchWeather(for cityName: String) async throws -> CurrentWeatherResponse
 
 }
 
@@ -16,7 +16,7 @@ class WeatherService: WeatherServiceProtocol {
         return apiKey
     }
 
-    func fetchWeather(for cityName: String) async throws -> WeatherModel {
+    func fetchWeather(for cityName: String) async throws -> CurrentWeatherResponse {
         var urlComponents = URLComponents(string: baseURL)!
         urlComponents.queryItems = [
             URLQueryItem(name: "q", value: cityName),
@@ -26,7 +26,7 @@ class WeatherService: WeatherServiceProtocol {
         guard let url = urlComponents.url else { throw URLError(.badURL) }
 
         let (data, _) = try await URLSession.shared.data(from: url)
-        let decodedData = try JSONDecoder().decode(WeatherModel.self, from: data)
+        let decodedData = try JSONDecoder().decode(CurrentWeatherResponse.self, from: data)
         return decodedData
     }
 

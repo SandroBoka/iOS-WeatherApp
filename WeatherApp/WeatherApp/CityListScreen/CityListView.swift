@@ -2,7 +2,7 @@ import SwiftUI
 
 struct CityListView: View {
 
-    @StateObject var viewModel: CityListViewModel
+    @ObservedObject var viewModel: CityListViewModel
 
     var body: some View {
         NavigationView {

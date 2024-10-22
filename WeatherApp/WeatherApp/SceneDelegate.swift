@@ -18,7 +18,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let window else { return }
 
         router.start(in: window)
-        print(router)
     }
 
 }

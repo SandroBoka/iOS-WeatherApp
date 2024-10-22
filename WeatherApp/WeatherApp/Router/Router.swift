@@ -52,5 +52,5 @@ class Router: RouterProtocol {
         let viewController = UIHostingController(rootView: view)
         navigationController.pushViewController(viewController, animated: false)
     }
-    
+
 }

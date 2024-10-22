@@ -6,7 +6,7 @@ class CityScreenViewModel: ObservableObject {
     private let weatherService: WeatherServiceProtocol
 
     @Published var city: String
-    @Published var weather: WeatherModel?
+    @Published var weather: CurrentWeatherResponse?
 
     init(router: RouterProtocol, service: WeatherServiceProtocol, city: String) {
         self.router = router
