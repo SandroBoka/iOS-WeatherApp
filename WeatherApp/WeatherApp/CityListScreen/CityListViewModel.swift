@@ -10,11 +10,9 @@ class CityListViewModel: ObservableObject {
         City(name: "London"),
         City(name: "Los Angeles"),
         City(name: "Toronto"),
-        City(name: "Split")
-    ]
+        City(name: "Split")]
 
     private let apiKey = "ff4cd4d2c654b4100a2712f4cbaeb732" // remove
-
     private let router: RouterProtocol
 
     init(router: RouterProtocol) {
@@ -22,12 +20,13 @@ class CityListViewModel: ObservableObject {
     }
 
     func fetchTemperature(for city: City) async {
-        var urlComponents = URLComponents(string: "https://api.openweathermap.org/data/2.5/weather")!
+        guard let urlComponentsCheck = URLComponents(string: "https://api.openweathermap.org/data/2.5/weather") else { return }
+
+        var urlComponents = urlComponentsCheck
         urlComponents.queryItems = [
             URLQueryItem(name: "q", value: city.name),
             URLQueryItem(name: "appid", value: apiKey),
-            URLQueryItem(name: "units", value: "metric")
-        ]
+            URLQueryItem(name: "units", value: "metric")]
 
         guard let url = urlComponents.url else { return }
 
@@ -35,8 +34,8 @@ class CityListViewModel: ObservableObject {
             let (data, _) = try await URLSession.shared.data(from: url)
             let decodedData = try JSONDecoder().decode(WeatherModel.self, from: data)
             if let index = cities.firstIndex(where: { $0.id == city.id }) {
-                DispatchQueue.main.async {
-                    self.cities[index].temperature = decodedData.main.temp
+                DispatchQueue.main.async { [ weak self ] in
+                    self?.cities[index].temperature = decodedData.main.temp
                 }
             }
         } catch {
