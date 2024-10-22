@@ -11,6 +11,9 @@ class CityScreenViewModel: ObservableObject {
     init(router: RouterProtocol, city: String) {
         self.router = router
         self.city = city
+        Task {
+            await fetchWeather()
+        }
     }
 
     func fetchWeather() async {
