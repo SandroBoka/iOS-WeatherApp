@@ -7,6 +7,7 @@ protocol RouterProtocol {
 
     func showCityList()
     func showCityWeather(city: City)
+    
 }
 
 class Router: RouterProtocol {
@@ -41,4 +42,5 @@ class Router: RouterProtocol {
         let viewController = UIHostingController(rootView: view)
         navigationController.pushViewController(viewController, animated: false)
     }
+
 }
