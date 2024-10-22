@@ -19,6 +19,9 @@ class CityListViewModel: ObservableObject {
     init(router: RouterProtocol, service: WeatherServiceProtocol) {
         self.router = router
         self.weatherService = service
+        Task {
+            await fetchWeatherForAllCities()
+        }
     }
 
     func fetchTemperature(for city: City) async {
