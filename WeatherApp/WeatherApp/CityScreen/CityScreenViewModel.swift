@@ -5,8 +5,8 @@ class CityScreenViewModel: ObservableObject {
     private let apiKey = "ff4cd4d2c654b4100a2712f4cbaeb732" // remove
     private let router: RouterProtocol
 
-    @Published var city: String
-    @Published var weather: WeatherModel?
+    @Published private(set) var city: String
+    @Published private(set) var weather: WeatherModel?
 
     init(router: RouterProtocol, city: String) {
         self.router = router
@@ -18,16 +18,15 @@ class CityScreenViewModel: ObservableObject {
         urlComponents.queryItems = [
             URLQueryItem(name: "q", value: city),
             URLQueryItem(name: "appid", value: apiKey),
-            URLQueryItem(name: "units", value: "metric")
-        ]
+            URLQueryItem(name: "units", value: "metric")]
 
         guard let url = urlComponents.url else { return }
 
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
             let decodedData = try JSONDecoder().decode(WeatherModel.self, from: data)
-            DispatchQueue.main.async {
-                self.weather = decodedData
+            DispatchQueue.main.async { [weak self] in
+                self?.weather = decodedData
             }
         } catch {
             print("Error fetching weather data: \(error)")
