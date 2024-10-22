@@ -4,7 +4,7 @@ class HomeScreenViewModel: ObservableObject {
 
     private let apiKey = "ff4cd4d2c654b4100a2712f4cbaeb732"
 
-    @Published private(set) var weather: WeatherModel?
+    @Published private(set) var weather: CurrentWeatherResponse?
 
     init() {
             Task {
@@ -25,7 +25,7 @@ class HomeScreenViewModel: ObservableObject {
 
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
-            let decodedData = try JSONDecoder().decode(WeatherModel.self, from: data)
+            let decodedData = try JSONDecoder().decode(CurrentWeatherResponse.self, from: data)
             DispatchQueue.main.async { [weak self] in
                 self?.weather = decodedData
             }

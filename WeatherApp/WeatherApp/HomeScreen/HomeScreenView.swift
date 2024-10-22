@@ -40,7 +40,7 @@ struct HomeScreenView: View {
                 .ignoresSafeArea()
         }
     }
-    
+
 }
 
 #Preview {
