@@ -1,9 +1,11 @@
 import Foundation
 
 public protocol Endpoint {
+
     var path: String { get }
     var queryItems: [URLQueryItem] { get }
     var baseURL: String { get }
+
 }
 
 extension Endpoint {
@@ -18,6 +20,7 @@ extension Endpoint {
 
         return URLRequest(url: url)
     }
+    
 }
 
 class WeatherEndPoint: Endpoint {
@@ -30,4 +33,5 @@ class WeatherEndPoint: Endpoint {
         self.path = path
         self.queryItems = queryItems
     }
+
 }

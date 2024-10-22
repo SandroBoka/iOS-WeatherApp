@@ -1,16 +1,20 @@
 import Foundation
 
 public enum ClientError: Error {
+
     case badURL
     case decodingError(Error)
     case networkError(Error)
     case httpError(Int)
     case noData
     case unknown
+
 }
 
 public protocol BaseApiClientProtocol {
+
     func get<T: Decodable>(endpoint: Endpoint, completion: @escaping (Result<T, ClientError>) -> Void)
+
 }
 
 class NetworkClient: BaseApiClientProtocol {
@@ -49,4 +53,5 @@ class NetworkClient: BaseApiClientProtocol {
 
         task.resume()
     }
+
 }
