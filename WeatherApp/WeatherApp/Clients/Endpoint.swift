@@ -23,7 +23,7 @@ extension Endpoint {
     
 }
 
-class WeatherEndPoint: Endpoint {
+class WeatherEndpoint: Endpoint {
 
     var path: String
     var queryItems: [URLQueryItem]
