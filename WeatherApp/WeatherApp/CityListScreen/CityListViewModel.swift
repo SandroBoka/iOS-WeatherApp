@@ -1,7 +1,7 @@
 import SwiftUI
 
 class CityListViewModel: ObservableObject {
-
+    
     @Published var cities: [City] = [
         City(name: "Zagreb"),
         City(name: "Paris"),
@@ -11,10 +11,10 @@ class CityListViewModel: ObservableObject {
         City(name: "Los Angeles"),
         City(name: "Toronto"),
         City(name: "Split")]
-
+    
     private let router: RouterProtocol
     private let weatherService: WeatherServiceProtocol
-
+    
     init(router: RouterProtocol, service: WeatherServiceProtocol) {
         self.router = router
         self.weatherService = service
@@ -22,7 +22,7 @@ class CityListViewModel: ObservableObject {
             await fetchWeatherForAllCities()
         }
     }
-
+    
     func fetchTemperature(for city: City) async {
         do {
             let weather = try await weatherService.fetchWeather(for: city.name)
@@ -35,15 +35,15 @@ class CityListViewModel: ObservableObject {
             print("Error fetching temperature for \(city.name): \(error)")
         }
     }
-
+    
     func fetchWeatherForAllCities() async {
         for city in cities {
             await fetchTemperature(for: city)
         }
     }
-
+    
     func showDetailsForCity(city: City) {
         router.showCityWeather(city: city)
     }
-
+    
 }
