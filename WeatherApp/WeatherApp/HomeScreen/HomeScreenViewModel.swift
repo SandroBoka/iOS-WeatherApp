@@ -5,6 +5,12 @@ class HomeScreenViewModel: ObservableObject {
     private let apiKey = "ff4cd4d2c654b4100a2712f4cbaeb732"
     @Published var weather: WeatherModel?
 
+    init() {
+            Task {
+                await fetchWeatherZagreb()
+            }
+        }
+
     func fetchWeatherZagreb() async {
         var urlComponents = URLComponents(string: "https://api.openweathermap.org/data/2.5/weather")!
         urlComponents.queryItems = [

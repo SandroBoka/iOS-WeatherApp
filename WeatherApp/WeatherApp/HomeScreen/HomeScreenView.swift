@@ -1,7 +1,9 @@
 import SwiftUI
 
 struct HomeScreenView: View {
-    @ObservedObject var homeScreenViewModel = HomeScreenViewModel()
+
+    @StateObject private var homeScreenViewModel = HomeScreenViewModel()
+
     var body: some View {
         VStack {
             Text("Weather in Zagreb")
@@ -11,12 +13,16 @@ struct HomeScreenView: View {
             if let weather = homeScreenViewModel.weather {
                 Text("Temperature: \(String(format: "%.1f", weather.main.temp))°C")
                     .padding()
+
                 Text("Feels Like: \(String(format: "%.1f", weather.main.feelsLike))°C")
                     .padding()
+
                 Text("Weather: \(weather.weather.first?.description.capitalized ?? "N/A")")
                     .padding()
+
                 Text("Humidity: \(weather.main.humidity)%")
                     .padding()
+
                 Text("Wind Speed: \(String(format: "%.1f", weather.wind.speed)) m/s")
                     .padding()
             } else {
@@ -26,13 +32,15 @@ struct HomeScreenView: View {
             Spacer()
         }
         .padding()
-        .task {
-            await homeScreenViewModel.fetchWeatherZagreb()
-        }
         .frame(maxWidth: .infinity)
-        .background(Color.blue.opacity(0.6).ignoresSafeArea())
-
+        .background {
+            Color
+                .blue
+                .opacity(0.6)
+                .ignoresSafeArea()
+        }
     }
+    
 }
 
 #Preview {
