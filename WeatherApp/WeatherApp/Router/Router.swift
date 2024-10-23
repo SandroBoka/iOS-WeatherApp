@@ -54,7 +54,7 @@ class Router: RouterProtocol {
         let viewModel = CityScreenViewModel(router: self, useCase: getWeatherUseCase, city: city.name)
         let view = CityScreenView(viewModel: viewModel)
         let viewController = UIHostingController(rootView: view)
-        navigationController.pushViewController(viewController, animated: false)
+        navigationController.pushViewController(viewController, animated: true)
     }
 
 }
