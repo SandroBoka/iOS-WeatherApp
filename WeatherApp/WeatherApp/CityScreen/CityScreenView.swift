@@ -11,25 +11,25 @@ struct CityScreenView: View {
                 .padding()
 
             if let weather = viewModel.weather {
-                Text("Temperature: \(String(format: "%.1f", weather.main.temp))°C")
+                Text("Temperature: \(String(format: "%.1f", weather.temp))°C")
                     .padding()
 
-                Text("Feels Like: \(String(format: "%.1f", weather.main.feelsLike))°C")
+                Text("Feels Like: \(String(format: "%.1f", weather.feelsLike))°C")
                     .padding()
 
-                Text("Weather: \(weather.weather.first?.description.capitalized ?? "N/A")")
+                Text("Weather: \(weather.description.capitalized)")
                     .padding()
 
-                Text("Humidity: \(weather.main.humidity)%")
+                Text("Humidity: \(weather.humidity)%")
                     .padding()
 
-                Text("Wind Speed: \(String(format: "%.1f", weather.wind.speed)) m/s")
+                Text("Wind Speed: \(String(format: "%.1f", weather.speed)) m/s")
                     .padding()
 
-                Text("Sunrise: \(viewModel.formatTimeFromUnix(weather.sys.sunrise, timeZoneOffset: 3600))")
+                Text("Sunrise: \(viewModel.formatTimeFromUnix(weather.sunrise, timeZoneOffset: 3600))")
                     .padding()
 
-                Text("Sunset: \(viewModel.formatTimeFromUnix(weather.sys.sunset, timeZoneOffset: 3600))")
+                Text("Sunset: \(viewModel.formatTimeFromUnix(weather.sunset, timeZoneOffset: 3600))")
                     .padding()
             } else {
                 Text("Loading weather data...")
@@ -48,8 +48,11 @@ struct CityScreenView: View {
 }
 
 #Preview {
-    CityScreenView(viewModel: CityScreenViewModel(
-        router: Router(navigationController: UINavigationController()),
-        service: WeatherService(client: NetworkClient()),
-        city: "Atlantic City"))
+    CityScreenView(
+        viewModel: CityScreenViewModel(
+            router: Router(navigationController: UINavigationController()),
+            repo: WeatherRepository(weatherService: WeatherService(client: NetworkClient())),
+            city: "Atlantic City"
+        )
+    )
 }
