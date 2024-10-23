@@ -3,25 +3,25 @@ import SwiftUI
 class CityScreenViewModel: ObservableObject {
 
     private let router: RouterProtocol
-    private let weatherService: WeatherServiceProtocol
+    private let getWeatherUseCase: GetWeatherUseCaseProtocol
 
     @Published var city: String
-    @Published var weather: CurrentWeatherResponse?
+    @Published var weather: WeatherModel?
 
-    init(router: RouterProtocol, service: WeatherServiceProtocol, city: String) {
+    init(router: RouterProtocol, useCase: GetWeatherUseCaseProtocol, city: String) {
         self.router = router
-        self.weatherService = service
+        self.getWeatherUseCase = useCase
         self.city = city
 
         fetchWeather()
     }
 
     func fetchWeather() {
-        weatherService.fetchWeather(for: city) { result in
+        getWeatherUseCase.getWeather(cityName: city) { result in
             switch result {
-            case .success(let weatherResponse):
-                DispatchQueue.main.async { [ weak self ] in
-                    self?.weather = weatherResponse
+            case .success(let weatherModel):
+                DispatchQueue.main.async { [weak self] in
+                    self?.weather = weatherModel
                 }
             case .failure(let error):
                 print("Error fetching weather: \(error)")

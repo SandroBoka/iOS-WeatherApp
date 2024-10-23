@@ -13,24 +13,24 @@ class CityListViewModel: ObservableObject {
         City(name: "Split")]
 
     private let router: RouterProtocol
-    private let weatherService: WeatherServiceProtocol
+    private let getWeatherUseCase: GetWeatherUseCaseProtocol
 
-    init(router: RouterProtocol, service: WeatherServiceProtocol) {
+    init(router: RouterProtocol, useCase: GetWeatherUseCaseProtocol) {
         self.router = router
-        self.weatherService = service
+        self.getWeatherUseCase = useCase
 
         fetchWeatherForAllCities()
     }
 
     func fetchTemperature(for city: City) {
-        weatherService.fetchWeather(for: city.name) { [ weak self ] result in
+        getWeatherUseCase.getWeather(cityName: city.name) { [ weak self ] result in
             guard let self = self else { return }
 
             switch result {
-            case .success(let weatherResponse):
+            case .success(let weatherModel):
                 if let index = self.cities.firstIndex(where: { $0.id == city.id }) {
-                    DispatchQueue.main.async { [ weak self ] in
-                        self?.cities[index].temperature = weatherResponse.main.temp
+                    DispatchQueue.main.sync { [ weak self ] in
+                        self?.cities[index].temperature = weatherModel.temp
                     }
                 }
             case .failure(let error):

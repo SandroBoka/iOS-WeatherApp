@@ -15,10 +15,14 @@ class Router: RouterProtocol {
 
     private let navigationController: UINavigationController
     private let weatherService: WeatherServiceProtocol
+    private let weatherRepo: WeatherRepositoryProtocol
+    private let getWeatherUseCase: GetWeatherUseCaseProtocol
 
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
         self.weatherService = WeatherService(client: NetworkClient())
+        self.weatherRepo = WeatherRepository(weatherService: weatherService)
+        self.getWeatherUseCase = GetWeatherUseCase(weatherRepo: weatherRepo)
     }
 
     func start(in window: UIWindow) {
@@ -33,24 +37,24 @@ class Router: RouterProtocol {
     }
 
     func showHomeScreen() {
-        let viewModel = CityScreenViewModel(router: self, service: weatherService, city: "Zagreb")
+        let viewModel = CityScreenViewModel(router: self, useCase: getWeatherUseCase, city: "Zagreb")
         let view = CityScreenView(viewModel: viewModel)
         let viewController = UIHostingController(rootView: view)
         navigationController.pushViewController(viewController, animated: false)
     }
 
     func showCityList() {
-        let viewModel = CityListViewModel(router: self, service: weatherService)
+        let viewModel = CityListViewModel(router: self, useCase: getWeatherUseCase)
         let view = CityListView(viewModel: viewModel)
         let viewController = UIHostingController(rootView: view)
         navigationController.setViewControllers([viewController], animated: false)
     }
 
     func showCityWeather(city: City) {
-        let viewModel = CityScreenViewModel(router: self, service: weatherService, city: city.name)
+        let viewModel = CityScreenViewModel(router: self, useCase: getWeatherUseCase, city: city.name)
         let view = CityScreenView(viewModel: viewModel)
         let viewController = UIHostingController(rootView: view)
-        navigationController.pushViewController(viewController, animated: false)
+        navigationController.pushViewController(viewController, animated: true)
     }
 
 }
