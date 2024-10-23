@@ -44,4 +44,3 @@ class WeatherRepository: WeatherRepositoryProtocol {
     }
 
 }
-
