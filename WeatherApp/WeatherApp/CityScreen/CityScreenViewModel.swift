@@ -12,33 +12,22 @@ class CityScreenViewModel: ObservableObject {
         self.router = router
         self.weatherService = service
         self.city = city
-        Task {
-            await fetchWeather()
-        }
+
+        fetchWeather()
     }
 
-    func fetchWeather() async {
-        do {
-            let decodedData = try await weatherService.fetchWeather(for: city)
-            DispatchQueue.main.async { [ weak self ] in
-                self?.weather = decodedData
-            }
-        } catch {
-            print("Error fetching weather data: \(error)")
-        }
-    }
-
-    func getWeatherWithCompletion() {
+    func fetchWeather() {
         weatherService.fetchWeather(for: city) { result in
             switch result {
             case .success(let weatherResponse):
-                print("Weather: \(weatherResponse)")
+                DispatchQueue.main.async { [ weak self ] in
+                    self?.weather = weatherResponse
+                }
             case .failure(let error):
                 print("Error fetching weather: \(error)")
             }
         }
     }
-
 
     func formatTimeFromUnix(_ unixTime: Int, timeZoneOffset: Int) -> String {
         let date = Date(timeIntervalSince1970: TimeInterval(unixTime + timeZoneOffset))

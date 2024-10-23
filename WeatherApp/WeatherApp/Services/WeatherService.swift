@@ -25,18 +25,10 @@ class WeatherService: WeatherServiceProtocol {
         for cityName: String,
         completion: @escaping (Result<CurrentWeatherResponse, ClientError>) -> Void
     ) {
-        let queryItems = [
-            URLQueryItem(name: "q", value: cityName),
-            URLQueryItem(name: "appid", value: apiKey),
-            URLQueryItem(name: "units", value: "metric")]
-
-        let weatherEndpoint = WeatherEndpoint(path: "/data/2.5/weather", queryItems: queryItems)
-
         client.get(endpoint: endpointFactory.makeCurrentWeather(cityName: cityName)) { result in
             completion(result)
         }
     }
-
 
 }
 
@@ -51,7 +43,12 @@ private extension WeatherService {
         }
 
         func makeCurrentWeather(cityName: String) -> WeatherEndpoint {
+            let queryItems = [
+                URLQueryItem(name: "q", value: cityName),
+                URLQueryItem(name: "appid", value: apiKey),
+                URLQueryItem(name: "units", value: "metric")]
 
+            return WeatherEndpoint(path: "/data/2.5/weather", queryItems: queryItems)
         }
 
     }
