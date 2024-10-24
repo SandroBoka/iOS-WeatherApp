@@ -4,44 +4,62 @@ struct CityScreenView: View {
 
     @ObservedObject var viewModel: CityScreenViewModel
 
+    let columns = [
+        GridItem(.flexible(), spacing: 18),
+        GridItem(.flexible())]
+
     var body: some View {
-        VStack {
-            Text("Weather in \(viewModel.city)")
-                .font(.title)
-                .padding()
+        ZStack {
+            Color.black
+                .ignoresSafeArea()
 
             if let weather = viewModel.weather {
-                Text("Temperature: \(String(format: "%.1f", weather.temp))°C")
-                    .padding()
+                ScrollView {
+                    VStack {
+                        Text(viewModel.city)
+                            .font(Font.custom("NDOT45inspiredbyNOTHING", size: 25))
 
-                Text("Feels Like: \(String(format: "%.1f", weather.feelsLike))°C")
-                    .padding()
+                        Image(.sunny)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(maxWidth: 170, maxHeight: 170)
+                            .padding()
 
-                Text("Weather: \(weather.description.capitalized)")
-                    .padding()
+                        Text(weather.description.uppercased())
+                            .font(Font.custom("Noto Sans Mono", size: 12))
+                            .padding(.bottom, 20)
 
-                Text("Humidity: \(weather.humidity)%")
-                    .padding()
+                        HStack(spacing: 24) {
+                            Spacer()
 
-                Text("Wind Speed: \(String(format: "%.1f", weather.speed)) m/s")
-                    .padding()
+                            TemperatureInfoView(title: "Current", temperature: weather.temp)
 
-                Text("Sunrise: \(viewModel.formatTimeFromUnix(weather.sunrise, timeZoneOffset: 3600))")
-                    .padding()
+                            Spacer()
 
-                Text("Sunset: \(viewModel.formatTimeFromUnix(weather.sunset, timeZoneOffset: 3600))")
-                    .padding()
-            } else {
-                Text("Loading weather data...")
+                            TemperatureInfoView(title: "Feels Like", temperature: weather.feelsLike)
+
+                            Spacer()
+                        }
+
+                        Divider()
+                            .overlay(.white)
+                            .padding(.top)
+                            .padding(.horizontal)
+
+                        LazyVGrid(columns: columns, spacing: 18) {
+                            WeatherWidgetView(title: "Widget 1")
+                            WeatherWidgetView(title: "Widget 2")
+                            WeatherWidgetView(title: "Widget 3")
+                            WeatherWidgetView(title: "Widget 4")
+                        }
+                        .padding()
+
+                        Spacer()
+                    }
+                    .foregroundStyle(Color.white)
+                }
+
             }
-
-            Spacer()
-        }
-        .padding()
-        .frame(maxWidth: .infinity)
-        .background {
-            LinearGradient(gradient: Gradient(colors: [.white, .blue, .gray]), startPoint: .top, endPoint: .bottom)
-                .ignoresSafeArea()
         }
     }
 
