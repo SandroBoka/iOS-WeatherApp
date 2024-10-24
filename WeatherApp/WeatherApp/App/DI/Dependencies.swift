@@ -26,7 +26,7 @@ class Dependencies: DependenciesProtocol {
 
     private lazy var mainNavigationController: UINavigationController = {
         let navigationController = UINavigationController()
-        navigationController.setNavigationBarHidden(true, animated: false)
+        navigationController.setNavigationBarHidden(false, animated: false)
 
         return navigationController
     }()
