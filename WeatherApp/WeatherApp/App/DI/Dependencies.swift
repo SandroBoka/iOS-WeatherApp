@@ -35,11 +35,11 @@ class Dependencies: DependenciesProtocol {
         NetworkClient()
     }()
 
-    lazy var weatherService: WeatherServiceProtocol = {
+    private lazy var weatherService: WeatherServiceProtocol = {
         WeatherService(client: weatherClient)
     }()
 
-    lazy var weatherRepository: WeatherRepositoryProtocol = {
+    private lazy var weatherRepository: WeatherRepositoryProtocol = {
         WeatherRepository(weatherService: weatherService)
     }()
 
