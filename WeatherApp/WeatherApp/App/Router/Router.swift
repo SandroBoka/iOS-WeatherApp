@@ -14,9 +14,9 @@ protocol RouterProtocol {
 class Router: RouterProtocol {
 
     private let navigationController: UINavigationController
-    private let viewModelFactory: ViewModelDependenciesProtocol
+    private let viewModelFactory: ViewModelFactoryProtocol
 
-    init(navigationController: UINavigationController, viewModelFactory: ViewModelDependenciesProtocol) {
+    init(navigationController: UINavigationController, viewModelFactory: ViewModelFactoryProtocol) {
         self.navigationController = navigationController
         self.viewModelFactory = viewModelFactory
     }

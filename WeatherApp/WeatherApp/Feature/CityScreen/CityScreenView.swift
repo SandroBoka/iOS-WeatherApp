@@ -50,7 +50,7 @@ struct CityScreenView: View {
 #Preview {
     CityScreenView(
         viewModel: CityScreenViewModel(
-            router: Router(navigationController: UINavigationController()),
+            router: Router(navigationController: UINavigationController(), viewModelFactory: Dependencies()),
             useCase: GetWeatherUseCase(
                 weatherRepo: WeatherRepository(weatherService: WeatherService(client: NetworkClient()))
             ),

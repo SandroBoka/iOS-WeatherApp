@@ -12,7 +12,7 @@ protocol NavigationDependenciesProtocol {
 
 }
 
-protocol ViewModelDependenciesProtocol {
+protocol ViewModelFactoryProtocol {
 
     func makeCityListViewModel() -> CityListViewModel
     func makeCityScreenViewModel(cityName: String) -> CityScreenViewModel
@@ -20,8 +20,7 @@ protocol ViewModelDependenciesProtocol {
 }
 
 typealias DependenciesProtocol = UseCaseDependenciesProtocol &
-NavigationDependenciesProtocol &
-ViewModelDependenciesProtocol
+NavigationDependenciesProtocol
 
 class Dependencies: DependenciesProtocol {
 
@@ -32,7 +31,7 @@ class Dependencies: DependenciesProtocol {
         return navigationController
     }()
 
-    lazy var weatherClient: BaseApiClientProtocol = {
+    private lazy var weatherClient: BaseApiClientProtocol = {
         NetworkClient()
     }()
 
@@ -52,6 +51,10 @@ class Dependencies: DependenciesProtocol {
         Router(navigationController: mainNavigationController, viewModelFactory: self)
     }()
 
+}
+
+extension Dependencies: ViewModelFactoryProtocol {
+
     func makeCityListViewModel() -> CityListViewModel {
         CityListViewModel(router: router, useCase: getWeatherUseCase)
     }
@@ -59,4 +62,5 @@ class Dependencies: DependenciesProtocol {
     func makeCityScreenViewModel(cityName: String) -> CityScreenViewModel {
         CityScreenViewModel(router: router, useCase: getWeatherUseCase, city: cityName)
     }
+
 }
