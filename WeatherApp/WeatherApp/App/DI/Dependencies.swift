@@ -49,7 +49,7 @@ class Dependencies: DependenciesProtocol {
     }()
 
     lazy var router: RouterProtocol = {
-        Router(navigationController: mainNavigationController)
+        Router(navigationController: mainNavigationController, viewModelFactory: self)
     }()
 
     func makeCityListViewModel() -> CityListViewModel {
