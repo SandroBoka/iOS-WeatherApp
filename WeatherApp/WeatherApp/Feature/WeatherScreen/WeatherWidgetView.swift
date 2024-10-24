@@ -18,6 +18,6 @@ struct WeatherWidgetView: View {
 
 extension Color {
 
-    static let darkGray = Color(red: 30/255, green: 30/255, blue: 30/255)
+    static let darkGray = Color(red: 25/255, green: 25/255, blue: 25/255)
 
 }
