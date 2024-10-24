@@ -14,15 +14,11 @@ protocol RouterProtocol {
 class Router: RouterProtocol {
 
     private let navigationController: UINavigationController
-    private let weatherService: WeatherServiceProtocol
-    private let weatherRepo: WeatherRepositoryProtocol
-    private let getWeatherUseCase: GetWeatherUseCaseProtocol
+    private let viewModelFactory: ViewModelFactoryProtocol
 
-    init(navigationController: UINavigationController) {
+    init(navigationController: UINavigationController, viewModelFactory: ViewModelFactoryProtocol) {
         self.navigationController = navigationController
-        self.weatherService = WeatherService(client: NetworkClient())
-        self.weatherRepo = WeatherRepository(weatherService: weatherService)
-        self.getWeatherUseCase = GetWeatherUseCase(weatherRepo: weatherRepo)
+        self.viewModelFactory = viewModelFactory
     }
 
     func start(in window: UIWindow) {
@@ -37,21 +33,21 @@ class Router: RouterProtocol {
     }
 
     func showHomeScreen() {
-        let viewModel = CityScreenViewModel(router: self, useCase: getWeatherUseCase, city: "Zagreb")
+        let viewModel = viewModelFactory.makeCityScreenViewModel(cityName: "Zagreb")
         let view = CityScreenView(viewModel: viewModel)
         let viewController = UIHostingController(rootView: view)
         navigationController.pushViewController(viewController, animated: false)
     }
 
     func showCityList() {
-        let viewModel = CityListViewModel(router: self, useCase: getWeatherUseCase)
+        let viewModel = viewModelFactory.makeCityListViewModel()
         let view = CityListView(viewModel: viewModel)
         let viewController = UIHostingController(rootView: view)
         navigationController.setViewControllers([viewController], animated: false)
     }
 
     func showCityWeather(city: City) {
-        let viewModel = CityScreenViewModel(router: self, useCase: getWeatherUseCase, city: city.name)
+        let viewModel = viewModelFactory.makeCityScreenViewModel(cityName: city.name)
         let view = CityScreenView(viewModel: viewModel)
         let viewController = UIHostingController(rootView: view)
         navigationController.pushViewController(viewController, animated: true)
