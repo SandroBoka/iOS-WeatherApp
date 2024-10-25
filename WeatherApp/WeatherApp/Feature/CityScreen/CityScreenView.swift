@@ -47,10 +47,16 @@ struct CityScreenView: View {
                             .padding(.horizontal)
 
                         LazyVGrid(columns: columns, spacing: 18) {
-                            WeatherWidgetView(title: "Widget 1")
-                            WeatherWidgetView(title: "Widget 2")
-                            WeatherWidgetView(title: "Widget 3")
-                            WeatherWidgetView(title: "Widget 4")
+                            WeatherWidgetView(title: "Wind", value: "\(weather.speed) km/h")
+                            WeatherWidgetView(title: "Humidity", value: "\(weather.humidity) %")
+                            WeatherWidgetView(
+                                title: "Sunrise",
+                                value: "\(viewModel.formatTimeFromUnix(weather.sunrise, timeZoneOffset: 3600))"
+                            )
+                            WeatherWidgetView(
+                                title: "Sunset",
+                                value: "\(viewModel.formatTimeFromUnix(weather.sunset, timeZoneOffset: 3600))"
+                            )
                         }
                         .padding()
 
