@@ -4,32 +4,27 @@ class CityListViewModel: ObservableObject {
 
     @Published var cities: [City] = [] {
         didSet {
-            saveCities()
+            storeCitiesUseCase.storeCities(cities: cities)
         }
     }
 
-    let appearance = UINavigationBarAppearance()
-
     private let router: RouterProtocol
     private let getWeatherUseCase: GetWeatherUseCaseProtocol
-    private let citiesKey = "savedCities"
-    private let defaultCities: [City] = [
-        City(name: "Zagreb"),
-        City(name: "Paris"),
-        City(name: "New York"),
-        City(name: "Tokyo"),
-        City(name: "London"),
-        City(name: "Los Angeles")]
+    private let getCitiesUseCase: GetCitiesUseCaseProtocol
+    private let storeCitiesUseCase: StoreCitiesUseCaseProtocol
 
-    init(router: RouterProtocol, useCase: GetWeatherUseCaseProtocol) {
+    init(
+        router: RouterProtocol,
+        weatherUseCase: GetWeatherUseCaseProtocol,
+        getCitiesUseCase: GetCitiesUseCaseProtocol,
+        storeCitiesUseCase: StoreCitiesUseCaseProtocol
+    ) {
         self.router = router
-        self.getWeatherUseCase = useCase
-        self.cities = loadCities()
+        self.getWeatherUseCase = weatherUseCase
+        self.getCitiesUseCase = getCitiesUseCase
+        self.storeCitiesUseCase = storeCitiesUseCase
 
-        if cities.isEmpty {
-            cities = self.defaultCities
-        }
-
+        cities = getCitiesUseCase.getCities()
         fetchWeatherForAllCities()
     }
 
@@ -68,28 +63,6 @@ class CityListViewModel: ObservableObject {
 
     func removeCity(at offsets: IndexSet) {
         cities.remove(atOffsets: offsets)
-    }
-
-    private func loadCities() -> [City] {
-        guard let data = UserDefaults.standard.data(forKey: citiesKey) else { return [] }
-        
-        let decoder = JSONDecoder()
-        do {
-            return try decoder.decode([City].self, from: data)
-        } catch {
-            print("Error loading cities: \(error)")
-            return []
-        }
-    }
-
-    private func saveCities() {
-        let encoder = JSONEncoder()
-        do {
-            let data = try encoder.encode(cities)
-            UserDefaults.standard.set(data, forKey: citiesKey)
-        } catch {
-            print("Error saving cities: \(error)")
-        }
     }
 
 }
