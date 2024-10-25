@@ -1,10 +1,10 @@
 import Foundation
 
-struct City: Identifiable {
+struct City: Identifiable, Codable {
 
-    let id = UUID()
     let name: String
 
+    var id = UUID()
     var temperature: Double?
 
 }
