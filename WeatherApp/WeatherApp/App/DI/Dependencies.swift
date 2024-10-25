@@ -3,6 +3,8 @@ import UIKit
 protocol UseCaseDependenciesProtocol {
 
     var getWeatherUseCase: GetWeatherUseCaseProtocol { get }
+    var getCitiesUseCase: GetCitiesUseCaseProtocol { get }
+    var storeCitiesUseCase: StoreCitiesUseCaseProtocol { get }
 
 }
 
@@ -39,12 +41,28 @@ class Dependencies: DependenciesProtocol {
         WeatherService(client: weatherClient)
     }()
 
+    private lazy var dataService: DataServiceProtocol = {
+        DataService()
+    }()
+
     private lazy var weatherRepository: WeatherRepositoryProtocol = {
         WeatherRepository(weatherService: weatherService)
     }()
 
+    private lazy var dataRepository: DataRepositoryProtocol = {
+        DataRepository(dataService: dataService)
+    }()
+
     lazy var getWeatherUseCase: GetWeatherUseCaseProtocol = {
         GetWeatherUseCase(weatherRepo: weatherRepository)
+    }()
+
+    lazy var getCitiesUseCase: GetCitiesUseCaseProtocol = {
+        GetCitiesUseCase(dataRepo: dataRepository)
+    }()
+
+    lazy var storeCitiesUseCase: StoreCitiesUseCaseProtocol = {
+        StoreCitiesUseCase(dataRepo: dataRepository)
     }()
 
     lazy var router: RouterProtocol = {
@@ -56,7 +74,12 @@ class Dependencies: DependenciesProtocol {
 extension Dependencies: ViewModelFactoryProtocol {
 
     func makeCityListViewModel() -> CityListViewModel {
-        CityListViewModel(router: router, useCase: getWeatherUseCase)
+        CityListViewModel(
+            router: router,
+            weatherUseCase: getWeatherUseCase,
+            getCitiesUseCase: getCitiesUseCase,
+            storeCitiesUseCase: storeCitiesUseCase
+        )
     }
 
     func makeCityScreenViewModel(cityName: String) -> CityScreenViewModel {
