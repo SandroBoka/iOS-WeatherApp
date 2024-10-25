@@ -72,6 +72,7 @@ class CityListViewModel: ObservableObject {
 
     private func loadCities() -> [City] {
         guard let data = UserDefaults.standard.data(forKey: citiesKey) else { return [] }
+        
         let decoder = JSONDecoder()
         do {
             return try decoder.decode([City].self, from: data)
