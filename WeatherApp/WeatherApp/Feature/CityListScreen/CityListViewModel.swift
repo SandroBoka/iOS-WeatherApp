@@ -12,6 +12,8 @@ class CityListViewModel: ObservableObject {
         City(name: "Toronto"),
         City(name: "Split")]
 
+    let appearance = UINavigationBarAppearance()
+
     private let router: RouterProtocol
     private let getWeatherUseCase: GetWeatherUseCaseProtocol
 
@@ -47,6 +49,16 @@ class CityListViewModel: ObservableObject {
 
     func showDetailsForCity(city: City) {
         router.showCityWeather(city: city)
+    }
+
+    func addCity(cityName: String) {
+        let newCity = City(name: cityName)
+        cities.append(newCity)
+        fetchTemperature(for: newCity)
+    }
+
+    func removeCity(at offsets: IndexSet) {
+        cities.remove(atOffsets: offsets)
     }
 
 }

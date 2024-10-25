@@ -64,7 +64,6 @@ struct CityScreenView: View {
                     }
                     .foregroundStyle(Color.white)
                 }
-
             }
         }
     }
