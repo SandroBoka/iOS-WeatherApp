@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct TemperatureInfoView: View {
-    
+
     let title: String
     let temperature: Double
 
@@ -14,5 +14,5 @@ struct TemperatureInfoView: View {
                 .font(Font.custom("NDOT45inspiredbyNOTHING", size: 24))
         }
     }
-    
+
 }

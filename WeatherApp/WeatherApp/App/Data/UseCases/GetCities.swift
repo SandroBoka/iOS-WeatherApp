@@ -17,5 +17,5 @@ class GetCitiesUseCase: GetCitiesUseCaseProtocol {
     func getCities() -> [City] {
         return dataRepo.getCities()
     }
-    
+
 }

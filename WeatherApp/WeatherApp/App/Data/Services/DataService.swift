@@ -23,7 +23,7 @@ class DataService: DataServiceProtocol {
 
     func getCities() -> [City] {
         guard let data = UserDefaults.standard.data(forKey: citiesKey) else { return [] }
-        
+
         let decoder = JSONDecoder()
         do {
             return try decoder.decode([City].self, from: data)
@@ -34,4 +34,3 @@ class DataService: DataServiceProtocol {
     }
 
 }
-

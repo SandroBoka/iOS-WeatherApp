@@ -5,19 +5,6 @@ struct CityListView: View {
     @ObservedObject var viewModel: CityListViewModel
     @State private var newCityName: String = ""
 
-    init(viewModel: CityListViewModel) {
-        let appearance = UINavigationBarAppearance()
-
-        appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = UIColor.black
-        appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
-        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
-        UINavigationBar.appearance().standardAppearance = appearance
-        UINavigationBar.appearance().scrollEdgeAppearance = appearance
-
-        self.viewModel = viewModel
-    }
-
     var body: some View {
         VStack {
             HStack {
