@@ -16,6 +16,9 @@ struct CityScreenView: View {
             if let weather = viewModel.weather {
                 ScrollView {
                     VStack {
+
+                        NavBar(backAction: viewModel.goBack)
+
                         Text(viewModel.city)
                             .font(Font.custom("NDOT45inspiredbyNOTHING", size: 25))
 

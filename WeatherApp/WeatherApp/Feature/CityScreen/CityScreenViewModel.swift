@@ -37,4 +37,7 @@ class CityScreenViewModel: ObservableObject {
         return formatter.string(from: date)
     }
 
+    func goBack() {
+        router.goBack()
+    }
 }
