@@ -17,7 +17,6 @@ struct NavBar: View {
             Spacer()
         }
         .padding(.horizontal)
-        .foregroundColor(.white)
     }
 
 }

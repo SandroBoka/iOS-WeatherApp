@@ -9,7 +9,6 @@ struct CityListView: View {
         VStack {
             HStack {
                 Text("Locations")
-                    .foregroundColor(.white)
                     .font(Font.custom("NDOT45inspiredbyNOTHING", size: 18))
 
                 Spacer()
@@ -23,10 +22,10 @@ struct CityListView: View {
                 TextField(
                     "",
                     text: $newCityName,
-                    prompt: Text("Enter city name").foregroundColor(.white.opacity(0.5))
+                    prompt: Text("Enter city name").foregroundColor(.primaryForeground.opacity(0.5))
                 )
                 .padding(8)
-                .foregroundStyle(Color.white)
+                .foregroundStyle(.primaryForeground)
                 .background(RoundedRectangle(cornerRadius: 10).fill(Color.gray.opacity(0.1)))
 
                 Button("Add City") {
@@ -50,7 +49,6 @@ struct CityListView: View {
 
                             if let temperature = city.temperature {
                                 Text("\(temperature, specifier: "%.1f")°C")
-                                    .foregroundColor(.white)
                                     .font(Font.custom("NDOT45inspiredbyNOTHING", size: 20))
                             } else {
                                 ProgressView()
@@ -62,11 +60,11 @@ struct CityListView: View {
                 }
                 .onDelete(perform: viewModel.removeCity)
             }
-            .background(Color.black)
+            .background(.primaryBackground)
             .scrollContentBackground(.hidden)
         }
-        .foregroundStyle(Color.white)
-        .background(Color.black)
+        .foregroundStyle(.primaryForeground)
+        .background(Color.primaryBackground)
     }
 }
 

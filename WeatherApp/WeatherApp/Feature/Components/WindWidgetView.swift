@@ -11,28 +11,26 @@ struct WindWidgetView: View {
         VStack {
             Text(title.uppercased())
                 .font(Font.custom("Noto Sans Mono", size: 14))
-                .foregroundColor(.white)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
 
             ZStack {
                 Circle()
-                    .stroke(Color.white, lineWidth: 2)
+                    .stroke(.primaryForeground, lineWidth: 2)
                     .frame(width: 100, height: 100)
 
                 Text("N")
                     .font(Font.custom("Noto Sans Mono", size: 14))
-                    .foregroundColor(.white)
                     .offset(y: -42)
 
                 Circle()
-                    .foregroundStyle(Color.white).opacity(0.7)
+                    .foregroundStyle(.primaryForeground).opacity(0.7)
                     .frame(width: 70, height: 70)
 
                 Text("----->")
                     .font(Font.custom("NDOT45inspiredbyNOTHING", size: 16))
                     .rotationEffect(Angle(degrees: Double(deg) + (animateRotation ? 2 : -2)))
-                    .foregroundStyle(Color.black)
+                    .foregroundStyle(.primaryBackground)
                     .onAppear {
                         withAnimation(
                             Animation.easeInOut(duration: 0.4)
@@ -45,14 +43,13 @@ struct WindWidgetView: View {
 
             Text("\(value) km/h")
                 .font(Font.custom("NDOT45inspiredbyNOTHING", size: 16))
-                .foregroundColor(.white)
                 .frame(maxHeight: .infinity)
                 .padding(.bottom)
         }
         .frame(minHeight: 120)
         .background {
             Color
-                .darkGray
+                .widgetGray
                 .cornerRadius(15)
         }
     }

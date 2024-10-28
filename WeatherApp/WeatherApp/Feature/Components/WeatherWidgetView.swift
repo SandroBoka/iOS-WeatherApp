@@ -21,16 +21,10 @@ struct WeatherWidgetView: View {
         .frame(minHeight: 120)
         .background {
             Color
-                .darkGray
+                .widgetGray
                 .cornerRadius(15)
         }
     }
-
-}
-
-extension Color {
-
-    static let darkGray = Color(red: 25/255, green: 25/255, blue: 25/255)
 
 }
 

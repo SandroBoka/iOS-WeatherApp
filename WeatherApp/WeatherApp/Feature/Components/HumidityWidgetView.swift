@@ -10,17 +10,16 @@ struct HumidityWidgetView: View {
         VStack {
             Text(title.uppercased())
                 .font(Font.custom("Noto Sans Mono", size: 14))
-                .foregroundColor(.white)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
 
             ZStack {
                 Circle()
-                    .stroke(Color.white, lineWidth: 2)
+                    .stroke(.primaryForeground, lineWidth: 2)
                     .frame(width: 100, height: 100)
 
                 Circle()
-                    .fill(Color.white.opacity(0.7))
+                    .fill(.primaryForeground.opacity(0.7))
                     .frame(width: 100, height: 100)
                     .mask {
                         waterLevel
@@ -37,14 +36,13 @@ struct HumidityWidgetView: View {
 
             Text("\(value) %")
                 .font(Font.custom("NDOT45inspiredbyNOTHING", size: 16))
-                .foregroundColor(.white)
                 .frame(maxHeight: .infinity)
                 .padding(.bottom)
         }
         .frame(minHeight: 120)
         .background {
             Color
-                .darkGray
+                .widgetGray
                 .cornerRadius(15)
         }
     }
