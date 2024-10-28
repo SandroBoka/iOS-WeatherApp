@@ -3,7 +3,7 @@ import SwiftUI
 struct WindWidgetView: View {
     var title: String
     var value: String
-    var deg: Double
+    var deg: Int
 
     @State private var animateRotation = false
 
@@ -31,7 +31,7 @@ struct WindWidgetView: View {
 
                 Text("----->")
                     .font(Font.custom("NDOT45inspiredbyNOTHING", size: 16))
-                    .rotationEffect(Angle(degrees: deg + (animateRotation ? 2 : -2)))
+                    .rotationEffect(Angle(degrees: Double(deg) + (animateRotation ? 2 : -2)))
                     .foregroundStyle(Color.black)
                     .onAppear {
                         withAnimation(
@@ -59,5 +59,5 @@ struct WindWidgetView: View {
 }
 
 #Preview {
-    WindWidgetView(title: "Title", value: "Value", deg: 46)
+    WindWidgetView(title: "Wind", value: "14.2", deg: 46)
 }

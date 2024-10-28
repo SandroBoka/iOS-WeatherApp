@@ -50,8 +50,7 @@ struct CityScreenView: View {
                             .padding(.horizontal)
 
                         LazyVGrid(columns: columns, spacing: 18) {
-//                            WeatherWidgetView(title: "Wind", value: "\(weather.speed) km/h")
-                            WindWidgetView(title: "Wind", value: "2.71", deg: 7)
+                            WindWidgetView(title: "Wind", value: "\(weather.speed)", deg: weather.deg)
                             WeatherWidgetView(title: "Humidity", value: "\(weather.humidity) %")
                             WeatherWidgetView(
                                 title: "Sunrise",

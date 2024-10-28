@@ -38,6 +38,7 @@ class WeatherRepository: WeatherRepositoryProtocol {
             description: weatherDescription,
             humidity: response.main.humidity,
             speed: response.wind.speed,
+            deg: response.wind.deg,
             sunrise: response.system.sunrise,
             sunset: response.system.sunset
         )
