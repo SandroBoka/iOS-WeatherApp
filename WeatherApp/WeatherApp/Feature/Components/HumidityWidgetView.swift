@@ -1,11 +1,10 @@
 import SwiftUI
 
-struct WindWidgetView: View {
+struct HumidityWidgetView: View {
     var title: String
     var value: String
-    var deg: Int
 
-    @State private var animateRotation = false
+    @State private var animateHumidity = false
 
     var body: some View {
         VStack {
@@ -20,30 +19,23 @@ struct WindWidgetView: View {
                     .stroke(Color.white, lineWidth: 2)
                     .frame(width: 100, height: 100)
 
-                Text("N")
-                    .font(Font.custom("Noto Sans Mono", size: 14))
-                    .foregroundColor(.white)
-                    .offset(y: -42)
-
                 Circle()
-                    .foregroundStyle(Color.white).opacity(0.7)
-                    .frame(width: 70, height: 70)
-
-                Text("----->")
-                    .font(Font.custom("NDOT45inspiredbyNOTHING", size: 16))
-                    .rotationEffect(Angle(degrees: Double(deg) + (animateRotation ? 2 : -2)))
-                    .foregroundStyle(Color.black)
+                    .fill(Color.white.opacity(0.7))
+                    .frame(width: 100, height: 100)
+                    .mask {
+                        waterLevel
+                    }
                     .onAppear {
                         withAnimation(
-                            Animation.easeInOut(duration: 0.4)
+                            Animation.easeInOut(duration: 0.8)
                                 .repeatForever(autoreverses: true)
                         ) {
-                            animateRotation.toggle()
+                            animateHumidity.toggle()
                         }
                     }
             }
 
-            Text("\(value) km/h")
+            Text("\(value) %")
                 .font(Font.custom("NDOT45inspiredbyNOTHING", size: 16))
                 .foregroundColor(.white)
                 .frame(maxHeight: .infinity)
@@ -57,8 +49,14 @@ struct WindWidgetView: View {
         }
     }
 
+    private var waterLevel: some View {
+        Rectangle()
+            .frame(height: (Double(value) ?? 0) / 100 * 100 + (animateHumidity ? 2 : -2))
+            .offset(y: 50 - ((Double(value) ?? 0) / 100 * 100) / 2)
+    }
+
 }
 
 #Preview {
-    WindWidgetView(title: "Wind", value: "14.2", deg: 46)
+    HumidityWidgetView(title: "Humidity", value: "45")
 }
