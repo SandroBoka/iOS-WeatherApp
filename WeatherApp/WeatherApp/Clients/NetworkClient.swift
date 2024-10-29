@@ -1,6 +1,6 @@
 import Foundation
 
-public enum ClientError: Error {
+enum ClientError: Error {
 
     case badURL
     case decodingError(Error)
@@ -11,7 +11,7 @@ public enum ClientError: Error {
 
 }
 
-public protocol BaseApiClientProtocol {
+protocol BaseApiClientProtocol {
 
     func get<T: Decodable>(endpoint: Endpoint, completion: @escaping (Result<T, ClientError>) -> Void)
 
@@ -31,12 +31,11 @@ class NetworkClient: BaseApiClientProtocol {
                 return
             }
 
-            if let httpResponse = response as? HTTPURLResponse {
-                guard (200...299).contains(httpResponse.statusCode) else {
-                    completion(.failure(.httpError(httpResponse.statusCode)))
-                    return
-                }
+            guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
+                completion(.failure(.httpError((response as? HTTPURLResponse)?.statusCode ?? -1)))
+                return
             }
+
 
             guard let data = data else {
                 completion(.failure(.noData))
