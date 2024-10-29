@@ -17,14 +17,14 @@ struct SunsetWidgetView: View {
             ZStack {
                 Circle()
                     .trim(from: 0, to: 0.5)
-                    .stroke(.primaryForeground.opacity(0.5), lineWidth: 2)
+                    .stroke(.primaryForeground, lineWidth: 1)
                     .frame(width: 110, height: isAnimating ? 110 : 100)
                     .offset(y: 10)
                     .rotationEffect(Angle(degrees: 180))
 
                 Circle()
                     .trim(from: 0, to: 0.5)
-                    .stroke(.primaryForeground, lineWidth: 1)
+                    .stroke(.primaryForeground.opacity(0.5), lineWidth: 2)
                     .frame(width: 80, height: isAnimating ? 70 : 75)
                     .offset(y: 5)
                     .rotationEffect(Angle(degrees: 180))
