@@ -32,11 +32,11 @@ struct CityScreenView: View {
                     HStack(spacing: 24) {
                         Spacer()
 
-                        TemperatureInfoView(title: "Current", temperature: weather.temp)
+                        TemperatureInfoView(title: String(localized: "current_string"), temperature: weather.temp)
 
                         Spacer()
 
-                        TemperatureInfoView(title: "Feels Like", temperature: weather.feelsLike)
+                        TemperatureInfoView(title: String(localized: "feels_like"), temperature: weather.feelsLike)
 
                         Spacer()
                     }
@@ -48,13 +48,13 @@ struct CityScreenView: View {
 
                     LazyVGrid(columns: columns, spacing: 18) {
                         SunriseWidgetView(
-                            title: "Sunrise",
+                            title: String(localized: "sunrise"),
                             value: "\(viewModel.formatTimeFromUnix(weather.sunrise, timeZoneOffset: 3600))"
                         )
-                        WindWidgetView(title: "Wind", value: "\(weather.speed)", deg: weather.deg)
-                        HumidityWidgetView(title: "Humidity", value: "\(weather.humidity)")
+                        WindWidgetView(title: String(localized: "wind"), value: "\(weather.speed)", deg: weather.deg)
+                        HumidityWidgetView(title: String(localized: "humidity"), value: "\(weather.humidity)")
                         SunsetWidgetView(
-                            title: "Sunset",
+                            title: String(localized: "sunset"),
                             value: "\(viewModel.formatTimeFromUnix(weather.sunset, timeZoneOffset: 3600))"
                         )
                     }

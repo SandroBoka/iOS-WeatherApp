@@ -22,12 +22,12 @@ struct CityListView: View {
                 TextField(
                     "",
                     text: $newCityName,
-                    prompt: Text("Enter city name").foregroundColor(.primaryForeground.opacity(0.5))
+                    prompt: Text(.enterCityName).foregroundColor(.primaryForeground.opacity(0.5))
                 )
                 .padding(8)
                 .background(RoundedRectangle(cornerRadius: 10).fill(Color.gray.opacity(0.1)))
 
-                Button("Add City") {
+                Button(.addCity) {
                     guard !newCityName.isEmpty else { return }
                     viewModel.addCity(cityName: newCityName)
                     newCityName = ""
