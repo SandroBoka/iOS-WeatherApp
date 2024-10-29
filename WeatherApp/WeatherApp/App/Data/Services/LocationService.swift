@@ -3,7 +3,7 @@ import Combine
 
 protocol LocationServiceProtocol {
 
-    func fetchLocation(for cityName: String, completion: @escaping (Result<LocationResponse, ClientError>) -> Void)
+    func fetchLocation(for cityName: String) -> AnyPublisher<LocationResponse, ClientError>
 
 }
 
@@ -20,11 +20,22 @@ class LocationService: LocationServiceProtocol {
         endPointFactory = LocationEndpointFactory(apiKey: apiKey)
     }
 
-    func fetchLocation(for cityName: String, completion: @escaping (Result<LocationResponse, ClientError>) -> Void) {
-        client.get(endpoint: endPointFactory.makeLocationEndpoint(cityName: cityName)) { result in
-            completion(result)
+    func fetchLocation(for cityName: String) -> AnyPublisher<LocationResponse, ClientError> {
+        let endpoint = endPointFactory.makeLocationEndpoint(cityName: cityName)
+
+        return Future<LocationResponse, ClientError> { [weak self] promise in
+            self?.client.get(endpoint: endpoint) { (result: Result<LocationResponse, ClientError>) in
+                switch result {
+                case .success(let locationResponse):
+                    promise(.success(locationResponse))
+                case .failure(let error):
+                    promise(.failure(error))
+                }
+            }
         }
+        .eraseToAnyPublisher()
     }
+
 
 }
 
