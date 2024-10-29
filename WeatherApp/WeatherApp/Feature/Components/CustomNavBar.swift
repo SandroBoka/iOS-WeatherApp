@@ -2,15 +2,13 @@ import SwiftUI
 
 struct NavBar: View {
 
-    let font: Font = Font.custom("NDOT45inspiredbyNOTHING", size: 25)
-
     var backAction: () -> Void
 
     var body: some View {
         HStack {
             Button(action: backAction) {
                 Text("<")
-                    .font(Font.custom("NDOT45inspiredbyNOTHING", size: 28))
+                    .font(.dottedFont(size: 28))
                     .padding(.horizontal)
             }
 

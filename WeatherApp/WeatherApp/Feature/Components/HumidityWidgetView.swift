@@ -9,7 +9,7 @@ struct HumidityWidgetView: View {
     var body: some View {
         VStack {
             Text(title.uppercased())
-                .font(Font.custom("Noto Sans Mono", size: 14))
+                .font(.notoSansFont(size: 14))
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
 
@@ -35,7 +35,7 @@ struct HumidityWidgetView: View {
             }
 
             Text("\(value) %")
-                .font(Font.custom("NDOT45inspiredbyNOTHING", size: 16))
+                .font(.dottedFont(size: 16))
                 .frame(maxHeight: .infinity)
                 .padding(.bottom)
         }

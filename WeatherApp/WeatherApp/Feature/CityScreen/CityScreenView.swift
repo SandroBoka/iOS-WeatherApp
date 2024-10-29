@@ -16,7 +16,7 @@ struct CityScreenView: View {
                     NavBar(backAction: viewModel.goBack)
 
                     Text(viewModel.city)
-                        .font(Font.custom("NDOT45inspiredbyNOTHING", size: 25))
+                        .font(.dottedFont(size: 25))
 
                     Image(.sunny)
                         .resizable()
@@ -26,7 +26,7 @@ struct CityScreenView: View {
                         .padding()
 
                     Text(weather.description.uppercased())
-                        .font(Font.custom("Noto Sans Mono", size: 12))
+                        .font(.notoSansFont(size: 12))
                         .padding(.bottom, 20)
 
                     HStack(spacing: 24) {

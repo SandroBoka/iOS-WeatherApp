@@ -8,13 +8,13 @@ struct WeatherWidgetView: View {
     var body: some View {
         VStack {
             Text(title.uppercased())
-                .font(Font.custom("Noto Sans Mono", size: 14))
+                .font(.notoSansFont(size: 14))
                 .foregroundColor(.white)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
 
             Text(value)
-                .font(Font.custom("NDOT45inspiredbyNOTHING", size: 16))
+                .font(.dottedFont(size: 16))
                 .foregroundColor(.white)
                 .frame(maxHeight: .infinity)
         }

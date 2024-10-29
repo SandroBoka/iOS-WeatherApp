@@ -10,7 +10,7 @@ struct SunriseWidgetView: View {
     var body: some View {
         VStack(spacing: 0) {
             Text(title.uppercased())
-                .font(Font.custom("Noto Sans Mono", size: 14))
+                .font(.notoSansFont(size: 14))
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
 
@@ -31,7 +31,7 @@ struct SunriseWidgetView: View {
                     .animation(Animation.easeInOut(duration: 1.5).repeatForever(autoreverses: true), value: isAnimating)
 
                 Text("--->")
-                    .font(Font.custom("NDOT45inspiredbyNOTHING", size: 12))
+                    .font(.dottedFont(size: 12))
                     .offset(x: 21)
                     .rotationEffect(Angle(degrees: 270))
                     .animation(Animation.easeInOut(duration: 1.5).repeatForever(autoreverses: true), value: isAnimating)
@@ -60,7 +60,7 @@ struct SunriseWidgetView: View {
             }
 
             Text(value)
-                .font(Font.custom("NDOT45inspiredbyNOTHING", size: 16))
+                .font(.dottedFont(size: 16))
                 .frame(maxHeight: .infinity)
                 .padding(.bottom)
         }

@@ -10,7 +10,7 @@ struct WindWidgetView: View {
     var body: some View {
         VStack {
             Text(title.uppercased())
-                .font(Font.custom("Noto Sans Mono", size: 14))
+                .font(.notoSansFont(size: 14))
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
 
@@ -20,7 +20,7 @@ struct WindWidgetView: View {
                     .frame(width: 100, height: 100)
 
                 Text("N")
-                    .font(Font.custom("Noto Sans Mono", size: 14))
+                    .font(.notoSansFont(size: 14))
                     .offset(y: -42)
 
                 Circle()
@@ -28,7 +28,7 @@ struct WindWidgetView: View {
                     .frame(width: 70, height: 70)
 
                 Text("----->")
-                    .font(Font.custom("NDOT45inspiredbyNOTHING", size: 16))
+                    .font(.dottedFont(size: 16))
                     .rotationEffect(Angle(degrees: Double(deg) + (animateRotation ? 2 : -2)))
                     .foregroundStyle(.primaryBackground)
                     .onAppear {
@@ -42,7 +42,7 @@ struct WindWidgetView: View {
             }
 
             Text("\(value) km/h")
-                .font(Font.custom("NDOT45inspiredbyNOTHING", size: 16))
+                .font(.dottedFont(size: 16))
                 .frame(maxHeight: .infinity)
                 .padding(.bottom)
         }

@@ -10,7 +10,7 @@ struct SunsetWidgetView: View {
     var body: some View {
         VStack(spacing: 0) {
             Text(title.uppercased())
-                .font(Font.custom("Noto Sans Mono", size: 14))
+                .font(.notoSansFont(size: 14))
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
 
@@ -31,7 +31,7 @@ struct SunsetWidgetView: View {
                     .animation(Animation.easeInOut(duration: 1.5).repeatForever(autoreverses: true), value: isAnimating)
 
                 Text("--->")
-                    .font(Font.custom("NDOT45inspiredbyNOTHING", size: 12))
+                    .font(.dottedFont(size: 12))
                     .offset(x: -18)
                     .rotationEffect(Angle(degrees: 90))
                     .animation(Animation.easeInOut(duration: 1.5).repeatForever(autoreverses: true), value: isAnimating)
@@ -61,20 +61,20 @@ struct SunsetWidgetView: View {
                 }
             }
 
-                Text(value)
-                    .font(Font.custom("NDOT45inspiredbyNOTHING", size: 16))
-                    .frame(maxHeight: .infinity)
-                    .padding(.bottom)
-            }
-            .frame(minHeight: 150)
-            .background {
-                Color.widgetGray
-                    .cornerRadius(15)
-            }
+            Text(value)
+                .font(.dottedFont(size: 16))
+                .frame(maxHeight: .infinity)
+                .padding(.bottom)
         }
-
+        .frame(minHeight: 150)
+        .background {
+            Color.widgetGray
+                .cornerRadius(15)
+        }
     }
 
-    #Preview {
-        SunsetWidgetView(title: "Sunset", value: "17:45")
-    }
+}
+
+#Preview {
+    SunsetWidgetView(title: "Sunset", value: "17:45")
+}

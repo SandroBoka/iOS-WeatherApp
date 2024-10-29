@@ -9,7 +9,7 @@ struct CityListView: View {
         VStack {
             HStack {
                 Text("Locations")
-                    .font(Font.custom("NDOT45inspiredbyNOTHING", size: 18))
+                    .font(.dottedFont(size: 18))
 
                 Spacer()
 
@@ -25,7 +25,6 @@ struct CityListView: View {
                     prompt: Text("Enter city name").foregroundColor(.primaryForeground.opacity(0.5))
                 )
                 .padding(8)
-                .foregroundStyle(.primaryForeground)
                 .background(RoundedRectangle(cornerRadius: 10).fill(Color.gray.opacity(0.1)))
 
                 Button("Add City") {
@@ -43,13 +42,13 @@ struct CityListView: View {
                     } label: {
                         HStack {
                             Text(city.name.uppercased())
-                                .font(Font.custom("Noto Sans Mono", size: 15))
+                                .font(.notoSansFont(size: 15))
 
                             Spacer()
 
                             if let temperature = city.temperature {
                                 Text("\(temperature, specifier: "%.1f")°C")
-                                    .font(Font.custom("NDOT45inspiredbyNOTHING", size: 20))
+                                    .font(.dottedFont(size: 20))
                             } else {
                                 ProgressView()
                             }
@@ -60,7 +59,6 @@ struct CityListView: View {
                 }
                 .onDelete(perform: viewModel.removeCity)
             }
-            .background(.primaryBackground)
             .scrollContentBackground(.hidden)
         }
         .foregroundStyle(.primaryForeground)
