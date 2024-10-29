@@ -14,11 +14,9 @@ extension Endpoint {
         var urlComponents = URLComponents(string: baseURL + path)
         urlComponents?.queryItems = queryItems
 
-        guard let url = urlComponents?.url else {
-            return nil
-        }
+        guard let url = urlComponents?.url else { return nil }
 
         return URLRequest(url: url)
     }
-    
+
 }
