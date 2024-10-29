@@ -11,7 +11,7 @@ struct CityScreenView: View {
                 .padding()
 
             if let weather = viewModel.weather {
-                Text("Temperature: \(String(format: "%.1f", weather.main.temp))°C")
+                Text("Temperature: \(String(format: "%.1f", weather.main.temperature))°C")
                     .padding()
 
                 Text("Feels Like: \(String(format: "%.1f", weather.main.feelsLike))°C")
@@ -26,10 +26,10 @@ struct CityScreenView: View {
                 Text("Wind Speed: \(String(format: "%.1f", weather.wind.speed)) m/s")
                     .padding()
 
-                Text("Sunrise: \(viewModel.formatTimeFromUnix(weather.sys.sunrise, timeZoneOffset: 3600))")
+                Text("Sunrise: \(viewModel.formatTimeFromUnix(weather.system.sunrise, timeZoneOffset: 3600))")
                     .padding()
 
-                Text("Sunset: \(viewModel.formatTimeFromUnix(weather.sys.sunset, timeZoneOffset: 3600))")
+                Text("Sunset: \(viewModel.formatTimeFromUnix(weather.system.sunset, timeZoneOffset: 3600))")
                     .padding()
             } else {
                 Text("Loading weather data...")

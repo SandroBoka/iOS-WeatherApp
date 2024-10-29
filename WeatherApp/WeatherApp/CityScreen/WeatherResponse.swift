@@ -8,7 +8,7 @@ struct CurrentWeatherResponse: Decodable {
     let wind: WindResponse
     let clouds: CloudsResponse
     let dateTime: Int
-    let sys: SystemResponse
+    let system: SystemResponse
     let timezone: Int
     let id: Int
     let name: String
@@ -24,7 +24,7 @@ struct CurrentWeatherResponse: Decodable {
         case wind
         case clouds
         case dateTime = "dt"
-        case sys
+        case system = "sys"
         case timezone
         case id
         case name
