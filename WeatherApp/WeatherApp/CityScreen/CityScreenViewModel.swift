@@ -20,7 +20,7 @@ class CityScreenViewModel: ObservableObject {
         weatherService.fetchWeather(for: city) { result in
             switch result {
             case .success(let weatherResponse):
-                DispatchQueue.main.async { [ weak self ] in
+                DispatchQueue.main.async { [weak self] in
                     self?.weather = weatherResponse
                 }
             case .failure(let error):
