@@ -2,7 +2,7 @@ import SwiftUI
 
 class CityListViewModel: ObservableObject {
 
-    @Published var cities: [City] = [
+    @Published private(set) var cities: [City] = [
         City(name: "Zagreb"),
         City(name: "Paris"),
         City(name: "New York"),
