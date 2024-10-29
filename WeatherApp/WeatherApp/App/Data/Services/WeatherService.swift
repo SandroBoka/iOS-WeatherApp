@@ -11,8 +11,6 @@ class WeatherService: WeatherServiceProtocol {
     private let client: BaseApiClientProtocol
     private let endpointFactory: WeatherEndpointFactory
 
-    private let baseURL = "https://api.openweathermap.org/data/2.5/weather"
-
     init(client: BaseApiClientProtocol) {
         self.client = client
 
