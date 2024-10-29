@@ -23,13 +23,13 @@ class CityListViewModel: ObservableObject {
     }
 
     func fetchTemperature(for city: City) {
-        weatherService.fetchWeather(for: city.name) { [ weak self ] result in
+        weatherService.fetchWeather(for: city.name) { [weak self] result in
             guard let self = self else { return }
 
             switch result {
             case .success(let weatherResponse):
                 if let index = self.cities.firstIndex(where: { $0.id == city.id }) {
-                    DispatchQueue.main.async { [ weak self ] in
+                    DispatchQueue.main.async { [weak self] in
                         self?.cities[index].temperature = weatherResponse.main.temperature
                     }
                 }
