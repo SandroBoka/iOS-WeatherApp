@@ -8,7 +8,7 @@ struct CityListView: View {
     var body: some View {
         VStack {
             HStack {
-                Text("Locations")
+                Text(.cityListTitle)
                     .font(.dottedFont(size: 18))
 
                 Spacer()
