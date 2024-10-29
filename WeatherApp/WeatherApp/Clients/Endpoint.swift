@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol Endpoint {
+protocol Endpoint {
 
     var path: String { get }
     var queryItems: [URLQueryItem] { get }
