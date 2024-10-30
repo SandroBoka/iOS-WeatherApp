@@ -16,7 +16,9 @@ class WeatherService: WeatherServiceProtocol {
     init(client: BaseApiClientProtocol) {
         self.client = client
 
-        guard let apiKey = Bundle.main.infoDictionary?[InfoConstants.apiKey] as? String else {
+        guard
+            let apiKey = InfoConstants.openWeatherMapApiKey
+        else {
             fatalError("API Key not found")
         }
 
@@ -67,11 +69,5 @@ private extension WeatherService {
         }
 
     }
-
-}
-
-enum InfoConstants {
-
-    static let apiKey = "API_KEY"
 
 }
