@@ -20,7 +20,9 @@ protocol BaseApiClientProtocol {
 class NetworkClient: BaseApiClientProtocol {
 
     func get<T: Decodable>(endpoint: Endpoint, completion: @escaping (Result<T, ClientError>) -> Void) {
-        guard let request = endpoint.buildRequest() else {
+        guard
+            let request = endpoint.buildRequest()
+        else {
             completion(.failure(.badURL))
             return
         }
@@ -31,13 +33,19 @@ class NetworkClient: BaseApiClientProtocol {
                 return
             }
 
-            guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
-                completion(.failure(.httpError((response as? HTTPURLResponse)?.statusCode ?? -1)))
+            let statusCode = (response as? HTTPURLResponse)?.statusCode ?? -1
+            guard
+                let httpResponse = response as? HTTPURLResponse,
+                (200...299).contains(statusCode)
+            else {
+                completion(.failure(.httpError(statusCode)))
                 return
             }
+            
 
-
-            guard let data = data else {
+            guard
+                let data = data
+            else {
                 completion(.failure(.noData))
                 return
             }
