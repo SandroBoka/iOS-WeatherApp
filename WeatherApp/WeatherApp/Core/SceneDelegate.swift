@@ -3,7 +3,7 @@ import SwiftUI
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-    lazy var dependencies = Dependencies()
+    private lazy var dependencies = Dependencies()
 
     func scene(
         _ scene: UIScene,
