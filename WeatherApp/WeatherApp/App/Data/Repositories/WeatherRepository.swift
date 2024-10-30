@@ -77,7 +77,7 @@ class WeatherRepository: WeatherRepositoryProtocol {
             }, receiveValue: { [weak self] locationResponse in
                 let latitude = locationResponse[0].latitude
                 let longitude = locationResponse[0].longitude
-                self?.fetchExtraWeather(latitude: latitude, longitude: latitude)
+                self?.fetchExtraWeather(latitude: latitude, longitude: longitude)
             })
     }
 

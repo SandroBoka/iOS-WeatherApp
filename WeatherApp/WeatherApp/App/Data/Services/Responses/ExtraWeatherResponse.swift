@@ -7,7 +7,7 @@ struct ExtraWeatherResponse: Decodable {
     let timezone: String
     let timezoneOffset: Int
     let current: CurrentWeather
-    let minutely: [MinutelyWeather]?
+    let minutely: [MinutelyWeather]
     let hourly: [HourlyWeather]
 
     enum CodingKeys: String, CodingKey {
