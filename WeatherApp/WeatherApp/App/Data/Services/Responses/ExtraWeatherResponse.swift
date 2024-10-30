@@ -1,13 +1,13 @@
 import Foundation
 
-struct ExtraWeatherResponse: Codable {
+struct ExtraWeatherResponse: Decodable {
 
     let latitude: Double
     let longitude: Double
     let timezone: String
     let timezoneOffset: Int
     let current: CurrentWeather
-    let minutely: [MinutelyWeather]
+    let minutely: [MinutelyWeather]?
     let hourly: [HourlyWeather]
 
     enum CodingKeys: String, CodingKey {
@@ -22,7 +22,7 @@ struct ExtraWeatherResponse: Codable {
 
 }
 
-struct CurrentWeather: Codable {
+struct CurrentWeather: Decodable {
 
     let dateTime: Int
     let sunrise: Int
@@ -60,7 +60,7 @@ struct CurrentWeather: Codable {
 
 }
 
-struct MinutelyWeather: Codable {
+struct MinutelyWeather: Decodable {
 
     let dateTime: Int
     let precipitation: Double
@@ -73,7 +73,7 @@ struct MinutelyWeather: Codable {
 
 }
 
-struct HourlyWeather: Codable {
+struct HourlyWeather: Decodable {
 
     let dateTime: Int
     let temperature: Double
@@ -111,7 +111,7 @@ struct HourlyWeather: Codable {
 
 }
 
-struct WeatherDescription: Codable {
+struct WeatherDescription: Decodable {
 
     let id: Int
     let main: String

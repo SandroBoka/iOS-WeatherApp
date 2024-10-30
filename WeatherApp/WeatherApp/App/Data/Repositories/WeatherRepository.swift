@@ -13,8 +13,6 @@ class WeatherRepository: WeatherRepositoryProtocol {
     let locationService: LocationServiceProtocol
 
     var cancellable: AnyCancellable?
-    var latitude: Double?
-    var longitude: Double?
 
     init(weatherService: WeatherServiceProtocol, locationService: LocationServiceProtocol) {
         self.weatherService = weatherService
@@ -38,6 +36,20 @@ class WeatherRepository: WeatherRepositoryProtocol {
         fetchCityLocation(cityName: cityName)
     }
 
+    func fetchExtraWeather(latitude: Double, longitude: Double) {
+        cancellable = weatherService.fetchExtraWeather(latitude: latitude, longitude: longitude)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    print("Finished")
+                case .failure(let error):
+                    print("Error getting extra weather info: \(error)")
+                }
+            }, receiveValue: { extraWeatherResponse in
+                print(extraWeatherResponse)
+            })
+    }
+
     private func mapToWeatherModel(response: CurrentWeatherResponse) -> WeatherModel {
         let weatherDescription = response.weather.first?.description ?? "Not Avaliable"
 
@@ -58,14 +70,14 @@ class WeatherRepository: WeatherRepositoryProtocol {
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
-                    print("Fetch successful")
+                    return
                 case .failure(let error):
                     print("Error fetching location: \(error)")
                 }
             }, receiveValue: { [weak self] locationResponse in
-                self?.latitude = locationResponse[0].latitude
-                self?.longitude = locationResponse[0].longitude
-                print("\(cityName): latitude = \(self?.latitude ?? -1)   longitude = \(self?.longitude ?? -1)")
+                let latitude = locationResponse[0].latitude
+                let longitude = locationResponse[0].longitude
+                self?.fetchExtraWeather(latitude: latitude, longitude: latitude)
             })
     }
 

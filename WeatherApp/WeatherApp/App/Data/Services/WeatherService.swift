@@ -4,11 +4,7 @@ import Combine
 protocol WeatherServiceProtocol {
 
     func fetchWeather(for cityName: String, completion: @escaping (Result<CurrentWeatherResponse, ClientError>) -> Void)
-    func fetchExtraWeather(
-        cityName: String,
-        latitude: Double,
-        longitude: Double
-    ) -> AnyPublisher<ExtraWeatherResponse, ClientError>
+    func fetchExtraWeather(latitude: Double, longitude: Double) -> AnyPublisher<ExtraWeatherResponse, ClientError>
 
 }
 
@@ -34,12 +30,9 @@ class WeatherService: WeatherServiceProtocol {
         }
     }
 
-    func fetchExtraWeather(
-        cityName: String,
-        latitude: Double,
-        longitude: Double
-    ) -> AnyPublisher<ExtraWeatherResponse, ClientError> {
-        let endpoint = endpointFactory.makeExtraWeather(cityName: cityName, latitude: latitude, longitude: longitude)
+    func fetchExtraWeather(latitude: Double, longitude: Double) -> AnyPublisher<ExtraWeatherResponse, ClientError> {
+        let endpoint = endpointFactory.makeExtraWeather(latitude: latitude, longitude: longitude)
+        print(endpoint)
 
         return Future { [weak self] promise in
             self?.client.get(endpoint: endpoint) { result in
@@ -70,10 +63,10 @@ private extension WeatherService {
             return WeatherEndpoint(path: "/data/2.5/weather", queryItems: queryItems)
         }
 
-        func makeExtraWeather(cityName: String, latitude: Double, longitude: Double) -> WeatherEndpoint {
+        func makeExtraWeather(latitude: Double, longitude: Double) -> WeatherEndpoint {
             let queryItems = [
                 URLQueryItem(name: "lat", value: String(latitude)),
-                URLQueryItem(name: "long", value: String(longitude)),
+                URLQueryItem(name: "lon", value: String(longitude)),
                 URLQueryItem(name: "appid", value: apiKey),
                 URLQueryItem(name: "units", value: "metric")]
 
