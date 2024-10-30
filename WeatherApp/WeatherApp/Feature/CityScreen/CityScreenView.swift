@@ -54,7 +54,5 @@ struct CityScreenView: View {
             useCase: GetWeatherUseCase(
                 weatherRepo: WeatherRepository(weatherService: WeatherService(client: NetworkClient()))
             ),
-            city: "Atlantic City"
-        )
-    )
+            city: "Atlantic City"))
 }
