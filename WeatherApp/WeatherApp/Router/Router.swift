@@ -44,7 +44,7 @@ class Router: RouterProtocol {
     }
 
     func showCityList() {
-        let viewModel = CityListViewModel(router: self, useCase: getWeatherUseCase)
+        let viewModel = CityListViewModel(router: self, getWeatherUseCase: getWeatherUseCase)
         let view = CityListView(viewModel: viewModel)
         let viewController = UIHostingController(rootView: view)
         navigationController.setViewControllers([viewController], animated: false)

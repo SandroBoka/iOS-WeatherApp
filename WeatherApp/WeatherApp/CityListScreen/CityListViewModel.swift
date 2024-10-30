@@ -2,7 +2,7 @@ import SwiftUI
 
 class CityListViewModel: ObservableObject {
 
-    @Published var cities: [City] = [
+    @Published private(set) var cities: [City] = [
         City(name: "Zagreb"),
         City(name: "Paris"),
         City(name: "New York"),
@@ -15,21 +15,22 @@ class CityListViewModel: ObservableObject {
     private let router: RouterProtocol
     private let getWeatherUseCase: GetWeatherUseCaseProtocol
 
-    init(router: RouterProtocol, useCase: GetWeatherUseCaseProtocol) {
+    init(router: RouterProtocol, getWeatherUseCase: GetWeatherUseCaseProtocol) {
         self.router = router
-        self.getWeatherUseCase = useCase
+        self.getWeatherUseCase = getWeatherUseCase
 
         fetchWeatherForAllCities()
     }
 
     func fetchTemperature(for city: City) {
-        getWeatherUseCase.getWeather(cityName: city.name) { [ weak self ] result in
+        getWeatherUseCase.getWeather(cityName: city.name) { [weak self] result in
             guard let self = self else { return }
 
             switch result {
             case .success(let weatherModel):
-                if let index = self.cities.firstIndex(where: { $0.id == city.id }) {
-                    DispatchQueue.main.sync { [ weak self ] in
+                if let index = self.cities.firstIndex(where: { $0.id == city.id }),
+                   self.cities.at(index) != nil {
+                    DispatchQueue.main.async { [weak self] in
                         self?.cities[index].temperature = weatherModel.temperature
                     }
                 }
@@ -49,4 +50,10 @@ class CityListViewModel: ObservableObject {
         router.showCityWeather(city: city)
     }
 
+}
+
+extension Array {
+    func at(_ index: Int) -> Element? {
+        return indices.contains(index) ? self[index] : nil
+    }
 }
