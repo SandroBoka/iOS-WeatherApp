@@ -42,7 +42,6 @@ class NetworkClient: BaseApiClientProtocol {
                 return
             }
             
-
             guard
                 let data = data
             else {

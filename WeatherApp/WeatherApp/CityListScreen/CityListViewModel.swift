@@ -30,7 +30,7 @@ class CityListViewModel: ObservableObject {
             case .success(let weatherResponse):
                 guard
                     let index = self.cities.firstIndex(where: { $0.id == city.id }),
-                      let city = self.cities.at(index)
+                    let city = self.cities.at(index)
                 else { return }
 
                 DispatchQueue.main.async { [weak self] in
@@ -52,10 +52,4 @@ class CityListViewModel: ObservableObject {
         router.showCityWeather(city: city)
     }
 
-}
-
-extension Array {
-    func at(_ index: Int) -> Element? {
-        return indices.contains(index) ? self[index] : nil
-    }
 }
