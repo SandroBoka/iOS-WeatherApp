@@ -6,15 +6,18 @@ struct WeatherScreenView: View {
 
     var body: some View {
         ZStack {
-            Color.black
+            Color
+                .black
                 .ignoresSafeArea()
 
             VStack {
-                Text("Hello, world!").font(Font.custom("NDOT45inspiredbyNOTHING", size: 20))
+                Text("Hello, world!")
+                    .font(Font.custom("NDOT45inspiredbyNOTHING", size: 20))
                     .foregroundStyle(Color.white)
             }
         }
     }
+
 }
 
 #Preview {
@@ -24,7 +27,5 @@ struct WeatherScreenView: View {
             useCase: GetWeatherUseCase(
                 weatherRepo: WeatherRepository(weatherService: WeatherService(client: NetworkClient()))
             ),
-            city: "Atlantic City"
-        )
-    )
+            city: "Atlantic City"))
 }
