@@ -28,11 +28,13 @@ class CityListViewModel: ObservableObject {
 
             switch result {
             case .success(let weatherResponse):
-                if let index = self.cities.firstIndex(where: { $0.id == city.id }),
-                   self.cities.at(index) != nil {
-                    DispatchQueue.main.async { [weak self] in
-                        self?.cities[index].temperature = weatherResponse.main.temperature
-                    }
+                guard
+                    let index = self.cities.firstIndex(where: { $0.id == city.id }),
+                      let city = self.cities.at(index)
+                else { return }
+
+                DispatchQueue.main.async { [weak self] in
+                    self?.cities[index].temperature = weatherResponse.main.temperature
                 }
             case .failure(let error):
                 print("Error fetching temperature for \(city.name): \(error)")
