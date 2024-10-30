@@ -13,6 +13,8 @@ class WeatherRepository: WeatherRepositoryProtocol {
     let locationService: LocationServiceProtocol
 
     var cancellable: AnyCancellable?
+    var latitude: Double?
+    var longitude: Double?
 
     init(weatherService: WeatherServiceProtocol, locationService: LocationServiceProtocol) {
         self.weatherService = weatherService
@@ -60,8 +62,10 @@ class WeatherRepository: WeatherRepositoryProtocol {
                 case .failure(let error):
                     print("Error fetching location: \(error)")
                 }
-            }, receiveValue: { locationResponse in
-                print("Location response: \(locationResponse)")
+            }, receiveValue: { [weak self] locationResponse in
+                self?.latitude = locationResponse[0].latitude
+                self?.longitude = locationResponse[0].longitude
+                print("\(cityName): latitude = \(self?.latitude ?? -1)   longitude = \(self?.longitude ?? -1)")
             })
     }
 
