@@ -5,8 +5,8 @@ class CityScreenViewModel: ObservableObject {
     private let router: RouterProtocol
     private let weatherService: WeatherServiceProtocol
 
-    @Published var city: String
-    @Published var weather: CurrentWeatherResponse?
+    @Published private(set) var city: String
+    @Published private(set) var weather: CurrentWeatherResponse?
 
     init(router: RouterProtocol, service: WeatherServiceProtocol, city: String) {
         self.router = router
