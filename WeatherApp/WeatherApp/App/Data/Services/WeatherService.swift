@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 protocol WeatherServiceProtocol {
 
@@ -6,9 +7,8 @@ protocol WeatherServiceProtocol {
     func fetchExtraWeather(
         cityName: String,
         latitude: Double,
-        longitude: Double,
-        completion: @escaping (Result<CurrentWeatherResponse, ClientError>) -> Void
-    )
+        longitude: Double
+    ) -> AnyPublisher<ExtraWeatherResponse, ClientError>
 
 }
 
@@ -37,16 +37,16 @@ class WeatherService: WeatherServiceProtocol {
     func fetchExtraWeather(
         cityName: String,
         latitude: Double,
-        longitude: Double,
-        completion: @escaping (Result<CurrentWeatherResponse, ClientError>) -> Void
-    ) {
-        client.get(
-            endpoint: endpointFactory.makeExtraWeather(
-                cityName: cityName,
-                latitude: latitude,
-                longitude: longitude)) { result in
-                    completion(result)
-                }
+        longitude: Double
+    ) -> AnyPublisher<ExtraWeatherResponse, ClientError> {
+        let endpoint = endpointFactory.makeExtraWeather(cityName: cityName, latitude: latitude, longitude: longitude)
+
+        return Future { [weak self] promise in
+            self?.client.get(endpoint: endpoint) { result in
+                promise(result)
+            }
+        }
+        .eraseToAnyPublisher()
     }
 
 }
