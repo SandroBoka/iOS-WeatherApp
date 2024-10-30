@@ -1,17 +1,5 @@
 import UIKit
 
-protocol UseCaseDependenciesProtocol {
-
-    var getWeatherUseCase: GetWeatherUseCaseProtocol { get }
-
-}
-
-protocol NavigationDependenciesProtocol {
-
-    var router: RouterProtocol { get }
-
-}
-
 protocol ViewModelFactoryProtocol {
 
     func makeCityListViewModel() -> CityListViewModel
@@ -19,10 +7,17 @@ protocol ViewModelFactoryProtocol {
 
 }
 
-typealias DependenciesProtocol = UseCaseDependenciesProtocol &
-NavigationDependenciesProtocol
+protocol SceneDelegateDependenciesProtocol {
 
-class Dependencies: DependenciesProtocol {
+    var router: RouterProtocol { get }
+
+}
+
+class Dependencies: SceneDelegateDependenciesProtocol {
+
+    lazy var router: RouterProtocol = {
+        Router(navigationController: mainNavigationController, viewModelFactory: self)
+    }()
 
     private lazy var mainNavigationController: UINavigationController = {
         let navigationController = UINavigationController()
@@ -43,12 +38,8 @@ class Dependencies: DependenciesProtocol {
         WeatherRepository(weatherService: weatherService)
     }()
 
-    lazy var getWeatherUseCase: GetWeatherUseCaseProtocol = {
+    private lazy var getWeatherUseCase: GetWeatherUseCaseProtocol = {
         GetWeatherUseCase(weatherRepo: weatherRepository)
-    }()
-
-    lazy var router: RouterProtocol = {
-        Router(navigationController: mainNavigationController, viewModelFactory: self)
     }()
 
 }

@@ -3,6 +3,7 @@ import SwiftUI
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+
     private lazy var dependencies = Dependencies()
 
     func scene(
@@ -13,6 +14,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = scene as? UIWindowScene else { return }
 
         window = UIWindow(windowScene: windowScene)
+
         guard let window else { return }
 
         dependencies.router.start(in: window)
