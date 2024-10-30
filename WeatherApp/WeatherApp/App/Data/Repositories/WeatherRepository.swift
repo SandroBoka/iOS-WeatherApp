@@ -41,7 +41,7 @@ class WeatherRepository: WeatherRepositoryProtocol {
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
-                    print("Finished")
+                    return
                 case .failure(let error):
                     print("Error getting extra weather info: \(error)")
                 }
