@@ -15,7 +15,7 @@ struct LocationResponse: Decodable {
         case longitude = "lon"
         case country
         case state
-        
+
     }
 
 }
