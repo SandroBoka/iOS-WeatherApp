@@ -4,6 +4,27 @@
     "" : {
 
     },
+    "----->" : {
+
+    },
+    "--->" : {
+
+    },
+    "%.1f°C" : {
+
+    },
+    "%@ %%" : {
+
+    },
+    "%@ °C" : {
+
+    },
+    "%@ km/h" : {
+
+    },
+    "<" : {
+
+    },
     "add_city" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -69,6 +90,9 @@
           }
         }
       }
+    },
+    "N" : {
+
     },
     "sunrise" : {
       "extractionState" : "manual",

@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 protocol WeatherRepositoryProtocol {
 
@@ -9,9 +10,13 @@ protocol WeatherRepositoryProtocol {
 class WeatherRepository: WeatherRepositoryProtocol {
 
     let weatherService: WeatherServiceProtocol
+    let locationService: LocationServiceProtocol
 
-    init(weatherService: WeatherServiceProtocol) {
+    var cancellable: AnyCancellable?
+
+    init(weatherService: WeatherServiceProtocol, locationService: LocationServiceProtocol) {
         self.weatherService = weatherService
+        self.locationService = locationService
     }
 
     func fetchWeather(
@@ -27,6 +32,8 @@ class WeatherRepository: WeatherRepositoryProtocol {
                 completion(.failure(error))
             }
         }
+
+        fetchCityLocation(cityName: cityName)
     }
 
     private func mapToWeatherModel(response: CurrentWeatherResponse) -> WeatherModel {
@@ -42,6 +49,20 @@ class WeatherRepository: WeatherRepositoryProtocol {
             sunrise: response.system.sunrise,
             sunset: response.system.sunset
         )
+    }
+
+    private func fetchCityLocation(cityName: String) {
+        cancellable = locationService.fetchLocation(for: cityName)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    print("Fetch successful")
+                case .failure(let error):
+                    print("Error fetching location: \(error)")
+                }
+            }, receiveValue: { locationResponse in
+                print("Location response: \(locationResponse)")
+            })
     }
 
 }
