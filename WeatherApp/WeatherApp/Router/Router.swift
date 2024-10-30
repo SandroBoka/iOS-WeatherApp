@@ -37,7 +37,7 @@ class Router: RouterProtocol {
     }
 
     func showHomeScreen() {
-        let viewModel = CityScreenViewModel(router: self, useCase: getWeatherUseCase, city: "Zagreb")
+        let viewModel = CityScreenViewModel(router: self, getWeatherUseCase: getWeatherUseCase, city: "Zagreb")
         let view = CityScreenView(viewModel: viewModel)
         let viewController = UIHostingController(rootView: view)
         navigationController.pushViewController(viewController, animated: false)
@@ -51,7 +51,7 @@ class Router: RouterProtocol {
     }
 
     func showCityWeather(city: City) {
-        let viewModel = CityScreenViewModel(router: self, useCase: getWeatherUseCase, city: city.name)
+        let viewModel = CityScreenViewModel(router: self, getWeatherUseCase: getWeatherUseCase, city: city.name)
         let view = CityScreenView(viewModel: viewModel)
         let viewController = UIHostingController(rootView: view)
         navigationController.pushViewController(viewController, animated: true)
