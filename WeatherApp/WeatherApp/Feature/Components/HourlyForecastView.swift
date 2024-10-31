@@ -11,13 +11,13 @@ struct HourlyForecastView: View {
 
             HStack(spacing: 15) {
                 Text("UV :")
-                    .font(.notoSansFont(size: 20))
+                    .font(.dottedFont(size: 20))
 
                 Text("\(Int(forecast.uvIndex))")
                     .font(.dottedFont(size: 20))
             }
 
-            Text("\(Int(forecast.percipation * 100))%")
+            Text("Rain : \(Int(forecast.percipation * 100))%")
                 .font(.dottedFont(size: 20))
         }
         .frame(minHeight: 120)
