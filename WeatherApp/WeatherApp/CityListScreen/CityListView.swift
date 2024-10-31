@@ -37,5 +37,6 @@ struct CityListView: View {
     CityListView(
         viewModel: CityListViewModel(
             router: Router(navigationController: UINavigationController()),
-            service: WeatherService(client: NetworkClient())))
+            getWeatherUseCase: GetWeatherUseCase(
+                weatherRepo: WeatherRepository(weatherService: WeatherService(client: NetworkClient())))))
 }

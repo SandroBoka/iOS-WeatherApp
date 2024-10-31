@@ -39,7 +39,7 @@ class NetworkClient: BaseApiClientProtocol {
                 completion(.failure(.httpError(statusCode)))
                 return
             }
-            
+
             guard let data = data else {
                 completion(.failure(.noData))
                 return
