@@ -5,23 +5,27 @@ class CityScreenViewModel: ObservableObject {
     private let router: RouterProtocol
     private let weatherService: WeatherServiceProtocol
 
-    @Published var city: String
-    @Published var weather: CurrentWeatherResponse?
+    @Published private(set) var city: String
+    @Published private(set) var weather: CurrentWeatherResponse?
 
     init(router: RouterProtocol, service: WeatherServiceProtocol, city: String) {
         self.router = router
         self.weatherService = service
         self.city = city
+
+        fetchWeather()
     }
 
-    func fetchWeather() async {
-        do {
-            let decodedData = try await weatherService.fetchWeather(for: city)
-            DispatchQueue.main.async { [ weak self ] in
-                self?.weather = decodedData
+    func fetchWeather() {
+        weatherService.fetchWeather(for: city) { result in
+            switch result {
+            case .success(let weatherResponse):
+                DispatchQueue.main.async { [weak self] in
+                    self?.weather = weatherResponse
+                }
+            case .failure(let error):
+                print("Error fetching weather: \(error)")
             }
-        } catch {
-            print("Error fetching weather data: \(error)")
         }
     }
 

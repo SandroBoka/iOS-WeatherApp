@@ -2,7 +2,7 @@ import SwiftUI
 
 class CityListViewModel: ObservableObject {
 
-    @Published var cities: [City] = [
+    @Published private(set) var cities: [City] = [
         City(name: "Zagreb"),
         City(name: "Paris"),
         City(name: "New York"),
@@ -18,27 +18,33 @@ class CityListViewModel: ObservableObject {
     init(router: RouterProtocol, service: WeatherServiceProtocol) {
         self.router = router
         self.weatherService = service
-        Task {
-            await fetchWeatherForAllCities()
-        }
+
+        fetchWeatherForAllCities()
     }
 
-    func fetchTemperature(for city: City) async {
-        do {
-            let weather = try await weatherService.fetchWeather(for: city.name)
-            if let index = cities.firstIndex(where: { $0.id == city.id }) {
-                DispatchQueue.main.async { [ weak self ] in
-                    self?.cities[index].temperature = weather.main.temp
+    func fetchTemperature(for city: City) {
+        weatherService.fetchWeather(for: city.name) { [weak self] result in
+            guard let self else { return }
+
+            switch result {
+            case .success(let weatherResponse):
+                guard
+                    let index = self.cities.firstIndex(where: { $0.id == city.id }),
+                    let city = self.cities.at(index)
+                else { return }
+
+                DispatchQueue.main.async { [weak self] in
+                    self?.cities[index].temperature = weatherResponse.main.temperature
                 }
+            case .failure(let error):
+                print("Error fetching temperature for \(city.name): \(error)")
             }
-        } catch {
-            print("Error fetching temperature for \(city.name): \(error)")
         }
     }
 
-    func fetchWeatherForAllCities() async {
+    func fetchWeatherForAllCities() {
         for city in cities {
-            await fetchTemperature(for: city)
+            fetchTemperature(for: city)
         }
     }
 
