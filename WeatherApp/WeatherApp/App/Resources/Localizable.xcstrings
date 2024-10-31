@@ -10,6 +10,9 @@
     "--->" : {
 
     },
+    "%.1f°C" : {
+
+    },
     "%@ %%" : {
 
     },
@@ -17,6 +20,12 @@
 
     },
     "%@ km/h" : {
+
+    },
+    "%lld%%" : {
+
+    },
+    "%lld°" : {
 
     },
     "<" : {
@@ -77,6 +86,9 @@
         }
       }
     },
+    "HOURLY FORECAST" : {
+
+    },
     "humidity" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -112,6 +124,9 @@
           }
         }
       }
+    },
+    "UV: %lld" : {
+
     },
     "wind" : {
       "extractionState" : "manual",

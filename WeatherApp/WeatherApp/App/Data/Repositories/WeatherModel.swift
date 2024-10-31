@@ -18,6 +18,7 @@ struct WeatherModel {
 
 struct HourlyForecast {
 
+    let id = UUID()
     let temperature: Double
     let uvIndex: Double
     let percipation: Double

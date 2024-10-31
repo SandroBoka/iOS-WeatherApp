@@ -24,6 +24,7 @@ class WeatherRepository: WeatherRepositoryProtocol {
         for cityName: String,
         completion: @escaping (Result<WeatherModel, ClientError>) -> Void
     ) {
+        fetchCityLocation(cityName: cityName)
         weatherService.fetchWeather(for: cityName) { [weak self] result in
             guard let self else { return }
 
@@ -35,8 +36,6 @@ class WeatherRepository: WeatherRepositoryProtocol {
                 completion(.failure(error))
             }
         }
-
-        fetchCityLocation(cityName: cityName)
     }
 
     func fetchExtraWeather(latitude: Double, longitude: Double) {

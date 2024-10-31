@@ -12,7 +12,6 @@ struct CityScreenView: View {
         if let weather = viewModel.weather {
             ScrollView {
                 VStack {
-
                     NavBar(backAction: viewModel.goBack)
 
                     Text(viewModel.city)
@@ -48,7 +47,7 @@ struct CityScreenView: View {
                     }
 
                     Divider()
-                        .overlay(.white)
+                        .overlay(.primaryForeground)
                         .padding(.top)
                         .padding(.horizontal)
 
@@ -57,12 +56,14 @@ struct CityScreenView: View {
                             title: String(localized: "sunrise"),
                             value: "\(viewModel.formatTimeFromUnix(weather.sunrise, timeZoneOffset: 3600))"
                         )
+
                         WindWidgetView(
                             title: String(localized: "wind"),
                             value: "\(weather.speed)",
-                            deg: weather.degrees
-                        )
+                            deg: weather.degrees)
+
                         HumidityWidgetView(title: String(localized: "humidity"), value: "\(weather.humidity)")
+
                         SunsetWidgetView(
                             title: String(localized: "sunset"),
                             value: "\(viewModel.formatTimeFromUnix(weather.sunset, timeZoneOffset: 3600))"
@@ -70,7 +71,17 @@ struct CityScreenView: View {
                     }
                     .padding()
 
-                    Spacer()
+                    Text("HOURLY FORECAST")
+                        .font(.notoSansFont(size: 16))
+
+                    ScrollView(.horizontal) {
+                        HStack(spacing: 16) {
+                            ForEach(weather.hourlyForecast, id: \.id) { hourly in
+                                HourlyForecastView(forecast: hourly)
+                            }
+                        }
+                        .padding()
+                    }
                 }
                 .background {
                     Color.primaryBackground
