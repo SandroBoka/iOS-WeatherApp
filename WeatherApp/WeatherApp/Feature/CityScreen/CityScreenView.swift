@@ -75,7 +75,7 @@ struct CityScreenView: View {
                         .overlay(.primaryForeground)
                         .padding()
 
-                    Text("HOURLY FORECAST")
+                    Text(.hourlyForecast)
                         .font(.notoSansFont(size: 14))
 
                     ScrollView(.horizontal) {

@@ -11,5 +11,7 @@ extension LocalizedStringKey {
     static let sunrise: Self = "sunrise"
     static let wind: Self = "wind"
     static let humidity: Self = "humidity"
-
+    static let hourlyForecast: Self = "hourly_forecast"
+    static let uvIndex: Self = "uvIndex"
+    static let rain: Self = "rain"
 }

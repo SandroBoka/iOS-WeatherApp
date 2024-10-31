@@ -6,18 +6,18 @@ struct HourlyForecastView: View {
 
     var body: some View {
         VStack(spacing: 10) {
-            Text("\(String(format: "%.1f", forecast.temperature)) °C")
+            Text("\(String(format: "%.1f", forecast.temperature)) \(String(localized: "degree"))")
                 .font(.dottedFont(size: 20))
 
             HStack(spacing: 15) {
-                Text("UV :")
+                Text(String(localized: "uvIndex"))
                     .font(.dottedFont(size: 20))
 
                 Text("\(Int(forecast.uvIndex))")
                     .font(.dottedFont(size: 20))
             }
 
-            Text("Rain : \(Int(forecast.percipation * 100))%")
+            Text("\(String(localized: "rain"))\(Int(forecast.percipation * 100))%")
                 .font(.dottedFont(size: 20))
         }
         .frame(minHeight: 120)
