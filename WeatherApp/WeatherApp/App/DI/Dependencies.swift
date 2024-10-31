@@ -47,11 +47,11 @@ class Dependencies: SceneDelegateDependenciesProtocol {
 extension Dependencies: ViewModelFactoryProtocol {
 
     func makeCityListViewModel() -> CityListViewModel {
-        CityListViewModel(router: router, useCase: getWeatherUseCase)
+        CityListViewModel(router: router, getWeatherUseCase: getWeatherUseCase)
     }
 
     func makeCityScreenViewModel(cityName: String) -> CityScreenViewModel {
-        CityScreenViewModel(router: router, useCase: getWeatherUseCase, city: cityName)
+        CityScreenViewModel(router: router, getWeatherUseCase: getWeatherUseCase, city: cityName)
     }
 
 }

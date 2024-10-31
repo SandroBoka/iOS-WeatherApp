@@ -8,7 +8,7 @@ protocol WeatherRepositoryProtocol {
 
 class WeatherRepository: WeatherRepositoryProtocol {
 
-    let weatherService: WeatherServiceProtocol
+    private let weatherService: WeatherServiceProtocol
 
     init(weatherService: WeatherServiceProtocol) {
         self.weatherService = weatherService
@@ -21,7 +21,7 @@ class WeatherRepository: WeatherRepositoryProtocol {
         weatherService.fetchWeather(for: cityName) { result in
             switch result {
             case .success(let currentWeatherResponse):
-                let weatherModel = self.mapToWeatherModel(response: currentWeatherResponse)
+                let weatherModel = WeatherModel(response: currentWeatherResponse)
                 completion(.success(weatherModel))
             case .failure(let error):
                 completion(.failure(error))
@@ -29,18 +29,21 @@ class WeatherRepository: WeatherRepositoryProtocol {
         }
     }
 
-    private func mapToWeatherModel(response: CurrentWeatherResponse) -> WeatherModel {
+}
+
+private extension WeatherModel {
+
+    init(response: CurrentWeatherResponse) {
         let weatherDescription = response.weather.first?.description ?? "Not Avaliable"
 
-        return WeatherModel(
+        self.init(
             temperature: response.main.temperature,
             feelsLike: response.main.feelsLike,
             description: weatherDescription,
             humidity: response.main.humidity,
             speed: response.wind.speed,
             sunrise: response.system.sunrise,
-            sunset: response.system.sunset
-        )
+            sunset: response.system.sunset)
     }
 
 }

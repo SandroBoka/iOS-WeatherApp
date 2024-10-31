@@ -15,9 +15,9 @@ class CityListViewModel: ObservableObject {
     private let router: RouterProtocol
     private let getWeatherUseCase: GetWeatherUseCaseProtocol
 
-    init(router: RouterProtocol, useCase: GetWeatherUseCaseProtocol) {
+    init(router: RouterProtocol, getWeatherUseCase: GetWeatherUseCaseProtocol) {
         self.router = router
-        self.getWeatherUseCase = useCase
+        self.getWeatherUseCase = getWeatherUseCase
 
         fetchWeatherForAllCities()
     }

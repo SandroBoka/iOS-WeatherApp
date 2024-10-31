@@ -24,7 +24,7 @@ struct WeatherScreenView: View {
     WeatherScreenView(
         viewModel: CityScreenViewModel(
             router: Router(navigationController: UINavigationController(), viewModelFactory: Dependencies()),
-            useCase: GetWeatherUseCase(
+            getWeatherUseCase: GetWeatherUseCase(
                 weatherRepo: WeatherRepository(weatherService: WeatherService(client: NetworkClient()))
             ),
             city: "Atlantic City"))
