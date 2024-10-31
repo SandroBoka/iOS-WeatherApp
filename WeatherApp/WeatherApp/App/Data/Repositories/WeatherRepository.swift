@@ -24,7 +24,9 @@ class WeatherRepository: WeatherRepositoryProtocol {
         for cityName: String,
         completion: @escaping (Result<WeatherModel, ClientError>) -> Void
     ) {
-        weatherService.fetchWeather(for: cityName) { result in
+        weatherService.fetchWeather(for: cityName) { [weak self] result in
+            guard let self else { return }
+
             switch result {
             case .success(let currentWeatherResponse):
                 let weatherModel = self.mapToWeatherModel(response: currentWeatherResponse)
@@ -54,15 +56,30 @@ class WeatherRepository: WeatherRepositoryProtocol {
     private func mapToWeatherModel(response: CurrentWeatherResponse) -> WeatherModel {
         let weatherDescription = response.weather.first?.description ?? "Not Avaliable"
 
+        var hourlyForecasts: [HourlyForecast] = []
+
+        if let extraWeatherResponse = self.extraWeatherResponse {
+            hourlyForecasts = extraWeatherResponse.hourly.prefix(24).map { hourlyWeather in
+                HourlyForecast(
+                    temperature: hourlyWeather.temperature,
+                    uvIndex: hourlyWeather.uvIndex,
+                    percipation: hourlyWeather.percipation
+                )
+            }
+        }
+
         return WeatherModel(
-            temp: response.main.temp,
+            temperature: response.main.temp,
             feelsLike: response.main.feelsLike,
             description: weatherDescription,
             humidity: response.main.humidity,
             speed: response.wind.speed,
-            deg: response.wind.deg,
+            degrees: response.wind.deg,
             sunrise: response.system.sunrise,
-            sunset: response.system.sunset
+            sunset: response.system.sunset,
+            minTemperature: response.main.tempMin,
+            maxTemperature: response.main.tempMax,
+            hourlyForecast: hourlyForecasts
         )
     }
 

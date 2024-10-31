@@ -32,11 +32,17 @@ struct CityScreenView: View {
                     HStack(spacing: 24) {
                         Spacer()
 
-                        TemperatureInfoView(title: String(localized: "current_string"), temperature: weather.temp)
+                        TemperatureInfoView(
+                            title: String(localized: "current_string"),
+                            temperature: weather.temperature
+                        )
 
                         Spacer()
 
-                        TemperatureInfoView(title: String(localized: "feels_like"), temperature: weather.feelsLike)
+                        TemperatureInfoView(
+                            title: String(localized: "feels_like"),
+                            temperature: weather.feelsLike
+                        )
 
                         Spacer()
                     }
@@ -51,7 +57,11 @@ struct CityScreenView: View {
                             title: String(localized: "sunrise"),
                             value: "\(viewModel.formatTimeFromUnix(weather.sunrise, timeZoneOffset: 3600))"
                         )
-                        WindWidgetView(title: String(localized: "wind"), value: "\(weather.speed)", deg: weather.deg)
+                        WindWidgetView(
+                            title: String(localized: "wind"),
+                            value: "\(weather.speed)",
+                            deg: weather.degrees
+                        )
                         HumidityWidgetView(title: String(localized: "humidity"), value: "\(weather.humidity)")
                         SunsetWidgetView(
                             title: String(localized: "sunset"),

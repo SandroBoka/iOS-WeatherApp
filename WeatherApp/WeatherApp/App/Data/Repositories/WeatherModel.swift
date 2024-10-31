@@ -2,13 +2,24 @@ import Foundation
 
 struct WeatherModel {
 
-    let temp: Double
+    let temperature: Double
     let feelsLike: Double
     let description: String
     let humidity: Int
     let speed: Double
-    let deg: Int
+    let degrees: Int
     let sunrise: Int
     let sunset: Int
+    let minTemperature: Double
+    let maxTemperature: Double
+    let hourlyForecast: [HourlyForecast]
+
+}
+
+struct HourlyForecast {
+
+    let temperature: Double
+    let uvIndex: Double
+    let percipation: Double
 
 }
