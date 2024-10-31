@@ -7,7 +7,6 @@ struct ExtraWeatherResponse: Decodable {
     let timezone: String
     let timezoneOffset: Int
     let current: CurrentWeather
-    let minutely: [MinutelyWeather]
     let hourly: [HourlyWeather]
 
     enum CodingKeys: String, CodingKey {
@@ -16,7 +15,6 @@ struct ExtraWeatherResponse: Decodable {
         case timezone
         case timezoneOffset = "timezone_offset"
         case current
-        case minutely
         case hourly
     }
 
@@ -60,19 +58,6 @@ struct CurrentWeather: Decodable {
 
 }
 
-struct MinutelyWeather: Decodable {
-
-    let dateTime: Int
-    let precipitation: Double
-
-    enum CodingKeys: String, CodingKey {
-
-        case dateTime = "dt"
-        case precipitation
-    }
-
-}
-
 struct HourlyWeather: Decodable {
 
     let dateTime: Int
@@ -88,7 +73,7 @@ struct HourlyWeather: Decodable {
     let windDegree: Int
     let windGust: Double?
     let weather: [WeatherDescription]
-    let pop: Double
+    let percipation: Double
 
     enum CodingKeys: String, CodingKey {
 
@@ -105,7 +90,7 @@ struct HourlyWeather: Decodable {
         case windDegree = "wind_deg"
         case windGust = "wind_gust"
         case weather
-        case pop
+        case percipation = "pop"
 
     }
 

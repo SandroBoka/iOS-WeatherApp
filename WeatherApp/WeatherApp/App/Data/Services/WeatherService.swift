@@ -32,7 +32,6 @@ class WeatherService: WeatherServiceProtocol {
 
     func fetchExtraWeather(latitude: Double, longitude: Double) -> AnyPublisher<ExtraWeatherResponse, ClientError> {
         let endpoint = endpointFactory.makeExtraWeather(latitude: latitude, longitude: longitude)
-        print(endpoint)
 
         return Future { [weak self] promise in
             self?.client.get(endpoint: endpoint) { result in
@@ -67,6 +66,7 @@ private extension WeatherService {
             let queryItems = [
                 URLQueryItem(name: "lat", value: String(latitude)),
                 URLQueryItem(name: "lon", value: String(longitude)),
+                URLQueryItem(name: "exclude", value: "minutely"),
                 URLQueryItem(name: "appid", value: apiKey),
                 URLQueryItem(name: "units", value: "metric")]
 

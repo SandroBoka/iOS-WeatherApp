@@ -12,6 +12,7 @@ class WeatherRepository: WeatherRepositoryProtocol {
     let weatherService: WeatherServiceProtocol
     let locationService: LocationServiceProtocol
 
+    var extraWeatherResponse: ExtraWeatherResponse?
     var cancellable: AnyCancellable?
 
     init(weatherService: WeatherServiceProtocol, locationService: LocationServiceProtocol) {
@@ -45,8 +46,8 @@ class WeatherRepository: WeatherRepositoryProtocol {
                 case .failure(let error):
                     print("Error getting extra weather info: \(error)")
                 }
-            }, receiveValue: { extraWeatherResponse in
-                print(extraWeatherResponse)
+            }, receiveValue: { [weak self] extraWeatherResponse in
+                self?.extraWeatherResponse = extraWeatherResponse
             })
     }
 
