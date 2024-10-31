@@ -20,9 +20,7 @@ protocol BaseApiClientProtocol {
 class NetworkClient: BaseApiClientProtocol {
 
     func get<T: Decodable>(endpoint: Endpoint, completion: @escaping (Result<T, ClientError>) -> Void) {
-        guard
-            let request = endpoint.buildRequest()
-        else {
+        guard let request = endpoint.buildRequest() else {
             completion(.failure(.badURL))
             return
         }
@@ -42,9 +40,7 @@ class NetworkClient: BaseApiClientProtocol {
                 return
             }
             
-            guard
-                let data = data
-            else {
+            guard let data = data else {
                 completion(.failure(.noData))
                 return
             }
