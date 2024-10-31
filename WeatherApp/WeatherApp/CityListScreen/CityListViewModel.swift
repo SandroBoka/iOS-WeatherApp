@@ -24,7 +24,7 @@ class CityListViewModel: ObservableObject {
 
     func fetchTemperature(for city: City) {
         getWeatherUseCase.getWeather(cityName: city.name) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
 
             switch result {
             case .success(let weatherModel):
@@ -50,10 +50,4 @@ class CityListViewModel: ObservableObject {
         router.showCityWeather(city: city)
     }
 
-}
-
-extension Array {
-    func at(_ index: Int) -> Element? {
-        indices.contains(index) ? self[index] : nil
-    }
 }

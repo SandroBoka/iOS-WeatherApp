@@ -37,7 +37,7 @@ private extension WeatherModel {
         let weatherDescription = response.weather.first?.description ?? "Not Avaliable"
 
         self.init(
-            temperature: response.main.temp,
+            temperature: response.main.temperature,
             feelsLike: response.main.feelsLike,
             description: weatherDescription,
             humidity: response.main.humidity,
