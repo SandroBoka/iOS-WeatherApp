@@ -54,6 +54,6 @@ class CityListViewModel: ObservableObject {
 
 extension Array {
     func at(_ index: Int) -> Element? {
-        return indices.contains(index) ? self[index] : nil
+        indices.contains(index) ? self[index] : nil
     }
 }

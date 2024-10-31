@@ -43,8 +43,7 @@ private extension WeatherModel {
             humidity: response.main.humidity,
             speed: response.wind.speed,
             sunrise: response.system.sunrise,
-            sunset: response.system.sunset
-        )
+            sunset: response.system.sunset)
     }
 
 }
