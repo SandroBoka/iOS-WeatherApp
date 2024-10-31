@@ -33,7 +33,7 @@ class WeatherRepository: WeatherRepositoryProtocol {
         let weatherDescription = response.weather.first?.description ?? "Not Avaliable"
 
         return WeatherModel(
-            temp: response.main.temp,
+            temperature: response.main.temperature,
             feelsLike: response.main.feelsLike,
             description: weatherDescription,
             humidity: response.main.humidity,

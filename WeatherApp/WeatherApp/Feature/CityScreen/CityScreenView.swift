@@ -11,7 +11,7 @@ struct CityScreenView: View {
                 .padding()
 
             if let weather = viewModel.weather {
-                Text("Temperature: \(String(format: "%.1f", weather.temp))°C")
+                Text("Temperature: \(String(format: "%.1f", weather.temperature))°C")
                     .padding()
 
                 Text("Feels Like: \(String(format: "%.1f", weather.feelsLike))°C")
