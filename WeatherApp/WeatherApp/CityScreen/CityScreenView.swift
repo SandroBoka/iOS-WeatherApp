@@ -52,9 +52,6 @@ struct CityScreenView: View {
         viewModel: CityScreenViewModel(
             router: Router(navigationController: UINavigationController()),
             getWeatherUseCase: GetWeatherUseCase(
-                weatherRepo: WeatherRepository(weatherService: WeatherService(client: NetworkClient()))
-            ),
-            city: "Atlantic City"
-        )
-    )
+                weatherRepo: WeatherRepository(weatherService: WeatherService(client: NetworkClient()))),
+            city: "Atlantic City"))
 }
