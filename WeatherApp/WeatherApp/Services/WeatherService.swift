@@ -16,11 +16,7 @@ class WeatherService: WeatherServiceProtocol {
     init(client: BaseApiClientProtocol) {
         self.client = client
 
-        guard
-            let apiKey = InfoConstants.openWeatherMapApiKey
-        else {
-            fatalError("API Key not found")
-        }
+        guard let apiKey = InfoConstants.openWeatherMapApiKey else { fatalError("API Key not found") }
 
         endpointFactory = WeatherEndpointFactory(apiKey: apiKey)
     }
