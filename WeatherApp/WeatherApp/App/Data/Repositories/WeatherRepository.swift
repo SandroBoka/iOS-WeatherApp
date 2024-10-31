@@ -62,7 +62,8 @@ class WeatherRepository: WeatherRepositoryProtocol {
                 HourlyForecast(
                     temperature: hourlyWeather.temperature,
                     uvIndex: hourlyWeather.uvIndex,
-                    percipation: hourlyWeather.percipation
+                    percipation: hourlyWeather.percipation,
+                    hour: hourlyWeather.dateTime
                 )
             }
         }

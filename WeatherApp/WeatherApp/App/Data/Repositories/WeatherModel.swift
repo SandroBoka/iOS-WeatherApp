@@ -22,5 +22,6 @@ struct HourlyForecast {
     let temperature: Double
     let uvIndex: Double
     let percipation: Double
+    let hour: Int
 
 }

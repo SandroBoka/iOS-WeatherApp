@@ -54,7 +54,7 @@ struct CityScreenView: View {
                     LazyVGrid(columns: columns, spacing: 18) {
                         SunriseWidgetView(
                             title: String(localized: "sunrise"),
-                            value: "\(viewModel.formatTimeFromUnix(weather.sunrise, timeZoneOffset: 3600))"
+                            value: "\(viewModel.formatTimeFromUnix(weather.sunrise, timeZoneOffset: 0))"
                         )
 
                         WindWidgetView(
@@ -66,18 +66,27 @@ struct CityScreenView: View {
 
                         SunsetWidgetView(
                             title: String(localized: "sunset"),
-                            value: "\(viewModel.formatTimeFromUnix(weather.sunset, timeZoneOffset: 3600))"
+                            value: "\(viewModel.formatTimeFromUnix(weather.sunset, timeZoneOffset: 0))"
                         )
                     }
                     .padding()
 
+                    Divider()
+                        .overlay(.primaryForeground)
+                        .padding()
+
                     Text("HOURLY FORECAST")
-                        .font(.notoSansFont(size: 16))
+                        .font(.notoSansFont(size: 14))
 
                     ScrollView(.horizontal) {
                         HStack(spacing: 16) {
                             ForEach(weather.hourlyForecast, id: \.id) { hourly in
-                                HourlyForecastView(forecast: hourly)
+                                VStack {
+                                    Text(viewModel.formatTimeFromUnix(hourly.hour, timeZoneOffset: 0))
+                                        .font(.dottedFont(size: 18))
+
+                                    HourlyForecastView(forecast: hourly)
+                                }
                             }
                         }
                         .padding()
@@ -102,7 +111,7 @@ struct CityScreenView: View {
                 weatherRepo: WeatherRepository(
                     weatherService: WeatherService(client: NetworkClient()),
                     locationService: LocationService(client: NetworkClient()))),
-            city: "Atlantic City"
+            city: "Zagreb"
         )
     )
 }
