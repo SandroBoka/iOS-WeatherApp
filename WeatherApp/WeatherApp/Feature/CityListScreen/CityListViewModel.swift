@@ -39,11 +39,11 @@ class CityListViewModel: ObservableObject {
                     DispatchQueue.main.sync { [weak self] in
                         self?.cities[index].temperature = weatherModel.temperature
                     }
+                    try? saveTemperatureToRealm(cityID: city.id, name: city.name, temperature: city.temperature ?? -1)
                 }
-                try? self.saveTemperatureToRealm(cityID: city.id, name: city.name, temperature: city.temperature ?? -1)
             case .failure(let error):
                 print("Error fetching temperature for \(city.name): \(error)")
-                try? self.loadLastSavedTemperature(for: city)
+                try? loadLastSavedTemperature(for: city)
             }
         }
     }
@@ -71,12 +71,14 @@ class CityListViewModel: ObservableObject {
 }
 
 enum CityListError: Error {
+
     case realmInitializationFailed
     case cityNotFoundInRealm
     case objectIdCreationFailed
+
 }
 
-extension CityListViewModel {
+private extension CityListViewModel {
 
     private func saveTemperatureToRealm(cityID: UUID, name: String, temperature: Double) throws {
         guard let realm = try? Realm() else { throw CityListError.realmInitializationFailed }
@@ -104,9 +106,11 @@ extension CityListViewModel {
             throw CityListError.cityNotFoundInRealm
         }
 
+        let temp = savedCity.temperature
+
         if let index = cities.firstIndex(where: { $0.id == city.id }) {
             DispatchQueue.main.async { [weak self] in
-                self?.cities[index].temperature = savedCity.temperature
+                self?.cities[index].temperature = temp
             }
         }
     }
