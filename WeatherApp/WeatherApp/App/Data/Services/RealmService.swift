@@ -10,15 +10,9 @@ protocol RealmServiceProtocol {
 
 class RealmService: RealmServiceProtocol {
 
-    private let realm: Realm
-
-    init() throws {
-        guard let realmInit = try? Realm() else { throw CityScreenError.realmInitializationFailed }
-
-        realm = realmInit
-    }
-
     func saveWeatherToRealm(weather: WeatherModel, cityName: String) throws {
+        let realm = try Realm()
+
         let weatherModelRealm = WeatherModelObject()
         weatherModelRealm.cityName = cityName
         weatherModelRealm.temperature = weather.temperature
@@ -47,6 +41,8 @@ class RealmService: RealmServiceProtocol {
     }
 
     func loadWeatherFromRealm(cityName: String) throws -> WeatherModel {
+        let realm = try Realm()
+
         guard let savedWeather = realm.object(ofType: WeatherModelObject.self, forPrimaryKey: cityName) else {
             throw CityScreenError.weatherNotFoundInRealm
         }

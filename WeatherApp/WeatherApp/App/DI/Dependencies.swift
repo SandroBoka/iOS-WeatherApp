@@ -45,12 +45,19 @@ class Dependencies: DependenciesProtocol {
         LocationService(client: weatherClient)
     }()
 
+    private lazy var realmService: RealmServiceProtocol = {
+        RealmService()
+    }()
+
     private lazy var dataService: DataServiceProtocol = {
         DataService()
     }()
 
     private lazy var weatherRepository: WeatherRepositoryProtocol = {
-        WeatherRepository(weatherService: weatherService, locationService: locationService)
+        return WeatherRepository(
+            weatherService: weatherService,
+            locationService: locationService,
+            realmService: realmService)
     }()
 
     private lazy var dataRepository: DataRepositoryProtocol = {

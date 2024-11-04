@@ -39,11 +39,9 @@ class CityListViewModel: ObservableObject {
                     DispatchQueue.main.sync { [weak self] in
                         self?.cities[index].temperature = weatherModel.temperature
                     }
-                    try? saveTemperatureToRealm(cityID: city.id, name: city.name, temperature: city.temperature ?? -1)
                 }
             case .failure(let error):
                 print("Error fetching temperature for \(city.name): \(error)")
-                try? loadLastSavedTemperature(for: city)
             }
         }
     }
@@ -66,53 +64,6 @@ class CityListViewModel: ObservableObject {
 
     func removeCity(at offsets: IndexSet) {
         cities.remove(atOffsets: offsets)
-    }
-
-}
-
-enum CityListError: Error {
-
-    case realmInitializationFailed
-    case cityNotFoundInRealm
-    case objectIdCreationFailed
-
-}
-
-private extension CityListViewModel {
-
-    private func saveTemperatureToRealm(cityID: UUID, name: String, temperature: Double) throws {
-        guard let realm = try? Realm() else { throw CityListError.realmInitializationFailed }
-
-        if let realmCity = realm.object(ofType: CityListObject.self, forPrimaryKey: cityID) {
-            try realm.write {
-                realmCity.temperature = temperature
-            }
-        } else {
-            let newRealmCity = CityListObject()
-            newRealmCity.id = cityID
-            newRealmCity.name = name
-            newRealmCity.temperature = temperature
-
-            try realm.write {
-                realm.add(newRealmCity)
-            }
-        }
-    }
-
-    private func loadLastSavedTemperature(for city: City) throws {
-        guard let realm = try? Realm() else { throw CityListError.realmInitializationFailed }
-
-        guard let savedCity = realm.object(ofType: CityListObject.self, forPrimaryKey: city.id) else {
-            throw CityListError.cityNotFoundInRealm
-        }
-
-        let temp = savedCity.temperature
-
-        if let index = cities.firstIndex(where: { $0.id == city.id }) {
-            DispatchQueue.main.async { [weak self] in
-                self?.cities[index].temperature = temp
-            }
-        }
     }
 
 }

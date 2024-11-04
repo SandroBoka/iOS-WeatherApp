@@ -11,13 +11,19 @@ class WeatherRepository: WeatherRepositoryProtocol {
 
     let weatherService: WeatherServiceProtocol
     let locationService: LocationServiceProtocol
+    let realmService: RealmServiceProtocol
 
     var extraWeatherResponse: ExtraWeatherResponse?
     var cancellable: AnyCancellable?
 
-    init(weatherService: WeatherServiceProtocol, locationService: LocationServiceProtocol) {
+    init(
+        weatherService: WeatherServiceProtocol,
+        locationService: LocationServiceProtocol,
+        realmService: RealmServiceProtocol
+    ) {
         self.weatherService = weatherService
         self.locationService = locationService
+        self.realmService = realmService
     }
 
     func fetchWeather(
@@ -31,6 +37,18 @@ class WeatherRepository: WeatherRepositoryProtocol {
             switch result {
             case .success(let currentWeatherResponse):
                 let weatherModel = self.mapToWeatherModel(response: currentWeatherResponse)
+                do {
+                    try self.realmService.saveWeatherToRealm(weather: weatherModel, cityName: cityName)
+                } catch {
+                    print("Failed to save weather data to Realm: \(error)")
+                }
+                do {
+                    let loadedWeatherModel = try self.realmService.loadWeatherFromRealm(cityName: cityName)
+                    completion(.success(loadedWeatherModel))
+                } catch {
+                    print("Failed to load weather data from Realm: \(error)")
+                    completion(.failure(.noData))
+                }
                 completion(.success(weatherModel))
             case .failure(let error):
                 completion(.failure(error))
