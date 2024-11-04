@@ -1,4 +1,5 @@
 import SwiftUI
+import RealmSwift
 
 class CityListViewModel: ObservableObject {
 
@@ -29,18 +30,20 @@ class CityListViewModel: ObservableObject {
     }
 
     func fetchTemperature(for city: City) {
-        getWeatherUseCase.getWeather(cityName: city.name) { [ weak self ] result in
+        getWeatherUseCase.getWeather(cityName: city.name) { [weak self] result in
             guard let self = self else { return }
 
             switch result {
             case .success(let weatherModel):
                 if let index = self.cities.firstIndex(where: { $0.id == city.id }) {
-                    DispatchQueue.main.sync { [ weak self ] in
+                    DispatchQueue.main.sync { [weak self] in
                         self?.cities[index].temperature = weatherModel.temperature
                     }
                 }
+                try? self.saveTemperatureToRealm(cityID: city.id, name: city.name, temperature: city.temperature ?? -1)
             case .failure(let error):
                 print("Error fetching temperature for \(city.name): \(error)")
+                try? self.loadLastSavedTemperature(for: city)
             }
         }
     }
@@ -63,6 +66,49 @@ class CityListViewModel: ObservableObject {
 
     func removeCity(at offsets: IndexSet) {
         cities.remove(atOffsets: offsets)
+    }
+
+}
+
+enum CityListError: Error {
+    case realmInitializationFailed
+    case cityNotFoundInRealm
+    case objectIdCreationFailed
+}
+
+extension CityListViewModel {
+
+    private func saveTemperatureToRealm(cityID: UUID, name: String, temperature: Double) throws {
+        guard let realm = try? Realm() else { throw CityListError.realmInitializationFailed }
+
+        if let realmCity = realm.object(ofType: CityListObject.self, forPrimaryKey: cityID) {
+            try realm.write {
+                realmCity.temperature = temperature
+            }
+        } else {
+            let newRealmCity = CityListObject()
+            newRealmCity.id = cityID
+            newRealmCity.name = name
+            newRealmCity.temperature = temperature
+
+            try realm.write {
+                realm.add(newRealmCity)
+            }
+        }
+    }
+
+    private func loadLastSavedTemperature(for city: City) throws {
+        guard let realm = try? Realm() else { throw CityListError.realmInitializationFailed }
+
+        guard let savedCity = realm.object(ofType: CityListObject.self, forPrimaryKey: city.id) else {
+            throw CityListError.cityNotFoundInRealm
+        }
+
+        if let index = cities.firstIndex(where: { $0.id == city.id }) {
+            DispatchQueue.main.async { [weak self] in
+                self?.cities[index].temperature = savedCity.temperature
+            }
+        }
     }
 
 }

@@ -10,8 +10,15 @@
     "--->" : {
 
     },
-    "%.1f°C" : {
-
+    "%@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@"
+          }
+        }
+      }
     },
     "%@ %%" : {
 
@@ -21,6 +28,16 @@
     },
     "%@ km/h" : {
 
+    },
+    "%@%lld%%" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@%2$lld%%"
+          }
+        }
+      }
     },
     "%lld" : {
 
@@ -94,9 +111,6 @@
         }
       }
     },
-    "HOURLY FORECAST" : {
-
-    },
     "hourly_forecast" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -133,9 +147,6 @@
         }
       }
     },
-    "Rain : %lld%%" : {
-
-    },
     "sunrise" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -157,9 +168,6 @@
           }
         }
       }
-    },
-    "UV :" : {
-
     },
     "uvIndex" : {
       "extractionState" : "manual",
