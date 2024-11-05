@@ -50,8 +50,7 @@ struct CityScreenView: View {
                             .padding(.horizontal)
 
                         LazyVGrid(columns: columns, spacing: 18) {
-//                            WeatherWidgetView(title: "Wind", value: "\(weather.speed) km/h")
-                            WindWidgetView(title: "Wind", value: "2.71", deg: 7)
+                            WindWidget(model: WindWidget.Model(title: "Wind", value: "2.71", degree: 7))
                             WeatherWidgetView(title: "Humidity", value: "\(weather.humidity) %")
                             WeatherWidgetView(
                                 title: "Sunrise",
@@ -79,7 +78,7 @@ struct CityScreenView: View {
         viewModel: CityScreenViewModel(
             router: Router(navigationController: UINavigationController(), viewModelFactory: Dependencies()),
             useCase: GetWeatherUseCase(
-                weatherRepo: WeatherRepository(weatherService: WeatherService(client: NetworkClient()))
+                weatherRepository: WeatherRepository(weatherService: WeatherService(client: NetworkClient()))
             ),
             city: "Atlantic City"
         )

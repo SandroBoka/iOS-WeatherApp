@@ -6,14 +6,14 @@ protocol GetWeatherUseCaseProtocol {
 
 class GetWeatherUseCase: GetWeatherUseCaseProtocol {
 
-    private let weatherRepo: WeatherRepositoryProtocol
+    private let weatherRepository: WeatherRepositoryProtocol
 
-    init(weatherRepo: WeatherRepositoryProtocol) {
-        self.weatherRepo = weatherRepo
+    init(weatherRepository: WeatherRepositoryProtocol) {
+        self.weatherRepository = weatherRepository
     }
 
     func getWeather(cityName: String, completion: @escaping (Result<WeatherModel, ClientError>) -> Void) {
-        weatherRepo.fetchWeather(for: cityName, completion: completion)
+        weatherRepository.fetchWeather(for: cityName, completion: completion)
     }
 
 }
