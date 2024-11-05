@@ -17,7 +17,9 @@ struct CityScreenView: View {
                 ScrollView {
                     VStack {
 
-                        NavBar(backAction: viewModel.goBack)
+                        NavigationBar(backAction: viewModel.goBack)
+                            .padding(.horizontal)
+                            .foregroundColor(.white)
 
                         Text(viewModel.city)
                             .font(Font.custom("NDOT45inspiredbyNOTHING", size: 25))
