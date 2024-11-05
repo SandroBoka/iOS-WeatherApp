@@ -77,5 +77,5 @@ struct CityListView: View {
             weatherUseCase: GetWeatherUseCase(
                 weatherRepository: WeatherRepository(weatherService: WeatherService(client: NetworkClient()))),
             getCitiesUseCase: GetCitiesUseCase(dataRepo: DataRepository(dataService: DataService())),
-            storeCitiesUseCase: StoreCitiesUseCase(dataRepo: DataRepository(dataService: DataService()))))
+            storeCitiesUseCase: StoreCitiesUseCase(dataRepository: DataRepository(dataService: DataService()))))
 }

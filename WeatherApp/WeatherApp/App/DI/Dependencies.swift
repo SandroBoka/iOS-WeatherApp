@@ -62,7 +62,7 @@ class Dependencies: DependenciesProtocol {
     }()
 
     lazy var storeCitiesUseCase: StoreCitiesUseCaseProtocol = {
-        StoreCitiesUseCase(dataRepo: dataRepository)
+        StoreCitiesUseCase(dataRepository: dataRepository)
     }()
 
     lazy var router: RouterProtocol = {
