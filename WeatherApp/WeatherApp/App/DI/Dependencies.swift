@@ -44,7 +44,7 @@ class Dependencies: DependenciesProtocol {
     }()
 
     lazy var getWeatherUseCase: GetWeatherUseCaseProtocol = {
-        GetWeatherUseCase(weatherRepo: weatherRepository)
+        GetWeatherUseCase(weatherRepository: weatherRepository)
     }()
 
     lazy var router: RouterProtocol = {
