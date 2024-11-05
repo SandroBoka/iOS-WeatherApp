@@ -1,19 +1,18 @@
 import SwiftUI
 
-struct WeatherWidgetView: View {
+struct WeatherWidget: View {
 
-    var title: String
-    var value: String
+    let model: Model
 
     var body: some View {
         VStack {
-            Text(title.uppercased())
+            Text(model.title.uppercased())
                 .font(Font.custom("Noto Sans Mono", size: 14))
                 .foregroundColor(.white)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
 
-            Text(value)
+            Text(model.value)
                 .font(Font.custom("NDOT45inspiredbyNOTHING", size: 16))
                 .foregroundColor(.white)
                 .frame(maxHeight: .infinity)
@@ -28,6 +27,17 @@ struct WeatherWidgetView: View {
 
 }
 
+extension WeatherWidget {
+
+    struct Model {
+
+        let title: String
+        let value: String
+
+    }
+
+}
+
 extension Color {
 
     static let darkGray = Color(red: 25/255, green: 25/255, blue: 25/255)
@@ -35,5 +45,5 @@ extension Color {
 }
 
 #Preview {
-    WeatherWidgetView(title: "Title", value: "Value")
+    WeatherWidget(model: WeatherWidget.Model(title: "Title", value: "Value"))
 }
