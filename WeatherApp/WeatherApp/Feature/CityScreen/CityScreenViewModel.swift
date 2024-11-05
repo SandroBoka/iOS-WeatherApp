@@ -40,4 +40,5 @@ class CityScreenViewModel: ObservableObject {
     func goBack() {
         router.goBack()
     }
+
 }
