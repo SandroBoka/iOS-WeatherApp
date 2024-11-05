@@ -35,11 +35,13 @@ struct CityScreenView: View {
                         HStack(spacing: 24) {
                             Spacer()
 
-                            TemperatureInfoView(title: "Current", temperature: weather.temp)
+                            TemperatureInfo(model: TemperatureInfo.Model(title: "Current", temperature: weather.temp))
 
                             Spacer()
 
-                            TemperatureInfoView(title: "Feels Like", temperature: weather.feelsLike)
+                            TemperatureInfo(
+                                model: TemperatureInfo.Model(title: "Feels Like", temperature: weather.feelsLike)
+                            )
 
                             Spacer()
                         }
