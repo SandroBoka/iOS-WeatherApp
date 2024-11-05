@@ -5,6 +5,8 @@ protocol RealmServiceProtocol {
 
     func saveWeatherToRealm(weather: WeatherModel, cityName: String) throws
     func loadWeatherFromRealm(cityName: String) throws -> WeatherModel
+    func saveCities(cities: [CityListObject]) throws
+    func loadCities() throws -> [CityListObject]
 
 }
 
@@ -63,6 +65,20 @@ class RealmService: RealmServiceProtocol {
             minTemperature: savedWeather.minTemperature,
             maxTemperature: savedWeather.maxTemperature,
             hourlyForecast: hourlyForecasts)
+    }
+
+    func saveCities(cities: [CityListObject]) throws {
+        let realm = try Realm()
+
+        try realm.write {
+            realm.delete(realm.objects(CityListObject.self))
+            realm.add(cities, update: .modified)
+        }
+    }
+
+    func loadCities() throws -> [CityListObject] {
+        let realm = try Realm()
+        return Array(realm.objects(CityListObject.self))
     }
 
 }
