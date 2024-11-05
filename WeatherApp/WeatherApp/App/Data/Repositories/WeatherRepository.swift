@@ -46,12 +46,16 @@ class WeatherRepository: WeatherRepositoryProtocol {
                     let loadedWeatherModel = try self.realmService.loadWeatherFromRealm(cityName: cityName)
                     completion(.success(loadedWeatherModel))
                 } catch {
-                    print("Failed to load weather data from Realm: \(error)")
                     completion(.failure(.noData))
                 }
                 completion(.success(weatherModel))
             case .failure(let error):
-                completion(.failure(error))
+                do {
+                    let loadedWeatherModel = try self.realmService.loadWeatherFromRealm(cityName: cityName)
+                    completion(.success(loadedWeatherModel))
+                } catch {
+                    completion(.failure(.noData))
+                }
             }
         }
     }
