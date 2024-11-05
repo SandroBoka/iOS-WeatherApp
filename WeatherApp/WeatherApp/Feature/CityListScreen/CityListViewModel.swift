@@ -2,11 +2,7 @@ import SwiftUI
 
 class CityListViewModel: ObservableObject {
 
-    @Published var cities: [City] = [] {
-        didSet {
-            storeCitiesUseCase.storeCities(cities: cities)
-        }
-    }
+    @Published private(set) var cities: [City] = []
 
     private let router: RouterProtocol
     private let getWeatherUseCase: GetWeatherUseCaseProtocol
@@ -58,11 +54,13 @@ class CityListViewModel: ObservableObject {
     func addCity(cityName: String) {
         let newCity = City(name: cityName)
         cities.append(newCity)
+        storeCitiesUseCase.storeCities(cities: cities)
         fetchTemperature(for: newCity)
     }
 
     func removeCity(at offsets: IndexSet) {
         cities.remove(atOffsets: offsets)
+        storeCitiesUseCase.storeCities(cities: cities)
     }
 
 }
