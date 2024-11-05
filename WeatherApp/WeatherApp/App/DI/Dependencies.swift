@@ -78,8 +78,7 @@ extension Dependencies: ViewModelFactoryProtocol {
             router: router,
             weatherUseCase: getWeatherUseCase,
             getCitiesUseCase: getCitiesUseCase,
-            storeCitiesUseCase: storeCitiesUseCase
-        )
+            storeCitiesUseCase: storeCitiesUseCase)
     }
 
     func makeCityScreenViewModel(cityName: String) -> CityScreenViewModel {
