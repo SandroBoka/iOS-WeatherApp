@@ -18,7 +18,9 @@ class WeatherRepository: WeatherRepositoryProtocol {
         for cityName: String,
         completion: @escaping (Result<WeatherModel, ClientError>) -> Void
     ) {
-        weatherService.fetchWeather(for: cityName) { result in
+        weatherService.fetchWeather(for: cityName) { [weak self] result in
+            guard let self else { return }
+
             switch result {
             case .success(let currentWeatherResponse):
                 let weatherModel = self.mapToWeatherModel(response: currentWeatherResponse)
@@ -39,8 +41,7 @@ class WeatherRepository: WeatherRepositoryProtocol {
             humidity: response.main.humidity,
             speed: response.wind.speed,
             sunrise: response.system.sunrise,
-            sunset: response.system.sunset
-        )
+            sunset: response.system.sunset)
     }
 
 }
