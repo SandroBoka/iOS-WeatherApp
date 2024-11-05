@@ -8,14 +8,14 @@ protocol GetCitiesUseCaseProtocol {
 
 class GetCitiesUseCase: GetCitiesUseCaseProtocol {
 
-    private let dataRepo: DataRepositoryProtocol
+    private let dataRepository: DataRepositoryProtocol
 
-    init(dataRepo: DataRepositoryProtocol) {
-        self.dataRepo = dataRepo
+    init(dataRepository: DataRepositoryProtocol) {
+        self.dataRepository = dataRepository
     }
 
     func getCities() -> [City] {
-        return dataRepo.getCities()
+        dataRepository.getCities()
     }
 
 }
