@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct NavBar: View {
+struct NavigationBar: View {
 
     var backAction: () -> Void
 

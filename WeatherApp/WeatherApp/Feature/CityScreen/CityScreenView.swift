@@ -13,7 +13,7 @@ struct CityScreenView: View {
             ScrollView {
                 VStack {
 
-                    NavBar(backAction: viewModel.goBack)
+                    NavigationBar(backAction: viewModel.goBack)
 
                     Text(viewModel.city)
                         .font(.dottedFont(size: 25))
@@ -51,12 +51,17 @@ struct CityScreenView: View {
                             title: String(localized: "sunrise"),
                             value: "\(viewModel.formatTimeFromUnix(weather.sunrise, timeZoneOffset: 3600))"
                         )
+
                         WindWidgetView(title: String(localized: "wind"), value: "\(weather.speed)", deg: weather.deg)
-                        HumidityWidgetView(title: String(localized: "humidity"), value: "\(weather.humidity)")
+
+                        HumidityWidget(
+                            model: HumidityWidget.Model(
+                                title: String(localized: "humidity"),
+                                value: "\(weather.humidity)"))
+
                         SunsetWidgetView(
                             title: String(localized: "sunset"),
-                            value: "\(viewModel.formatTimeFromUnix(weather.sunset, timeZoneOffset: 3600))"
-                        )
+                            value: "\(viewModel.formatTimeFromUnix(weather.sunset, timeZoneOffset: 3600))")
                     }
                     .padding()
 
