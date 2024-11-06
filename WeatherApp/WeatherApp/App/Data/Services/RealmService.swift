@@ -64,6 +64,7 @@ class RealmService: RealmServiceProtocol {
             sunset: savedWeather.sunset,
             minTemperature: savedWeather.minTemperature,
             maxTemperature: savedWeather.maxTemperature,
+            statusId: savedWeather.statusId,
             hourlyForecast: hourlyForecasts)
     }
 

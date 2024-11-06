@@ -12,6 +12,7 @@ class WeatherModelObject: Object {
     @Persisted var sunset: Int
     @Persisted var minTemperature: Double
     @Persisted var maxTemperature: Double
+    @Persisted var statusId: Int
     @Persisted var hourlyForecasts = List<HourlyForecastObject>()
 }
 
