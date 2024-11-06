@@ -16,7 +16,7 @@ class CityListViewModel: ObservableObject {
         storeCitiesUseCase: StoreCitiesUseCaseProtocol
     ) {
         self.router = router
-        self.getWeatherUseCase = weatherUseCase
+        self.getWeatherUseCase = getWeatherUseCase
         self.getCitiesUseCase = getCitiesUseCase
         self.storeCitiesUseCase = storeCitiesUseCase
 

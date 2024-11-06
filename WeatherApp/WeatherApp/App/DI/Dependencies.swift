@@ -58,10 +58,6 @@ class Dependencies: SceneDelegateDependenciesProtocol {
         StoreCitiesUseCase(dataRepository: dataRepository)
     }()
 
-    lazy var router: RouterProtocol = {
-        Router(navigationController: mainNavigationController, viewModelFactory: self)
-    }()
-
 }
 
 extension Dependencies: ViewModelFactoryProtocol {
@@ -69,7 +65,7 @@ extension Dependencies: ViewModelFactoryProtocol {
     func makeCityListViewModel() -> CityListViewModel {
         CityListViewModel(
             router: router,
-            weatherUseCase: getWeatherUseCase,
+            getWeatherUseCase: getWeatherUseCase,
             getCitiesUseCase: getCitiesUseCase,
             storeCitiesUseCase: storeCitiesUseCase)
     }
