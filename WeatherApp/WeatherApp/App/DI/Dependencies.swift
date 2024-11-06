@@ -1,19 +1,5 @@
 import UIKit
 
-protocol UseCaseDependenciesProtocol {
-
-    var getWeatherUseCase: GetWeatherUseCaseProtocol { get }
-    var getCitiesUseCase: GetCitiesUseCaseProtocol { get }
-    var storeCitiesUseCase: StoreCitiesUseCaseProtocol { get }
-
-}
-
-protocol NavigationDependenciesProtocol {
-
-    var router: RouterProtocol { get }
-
-}
-
 protocol ViewModelFactoryProtocol {
 
     func makeCityListViewModel() -> CityListViewModel
@@ -21,10 +7,17 @@ protocol ViewModelFactoryProtocol {
 
 }
 
-typealias DependenciesProtocol = UseCaseDependenciesProtocol &
-NavigationDependenciesProtocol
+protocol SceneDelegateDependenciesProtocol {
 
-class Dependencies: DependenciesProtocol {
+    var router: RouterProtocol { get }
+
+}
+
+class Dependencies: SceneDelegateDependenciesProtocol {
+
+    lazy var router: RouterProtocol = {
+        Router(navigationController: mainNavigationController, viewModelFactory: self)
+    }()
 
     private lazy var mainNavigationController: UINavigationController = {
         let navigationController = UINavigationController()
@@ -82,7 +75,7 @@ extension Dependencies: ViewModelFactoryProtocol {
     }
 
     func makeCityScreenViewModel(cityName: String) -> CityScreenViewModel {
-        CityScreenViewModel(router: router, useCase: getWeatherUseCase, city: cityName)
+        CityScreenViewModel(router: router, getWeatherUseCase: getWeatherUseCase, city: cityName)
     }
 
 }
