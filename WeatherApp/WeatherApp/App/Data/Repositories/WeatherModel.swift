@@ -7,6 +7,7 @@ struct WeatherModel {
     let description: String
     let humidity: Int
     let speed: Double
+    let degree: Int
     let sunrise: Int
     let sunset: Int
 

@@ -71,27 +71,27 @@ struct CityScreenView: View {
 
     private var widgets: some View {
         LazyVGrid(columns: columns, spacing: 18) {
-            WeatherWidget(
-                model: WeatherWidget.Model(title: "Wind", value: "\(viewModel.weather!.speed) km/h")
-            )
-
-            WeatherWidget(
-                model: WeatherWidget.Model(title: "Humidity", value: "\(viewModel.weather!.humidity) %")
-            )
-
-            WeatherWidget(
-                model: WeatherWidget.Model(
-                    title: "Sunrise",
-                    value: "\(viewModel.formatTimeFromUnix(viewModel.weather!.sunrise, timeZoneOffset: 3600))"
+            SunriseWidget(
+                model: SunriseWidget.Model(
+                    title: String(localized: "sunrise"),
+                    value: "\(viewModel.formatTimeFromUnix(viewModel.weather!.sunrise, timeZoneOffset: 0))"
                 )
             )
 
-            WeatherWidget(
-                model: WeatherWidget.Model(
-                    title: "Sunset",
-                    value: "\(viewModel.formatTimeFromUnix(viewModel.weather!.sunset, timeZoneOffset: 3600))"
-                )
-            )
+            WindWidget(
+                model: WindWidget.Model(
+                    title: String(localized: "wind"),
+                    value: "\(viewModel.weather!.speed)",
+                    degree: Double(viewModel.weather!.degree)))
+
+            HumidityWidget(
+                model: HumidityWidget.Model(
+                    title: String(localized: "humidity"),
+                    value: "\(viewModel.weather!.humidity)"))
+
+            SunsetWidget(model: SunsetWidget.Model(
+                title: String(localized: "sunset"),
+                value: "\(viewModel.formatTimeFromUnix(viewModel.weather!.sunset, timeZoneOffset: 0))"))
         }
     }
 
