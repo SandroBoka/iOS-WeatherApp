@@ -2,23 +2,25 @@ import SwiftUI
 
 class CityListViewModel: ObservableObject {
 
-    @Published private(set) var cities: [City] = [
-        City(name: "Zagreb"),
-        City(name: "Paris"),
-        City(name: "New York"),
-        City(name: "Tokyo"),
-        City(name: "London"),
-        City(name: "Los Angeles"),
-        City(name: "Toronto"),
-        City(name: "Split")]
+    @Published private(set) var cities: [City] = []
 
     private let router: RouterProtocol
     private let getWeatherUseCase: GetWeatherUseCaseProtocol
+    private let getCitiesUseCase: GetCitiesUseCaseProtocol
+    private let storeCitiesUseCase: StoreCitiesUseCaseProtocol
 
-    init(router: RouterProtocol, getWeatherUseCase: GetWeatherUseCaseProtocol) {
+    init(
+        router: RouterProtocol,
+        getWeatherUseCase: GetWeatherUseCaseProtocol,
+        getCitiesUseCase: GetCitiesUseCaseProtocol,
+        storeCitiesUseCase: StoreCitiesUseCaseProtocol
+    ) {
         self.router = router
-        self.getWeatherUseCase = getWeatherUseCase
+        self.getWeatherUseCase = weatherUseCase
+        self.getCitiesUseCase = getCitiesUseCase
+        self.storeCitiesUseCase = storeCitiesUseCase
 
+        cities = getCitiesUseCase.getCities()
         fetchWeatherForAllCities()
     }
 
@@ -52,11 +54,13 @@ class CityListViewModel: ObservableObject {
     func addCity(cityName: String) {
         let newCity = City(name: cityName)
         cities.append(newCity)
+        storeCitiesUseCase.storeCities(cities: cities)
         fetchTemperature(for: newCity)
     }
 
     func removeCity(at offsets: IndexSet) {
         cities.remove(atOffsets: offsets)
+        storeCitiesUseCase.storeCities(cities: cities)
     }
 
 }

@@ -34,12 +34,32 @@ class Dependencies: SceneDelegateDependenciesProtocol {
         WeatherService(client: weatherClient)
     }()
 
+    private lazy var dataService: DataServiceProtocol = {
+        DataService()
+    }()
+
     private lazy var weatherRepository: WeatherRepositoryProtocol = {
         WeatherRepository(weatherService: weatherService)
     }()
 
-    private lazy var getWeatherUseCase: GetWeatherUseCaseProtocol = {
+    private lazy var dataRepository: DataRepositoryProtocol = {
+        DataRepository(dataService: dataService)
+    }()
+
+    lazy var getWeatherUseCase: GetWeatherUseCaseProtocol = {
         GetWeatherUseCase(weatherRepository: weatherRepository)
+    }()
+
+    lazy var getCitiesUseCase: GetCitiesUseCaseProtocol = {
+        GetCitiesUseCase(dataRepository: dataRepository)
+    }()
+
+    lazy var storeCitiesUseCase: StoreCitiesUseCaseProtocol = {
+        StoreCitiesUseCase(dataRepository: dataRepository)
+    }()
+
+    lazy var router: RouterProtocol = {
+        Router(navigationController: mainNavigationController, viewModelFactory: self)
     }()
 
 }
@@ -47,7 +67,11 @@ class Dependencies: SceneDelegateDependenciesProtocol {
 extension Dependencies: ViewModelFactoryProtocol {
 
     func makeCityListViewModel() -> CityListViewModel {
-        CityListViewModel(router: router, getWeatherUseCase: getWeatherUseCase)
+        CityListViewModel(
+            router: router,
+            weatherUseCase: getWeatherUseCase,
+            getCitiesUseCase: getCitiesUseCase,
+            storeCitiesUseCase: storeCitiesUseCase)
     }
 
     func makeCityScreenViewModel(cityName: String) -> CityScreenViewModel {
