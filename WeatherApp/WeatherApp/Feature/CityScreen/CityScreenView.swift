@@ -59,13 +59,14 @@ struct CityScreenView: View {
                                 title: String(localized: "humidity"),
                                 value: "\(weather.humidity)"))
 
-                        SunsetWidgetView(
-                            title: String(localized: "sunset"),
-                            value: "\(viewModel.formatTimeFromUnix(weather.sunset, timeZoneOffset: 3600))")
+                        SunsetWidget(
+                            model: SunsetWidget.Model(
+                                title: String(localized: "sunset"),
+                                value: "\(viewModel.formatTimeFromUnix(weather.sunset, timeZoneOffset: 3600))"
+                            )
+                        )
                     }
                     .padding()
-
-                    Spacer()
                 }
                 .background {
                     Color.primaryBackground
