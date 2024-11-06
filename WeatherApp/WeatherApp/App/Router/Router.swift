@@ -19,6 +19,8 @@ class Router: RouterProtocol {
     init(navigationController: UINavigationController, viewModelFactory: ViewModelFactoryProtocol) {
         self.navigationController = navigationController
         self.viewModelFactory = viewModelFactory
+
+        navigationController.isNavigationBarHidden = true
     }
 
     func start(in window: UIWindow) {

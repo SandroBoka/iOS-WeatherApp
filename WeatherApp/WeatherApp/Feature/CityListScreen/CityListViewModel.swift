@@ -49,4 +49,14 @@ class CityListViewModel: ObservableObject {
         router.showCityWeather(city: city)
     }
 
+    func addCity(cityName: String) {
+        let newCity = City(name: cityName)
+        cities.append(newCity)
+        fetchTemperature(for: newCity)
+    }
+
+    func removeCity(at offsets: IndexSet) {
+        cities.remove(atOffsets: offsets)
+    }
+
 }

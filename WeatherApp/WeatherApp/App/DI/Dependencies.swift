@@ -39,7 +39,7 @@ class Dependencies: SceneDelegateDependenciesProtocol {
     }()
 
     private lazy var getWeatherUseCase: GetWeatherUseCaseProtocol = {
-        GetWeatherUseCase(weatherRepo: weatherRepository)
+        GetWeatherUseCase(weatherRepository: weatherRepository)
     }()
 
 }
