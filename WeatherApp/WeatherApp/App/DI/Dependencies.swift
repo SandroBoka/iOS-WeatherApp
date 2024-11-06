@@ -1,5 +1,6 @@
 import UIKit
 
+<<<<<<< HEAD
 protocol UseCaseDependenciesProtocol {
 
     var getWeatherUseCase: GetWeatherUseCaseProtocol { get }
@@ -14,6 +15,8 @@ protocol NavigationDependenciesProtocol {
 
 }
 
+=======
+>>>>>>> develop
 protocol ViewModelFactoryProtocol {
 
     func makeCityListViewModel() -> CityListViewModel
@@ -21,10 +24,24 @@ protocol ViewModelFactoryProtocol {
 
 }
 
+<<<<<<< HEAD
 typealias DependenciesProtocol = UseCaseDependenciesProtocol &
 NavigationDependenciesProtocol
 
 class Dependencies: DependenciesProtocol {
+=======
+protocol SceneDelegateDependenciesProtocol {
+
+    var router: RouterProtocol { get }
+
+}
+
+class Dependencies: SceneDelegateDependenciesProtocol {
+
+    lazy var router: RouterProtocol = {
+        Router(navigationController: mainNavigationController, viewModelFactory: self)
+    }()
+>>>>>>> develop
 
     private lazy var mainNavigationController: UINavigationController = {
         let navigationController = UINavigationController()
@@ -54,6 +71,7 @@ class Dependencies: DependenciesProtocol {
     }()
 
     lazy var getWeatherUseCase: GetWeatherUseCaseProtocol = {
+<<<<<<< HEAD
         GetWeatherUseCase(weatherRepo: weatherRepository)
     }()
 
@@ -67,6 +85,17 @@ class Dependencies: DependenciesProtocol {
 
     lazy var router: RouterProtocol = {
         Router(navigationController: mainNavigationController, viewModelFactory: self)
+=======
+        GetWeatherUseCase(weatherRepository: weatherRepository)
+    }()
+
+    lazy var getCitiesUseCase: GetCitiesUseCaseProtocol = {
+        GetCitiesUseCase(dataRepository: dataRepository)
+    }()
+
+    lazy var storeCitiesUseCase: StoreCitiesUseCaseProtocol = {
+        StoreCitiesUseCase(dataRepository: dataRepository)
+>>>>>>> develop
     }()
 
 }
@@ -76,6 +105,7 @@ extension Dependencies: ViewModelFactoryProtocol {
     func makeCityListViewModel() -> CityListViewModel {
         CityListViewModel(
             router: router,
+<<<<<<< HEAD
             weatherUseCase: getWeatherUseCase,
             getCitiesUseCase: getCitiesUseCase,
             storeCitiesUseCase: storeCitiesUseCase
@@ -84,6 +114,15 @@ extension Dependencies: ViewModelFactoryProtocol {
 
     func makeCityScreenViewModel(cityName: String) -> CityScreenViewModel {
         CityScreenViewModel(router: router, useCase: getWeatherUseCase, city: cityName)
+=======
+            getWeatherUseCase: getWeatherUseCase,
+            getCitiesUseCase: getCitiesUseCase,
+            storeCitiesUseCase: storeCitiesUseCase)
+    }
+
+    func makeCityScreenViewModel(cityName: String) -> CityScreenViewModel {
+        CityScreenViewModel(router: router, getWeatherUseCase: getWeatherUseCase, city: cityName)
+>>>>>>> develop
     }
 
 }

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct NavigationBar: View {
 
+<<<<<<< HEAD
     var backAction: () -> Void
 
     var body: some View {
@@ -28,6 +29,19 @@ extension UINavigationController: @retroactive UIGestureRecognizerDelegate {
 
     public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         return viewControllers.count > 1
+=======
+    let font: Font = Font.custom("NDOT45inspiredbyNOTHING", size: 25)
+
+    var backAction: () -> Void
+
+    var body: some View {
+        Button(action: backAction) {
+            Text("<")
+                .font(Font.custom("NDOT45inspiredbyNOTHING", size: 28))
+                .padding(.horizontal)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+>>>>>>> develop
     }
 
 }
