@@ -82,7 +82,12 @@ struct MainResponse: Decodable {
 struct WindResponse: Decodable {
 
     let speed: Double
-    let deg: Int
+    let degree: Int
+
+    enum CodingKeys: String, CodingKey {
+        case speed
+        case degree = "deg"
+    }
 
 }
 
