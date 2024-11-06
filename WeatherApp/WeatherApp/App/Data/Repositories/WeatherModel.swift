@@ -2,7 +2,7 @@ import Foundation
 
 struct WeatherModel {
 
-    let temp: Double
+    let temperature: Double
     let feelsLike: Double
     let description: String
     let humidity: Int

@@ -2,7 +2,7 @@ import SwiftUI
 
 class CityListViewModel: ObservableObject {
 
-    @Published var cities: [City] = [
+    @Published private(set) var cities: [City] = [
         City(name: "Zagreb"),
         City(name: "Paris"),
         City(name: "New York"),
@@ -15,9 +15,9 @@ class CityListViewModel: ObservableObject {
     private let router: RouterProtocol
     private let getWeatherUseCase: GetWeatherUseCaseProtocol
 
-    init(router: RouterProtocol, useCase: GetWeatherUseCaseProtocol) {
+    init(router: RouterProtocol, getWeatherUseCase: GetWeatherUseCaseProtocol) {
         self.router = router
-        self.getWeatherUseCase = useCase
+        self.getWeatherUseCase = getWeatherUseCase
 
         fetchWeatherForAllCities()
     }
@@ -29,8 +29,8 @@ class CityListViewModel: ObservableObject {
             switch result {
             case .success(let weatherModel):
                 if let index = self.cities.firstIndex(where: { $0.id == city.id }) {
-                    DispatchQueue.main.async { [weak self] in
-                        self?.cities[index].temperature = weatherModel.temp
+                    DispatchQueue.main.sync { [weak self] in
+                        self?.cities[index].temperature = weatherModel.temperature
                     }
                 }
             case .failure(let error):
