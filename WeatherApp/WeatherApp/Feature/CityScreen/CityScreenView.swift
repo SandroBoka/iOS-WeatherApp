@@ -58,7 +58,7 @@ struct CityScreenView: View {
         HStack(spacing: 24) {
             Spacer()
 
-            TemperatureInfo(model: TemperatureInfo.Model(title: "Current", temperature: viewModel.weather!.temp))
+            TemperatureInfo(model: TemperatureInfo.Model(title: "Current", temperature: viewModel.weather!.temperature))
 
             Spacer()
 
@@ -101,7 +101,7 @@ struct CityScreenView: View {
     CityScreenView(
         viewModel: CityScreenViewModel(
             router: Router(navigationController: UINavigationController(), viewModelFactory: Dependencies()),
-            useCase: GetWeatherUseCase(
+            getWeatherUseCase: GetWeatherUseCase(
                 weatherRepository: WeatherRepository(weatherService: WeatherService(client: NetworkClient()))
             ),
             city: "Atlantic City"
