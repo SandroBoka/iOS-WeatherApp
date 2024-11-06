@@ -21,11 +21,6 @@ struct HumidityWidget: View {
                 .padding(.bottom)
         }
         .frame(minHeight: 120)
-        .background {
-            Color
-                .widgetGray
-                .cornerRadius(15)
-        }
     }
 
     private var waterLevel: some View {

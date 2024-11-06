@@ -8,15 +8,9 @@ class CityScreenViewModel: ObservableObject {
     @Published var city: String
     @Published var weather: WeatherModel?
 
-<<<<<<< HEAD
-    init(router: RouterProtocol, useCase: GetWeatherUseCaseProtocol, city: String) {
-        self.router = router
-        self.getWeatherUseCase = useCase
-=======
     init(router: RouterProtocol, getWeatherUseCase: GetWeatherUseCaseProtocol, city: String) {
         self.router = router
         self.getWeatherUseCase = getWeatherUseCase
->>>>>>> develop
         self.city = city
 
         fetchWeather()
