@@ -17,6 +17,33 @@ class DataRepository: DataRepositoryProtocol {
         City(name: "London"),
         City(name: "Los Angeles")]
 
+<<<<<<< HEAD
+    let realmService: RealmServiceProtocol
+
+    init(realmService: RealmServiceProtocol) {
+        self.realmService = realmService
+    }
+
+    func storeCities(cities: [City]) {
+        do {
+            try realmService.saveCities(cities: mapToCityObject(cityModels: cities))
+        } catch {
+            print("Failed to save cities data to Realm: \(error)")
+        }
+    }
+
+    func getCities() -> [City] {
+        var cities: [City] = []
+        do {
+            cities = try mapToCityModel(cityObjects: realmService.loadCities())
+        } catch {
+            print("Failed to load cities from to Realm: \(error)")
+        }
+
+        if cities.isEmpty {
+            cities = defaultCities
+            storeCities(cities: cities)
+=======
     let dataService: DataServiceProtocol
 
     init(dataService: DataServiceProtocol) {
@@ -32,9 +59,25 @@ class DataRepository: DataRepositoryProtocol {
 
         if cities.isEmpty {
             cities = defaultCities
+>>>>>>> develop
         }
 
         return cities
     }
 
+<<<<<<< HEAD
+    private func mapToCityModel(cityObjects: [CityListObject]) -> [City] {
+        return cityObjects.map { cityObject in
+            City(name: cityObject.name, id: cityObject.id, temperature: cityObject.temperature)
+        }
+    }
+
+    private func mapToCityObject(cityModels: [City]) -> [CityListObject] {
+        return cityModels.map { cityModel in
+            CityListObject(id: cityModel.id, name: cityModel.name, temperature: cityModel.temperature ?? 0.0)
+        }
+    }
+
+=======
+>>>>>>> develop
 }

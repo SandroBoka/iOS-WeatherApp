@@ -1,4 +1,5 @@
 import SwiftUI
+import RealmSwift
 
 class CityScreenViewModel: ObservableObject {
 

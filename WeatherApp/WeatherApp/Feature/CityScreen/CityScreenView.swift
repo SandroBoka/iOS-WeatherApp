@@ -130,6 +130,6 @@ struct CityScreenView: View {
             getWeatherUseCase: GetWeatherUseCase(
                 weatherRepository: WeatherRepository(
                     weatherService: WeatherService(client: NetworkClient()),
-                    locationService: LocationService(client: NetworkClient()))),
+                    locationService: LocationService(client: NetworkClient()), realmService: RealmService())),
             city: "Zagreb"))
 }

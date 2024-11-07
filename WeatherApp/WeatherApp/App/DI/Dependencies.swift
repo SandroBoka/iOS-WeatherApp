@@ -38,16 +38,19 @@ class Dependencies: SceneDelegateDependenciesProtocol {
         LocationService(client: weatherClient)
     }()
 
-    private lazy var dataService: DataServiceProtocol = {
-        DataService()
+    private lazy var realmService: RealmServiceProtocol = {
+        RealmService()
     }()
 
     private lazy var weatherRepository: WeatherRepositoryProtocol = {
-        WeatherRepository(weatherService: weatherService, locationService: locationService)
+        return WeatherRepository(
+            weatherService: weatherService,
+            locationService: locationService,
+            realmService: realmService)
     }()
 
     private lazy var dataRepository: DataRepositoryProtocol = {
-        DataRepository(dataService: dataService)
+        DataRepository(realmService: realmService)
     }()
 
     lazy var getWeatherUseCase: GetWeatherUseCaseProtocol = {
@@ -60,6 +63,10 @@ class Dependencies: SceneDelegateDependenciesProtocol {
 
     lazy var storeCitiesUseCase: StoreCitiesUseCaseProtocol = {
         StoreCitiesUseCase(dataRepository: dataRepository)
+    }()
+
+    lazy var router: RouterProtocol = {
+        Router(navigationController: mainNavigationController, viewModelFactory: self)
     }()
 
 }

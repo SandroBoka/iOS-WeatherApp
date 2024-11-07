@@ -94,9 +94,6 @@
         }
       }
     },
-    "HOURLY FORECAST" : {
-
-    },
     "hourly_forecast" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -133,9 +130,6 @@
         }
       }
     },
-    "Rain : %lld%%" : {
-
-    },
     "sunrise" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -157,9 +151,6 @@
           }
         }
       }
-    },
-    "UV :" : {
-
     },
     "uvIndex" : {
       "extractionState" : "manual",
