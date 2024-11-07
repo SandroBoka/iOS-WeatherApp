@@ -7,6 +7,7 @@ protocol RealmServiceProtocol {
     func loadWeatherFromRealm(cityName: String) throws -> WeatherModel
     func saveCities(cities: [CityListObject]) throws
     func loadCities() throws -> [CityListObject]
+    func loadCitiesFromJson() -> Bool
 
 }
 
@@ -80,6 +81,43 @@ class RealmService: RealmServiceProtocol {
     func loadCities() throws -> [CityListObject] {
         let realm = try Realm()
         return Array(realm.objects(CityListObject.self))
+    }
+
+    func loadCitiesFromJson() -> Bool {
+        guard let path = Bundle.main.path(forResource: "city_list", ofType: "json") else {
+            print("JSON file not found")
+            return false
+        }
+
+        do {
+            let data = try Data(contentsOf: URL(fileURLWithPath: path))
+            let cities = try JSONDecoder().decode([CityJSON].self, from: data)
+            let realmCities = cities.map{ CityObject(id: $0.id, cityName: $0.name) }
+
+            let realm = try Realm()
+
+            try realm.write{
+                realm.add(realmCities)
+            }
+
+            print("city_list.json is now saved in the database")
+            return true
+        } catch  {
+            print("Error reading cities from json file: \(error)")
+            return false
+        }
+
+    }
+
+}
+
+extension RealmService {
+
+    struct CityJSON: Decodable {
+
+        let id: Int
+        let name: String
+
     }
 
 }

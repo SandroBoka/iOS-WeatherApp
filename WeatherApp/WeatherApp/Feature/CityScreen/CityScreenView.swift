@@ -12,7 +12,6 @@ struct CityScreenView: View {
         VStack {
             NavigationBar(backAction: viewModel.goBack)
                 .padding(.horizontal)
-                .foregroundColor(.white)
 
             ScrollView {
                 if viewModel.weather != nil {
