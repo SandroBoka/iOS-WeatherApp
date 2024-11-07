@@ -1,6 +1,7 @@
 import RealmSwift
 
 class WeatherModelObject: Object {
+
     @Persisted(primaryKey: true) var cityName: String
     @Persisted var temperature: Double
     @Persisted var feelsLike: Double
@@ -14,11 +15,14 @@ class WeatherModelObject: Object {
     @Persisted var maxTemperature: Double
     @Persisted var statusId: Int
     @Persisted var hourlyForecasts = List<HourlyForecastObject>()
+
 }
 
 class HourlyForecastObject: Object {
+
     @Persisted var temperature: Double
     @Persisted var uvIndex: Double
     @Persisted var percipation: Double
     @Persisted var hour: Int
+
 }
