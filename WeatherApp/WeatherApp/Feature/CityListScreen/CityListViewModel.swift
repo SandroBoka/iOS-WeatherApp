@@ -2,11 +2,7 @@ import SwiftUI
 
 class CityListViewModel: ObservableObject {
 
-    @Published var cities: [City] = [] {
-        didSet {
-            storeCitiesUseCase.storeCities(cities: cities)
-        }
-    }
+    @Published private(set) var cities: [City] = []
 
     private let router: RouterProtocol
     private let getWeatherUseCase: GetWeatherUseCaseProtocol
@@ -15,12 +11,12 @@ class CityListViewModel: ObservableObject {
 
     init(
         router: RouterProtocol,
-        weatherUseCase: GetWeatherUseCaseProtocol,
+        getWeatherUseCase: GetWeatherUseCaseProtocol,
         getCitiesUseCase: GetCitiesUseCaseProtocol,
         storeCitiesUseCase: StoreCitiesUseCaseProtocol
     ) {
         self.router = router
-        self.getWeatherUseCase = weatherUseCase
+        self.getWeatherUseCase = getWeatherUseCase
         self.getCitiesUseCase = getCitiesUseCase
         self.storeCitiesUseCase = storeCitiesUseCase
 
@@ -29,13 +25,13 @@ class CityListViewModel: ObservableObject {
     }
 
     func fetchTemperature(for city: City) {
-        getWeatherUseCase.getWeather(cityName: city.name) { [ weak self ] result in
-            guard let self = self else { return }
+        getWeatherUseCase.getWeather(cityName: city.name) { [weak self] result in
+            guard let self else { return }
 
             switch result {
             case .success(let weatherModel):
                 if let index = self.cities.firstIndex(where: { $0.id == city.id }) {
-                    DispatchQueue.main.sync { [ weak self ] in
+                    DispatchQueue.main.async { [weak self] in
                         self?.cities[index].temperature = weatherModel.temperature
                     }
                 }
@@ -58,11 +54,13 @@ class CityListViewModel: ObservableObject {
     func addCity(cityName: String) {
         let newCity = City(name: cityName)
         cities.append(newCity)
+        storeCitiesUseCase.storeCities(cities: cities)
         fetchTemperature(for: newCity)
     }
 
     func removeCity(at offsets: IndexSet) {
         cities.remove(atOffsets: offsets)
+        storeCitiesUseCase.storeCities(cities: cities)
     }
 
 }

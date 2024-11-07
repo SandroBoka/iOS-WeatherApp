@@ -1,19 +1,5 @@
 import UIKit
 
-protocol UseCaseDependenciesProtocol {
-
-    var getWeatherUseCase: GetWeatherUseCaseProtocol { get }
-    var getCitiesUseCase: GetCitiesUseCaseProtocol { get }
-    var storeCitiesUseCase: StoreCitiesUseCaseProtocol { get }
-
-}
-
-protocol NavigationDependenciesProtocol {
-
-    var router: RouterProtocol { get }
-
-}
-
 protocol ViewModelFactoryProtocol {
 
     func makeCityListViewModel() -> CityListViewModel
@@ -21,10 +7,17 @@ protocol ViewModelFactoryProtocol {
 
 }
 
-typealias DependenciesProtocol = UseCaseDependenciesProtocol &
-NavigationDependenciesProtocol
+protocol SceneDelegateDependenciesProtocol {
 
-class Dependencies: DependenciesProtocol {
+    var router: RouterProtocol { get }
+
+}
+
+class Dependencies: SceneDelegateDependenciesProtocol {
+
+    lazy var router: RouterProtocol = {
+        Router(navigationController: mainNavigationController, viewModelFactory: self)
+    }()
 
     private lazy var mainNavigationController: UINavigationController = {
         let navigationController = UINavigationController()
@@ -58,19 +51,15 @@ class Dependencies: DependenciesProtocol {
     }()
 
     lazy var getWeatherUseCase: GetWeatherUseCaseProtocol = {
-        GetWeatherUseCase(weatherRepo: weatherRepository)
+        GetWeatherUseCase(weatherRepository: weatherRepository)
     }()
 
     lazy var getCitiesUseCase: GetCitiesUseCaseProtocol = {
-        GetCitiesUseCase(dataRepo: dataRepository)
+        GetCitiesUseCase(dataRepository: dataRepository)
     }()
 
     lazy var storeCitiesUseCase: StoreCitiesUseCaseProtocol = {
-        StoreCitiesUseCase(dataRepo: dataRepository)
-    }()
-
-    lazy var router: RouterProtocol = {
-        Router(navigationController: mainNavigationController, viewModelFactory: self)
+        StoreCitiesUseCase(dataRepository: dataRepository)
     }()
 
 }
@@ -80,14 +69,13 @@ extension Dependencies: ViewModelFactoryProtocol {
     func makeCityListViewModel() -> CityListViewModel {
         CityListViewModel(
             router: router,
-            weatherUseCase: getWeatherUseCase,
+            getWeatherUseCase: getWeatherUseCase,
             getCitiesUseCase: getCitiesUseCase,
-            storeCitiesUseCase: storeCitiesUseCase
-        )
+            storeCitiesUseCase: storeCitiesUseCase)
     }
 
     func makeCityScreenViewModel(cityName: String) -> CityScreenViewModel {
-        CityScreenViewModel(router: router, useCase: getWeatherUseCase, city: cityName)
+        CityScreenViewModel(router: router, getWeatherUseCase: getWeatherUseCase, city: cityName)
     }
 
 }
