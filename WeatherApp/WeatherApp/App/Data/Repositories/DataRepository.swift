@@ -48,13 +48,13 @@ class DataRepository: DataRepositoryProtocol {
     }
 
     private func mapToCityModel(cityObjects: [CityListObject]) -> [City] {
-        return cityObjects.map { cityObject in
+        cityObjects.map { cityObject in
             City(name: cityObject.name, id: cityObject.id, temperature: cityObject.temperature)
         }
     }
 
     private func mapToCityObject(cityModels: [City]) -> [CityListObject] {
-        return cityModels.map { cityModel in
+        cityModels.map { cityModel in
             CityListObject(id: cityModel.id, name: cityModel.name, temperature: cityModel.temperature ?? 0.0)
         }
     }

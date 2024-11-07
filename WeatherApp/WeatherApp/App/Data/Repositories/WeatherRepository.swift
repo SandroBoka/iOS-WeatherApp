@@ -85,8 +85,7 @@ class WeatherRepository: WeatherRepositoryProtocol {
                     temperature: hourlyWeather.temperature,
                     uvIndex: hourlyWeather.uvIndex,
                     percipation: hourlyWeather.percipation,
-                    hour: hourlyWeather.dateTime
-                )
+                    hour: hourlyWeather.dateTime)
             }
         }
 
@@ -101,8 +100,8 @@ class WeatherRepository: WeatherRepositoryProtocol {
             sunset: response.system.sunset,
             minTemperature: response.main.minimalTemperature,
             maxTemperature: response.main.maximalTemperature,
-            hourlyForecast: hourlyForecasts
-        )
+            statusId: response.weather[0].id,
+            hourlyForecast: hourlyForecasts)
     }
 
     private func fetchCityLocation(cityName: String) {

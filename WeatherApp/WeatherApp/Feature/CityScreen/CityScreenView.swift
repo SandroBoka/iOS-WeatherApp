@@ -49,7 +49,9 @@ struct CityScreenView: View {
             Text(viewModel.city)
                 .font(.dottedFont(size: 25))
 
-            Image(.sunny)
+            viewModel
+                .weatherImage
+                .image
                 .resizable()
                 .renderingMode(.template)
                 .scaledToFit()

@@ -9,4 +9,5 @@ extension Font {
     static func notoSansFont(size: Double) -> Font {
         Font.custom("Noto Sans Mono", size: size)
     }
+
 }

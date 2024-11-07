@@ -12,6 +12,7 @@ struct WeatherModel {
     let sunset: Int
     let minTemperature: Double
     let maxTemperature: Double
+    let statusId: Int
     let hourlyForecast: [HourlyForecast]
 
 }
