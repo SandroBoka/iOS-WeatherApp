@@ -121,7 +121,6 @@ struct CityScreenView: View {
         }
     }
 
-
 }
 
 #Preview {
