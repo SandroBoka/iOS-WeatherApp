@@ -92,17 +92,17 @@ class RealmService: RealmServiceProtocol {
         do {
             let data = try Data(contentsOf: URL(fileURLWithPath: path))
             let cities = try JSONDecoder().decode([CityJSON].self, from: data)
-            let realmCities = cities.map{ CityObject(id: $0.id, cityName: $0.name) }
+            let realmCities = cities.map { CityObject(id: $0.id, cityName: $0.name) }
 
             let realm = try Realm()
 
-            try realm.write{
+            try realm.write {
                 realm.add(realmCities)
             }
 
             print("city_list.json is now saved in the database")
             return true
-        } catch  {
+        } catch {
             print("Error reading cities from json file: \(error)")
             return false
         }
