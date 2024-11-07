@@ -17,7 +17,6 @@ class DataRepository: DataRepositoryProtocol {
         City(name: "London"),
         City(name: "Los Angeles")]
 
-<<<<<<< HEAD
     let realmService: RealmServiceProtocol
 
     init(realmService: RealmServiceProtocol) {
@@ -43,29 +42,11 @@ class DataRepository: DataRepositoryProtocol {
         if cities.isEmpty {
             cities = defaultCities
             storeCities(cities: cities)
-=======
-    let dataService: DataServiceProtocol
-
-    init(dataService: DataServiceProtocol) {
-        self.dataService = dataService
-    }
-
-    func storeCities(cities: [City]) {
-        dataService.storeCities(cities: cities)
-    }
-
-    func getCities() -> [City] {
-        var cities = dataService.getCities()
-
-        if cities.isEmpty {
-            cities = defaultCities
->>>>>>> develop
         }
 
         return cities
     }
 
-<<<<<<< HEAD
     private func mapToCityModel(cityObjects: [CityListObject]) -> [City] {
         return cityObjects.map { cityObject in
             City(name: cityObject.name, id: cityObject.id, temperature: cityObject.temperature)
@@ -78,6 +59,4 @@ class DataRepository: DataRepositoryProtocol {
         }
     }
 
-=======
->>>>>>> develop
 }

@@ -65,10 +65,6 @@ class Dependencies: SceneDelegateDependenciesProtocol {
         StoreCitiesUseCase(dataRepository: dataRepository)
     }()
 
-    lazy var router: RouterProtocol = {
-        Router(navigationController: mainNavigationController, viewModelFactory: self)
-    }()
-
 }
 
 extension Dependencies: ViewModelFactoryProtocol {
