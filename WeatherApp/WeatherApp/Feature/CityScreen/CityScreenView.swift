@@ -4,99 +4,119 @@ struct CityScreenView: View {
 
     @ObservedObject var viewModel: CityScreenViewModel
 
-    let columns = [
+    private let columns = [
         GridItem(.flexible(), spacing: 18),
         GridItem(.flexible())]
 
     var body: some View {
-        if let weather = viewModel.weather {
+        VStack {
+            NavigationBar(backAction: viewModel.goBack)
+                .padding(.horizontal)
+                .foregroundColor(.white)
+
             ScrollView {
-                VStack {
-                    NavBar(backAction: viewModel.goBack)
+                if viewModel.weather != nil {
 
-                    Text(viewModel.city)
-                        .font(.dottedFont(size: 25))
+                    mainInfo
+                        .padding(.bottom)
 
-                    Image(.sunny)
-                        .resizable()
-                        .renderingMode(.template)
-                        .scaledToFit()
-                        .frame(maxWidth: 170, maxHeight: 170)
-                        .padding()
-
-                    Text(weather.description.uppercased())
-                        .font(.notoSansFont(size: 12))
-                        .padding(.bottom, 20)
-
-                    HStack(spacing: 24) {
-                        Spacer()
-
-                        TemperatureInfoView(
-                            title: String(localized: "current_string"),
-                            temperature: weather.temperature
-                        )
-
-                        Spacer()
-
-                        TemperatureInfoView(
-                            title: String(localized: "feels_like"),
-                            temperature: weather.feelsLike
-                        )
-
-                        Spacer()
-                    }
-
-                    Divider()
-                        .overlay(.primaryForeground)
-                        .padding(.top)
-                        .padding(.horizontal)
-
-                    LazyVGrid(columns: columns, spacing: 18) {
-                        SunriseWidgetView(
-                            title: String(localized: "sunrise"),
-                            value: "\(viewModel.formatTimeFromUnix(weather.sunrise, timeZoneOffset: 0))"
-                        )
-
-                        WindWidgetView(
-                            title: String(localized: "wind"),
-                            value: "\(weather.speed)",
-                            deg: weather.degrees)
-
-                        HumidityWidgetView(title: String(localized: "humidity"), value: "\(weather.humidity)")
-
-                        SunsetWidgetView(
-                            title: String(localized: "sunset"),
-                            value: "\(viewModel.formatTimeFromUnix(weather.sunset, timeZoneOffset: 0))"
-                        )
-                    }
-                    .padding()
+                    temperatureInfo
 
                     Divider()
                         .overlay(.primaryForeground)
                         .padding()
 
-                    Text(.hourlyForecast)
-                        .font(.notoSansFont(size: 14))
+                    widgets
+                        .padding()
 
-                    ScrollView(.horizontal) {
-                        HStack(spacing: 16) {
-                            ForEach(weather.hourlyForecast, id: \.id) { hourly in
-                                VStack {
-                                    Text(viewModel.formatTimeFromUnix(hourly.hour, timeZoneOffset: 0))
-                                        .font(.dottedFont(size: 18))
+                    Divider()
+                        .overlay(.primaryForeground)
+                        .padding()
 
-                                    HourlyForecastView(forecast: hourly)
-                                }
-                            }
+                    hourly
+                }
+            }
+        }
+        .background {
+            Color.primaryBackground
+                .ignoresSafeArea()
+        }
+        .foregroundStyle(.primaryForeground)
+    }
+
+    private var mainInfo: some View {
+        VStack(spacing: 10) {
+            Text(viewModel.city)
+                .font(.dottedFont(size: 25))
+
+            Image(.sunny)
+                .resizable()
+                .renderingMode(.template)
+                .scaledToFit()
+                .frame(maxWidth: 170, maxHeight: 170)
+
+            Text(viewModel.weather!.description.uppercased())
+                .font(.notoSansFont(size: 12))
+        }
+    }
+
+    private var temperatureInfo: some View {
+        HStack(spacing: 24) {
+            Spacer()
+
+            TemperatureInfo(model: TemperatureInfo.Model(title: "Current", temperature: viewModel.weather!.temperature))
+
+            Spacer()
+
+            TemperatureInfo(
+                model: TemperatureInfo.Model(title: "Feels Like", temperature: viewModel.weather!.feelsLike))
+
+            Spacer()
+        }
+    }
+
+    private var widgets: some View {
+        LazyVGrid(columns: columns, spacing: 18) {
+            SunriseWidget(
+                model: SunriseWidget.Model(
+                    title: String(localized: "sunrise"),
+                    value: "\(viewModel.formatTimeFromUnix(viewModel.weather!.sunrise, timeZoneOffset: 0))"))
+
+            WindWidget(
+                model: WindWidget.Model(
+                    title: String(localized: "wind"),
+                    value: "\(viewModel.weather!.speed)",
+                    degree: Double(viewModel.weather!.degrees)))
+
+            HumidityWidget(
+                model: HumidityWidget.Model(
+                    title: String(localized: "humidity"),
+                    value: "\(viewModel.weather!.humidity)"))
+
+            SunsetWidget(
+                model: SunsetWidget.Model(
+                    title: String(localized: "sunset"),
+                    value: "\(viewModel.formatTimeFromUnix(viewModel.weather!.sunset, timeZoneOffset: 0))"))
+        }
+    }
+
+    private var hourly: some View {
+        VStack {
+            Text(.hourlyForecast)
+                .font(.notoSansFont(size: 14))
+
+            ScrollView(.horizontal) {
+                HStack(spacing: 16) {
+                    ForEach(viewModel.weather!.hourlyForecast, id: \.id) { hourly in
+                        VStack {
+                            Text(viewModel.formatTimeFromUnix(hourly.hour, timeZoneOffset: 0))
+                                .font(.dottedFont(size: 18))
+
+                            HourlyForecastView(forecast: hourly)
                         }
-                        .padding()
                     }
                 }
-                .background {
-                    Color.primaryBackground
-                        .ignoresSafeArea()
-                }
-                .foregroundStyle(.primaryForeground)
+                .padding()
             }
         }
     }
@@ -107,11 +127,9 @@ struct CityScreenView: View {
     CityScreenView(
         viewModel: CityScreenViewModel(
             router: Router(navigationController: UINavigationController(), viewModelFactory: Dependencies()),
-            useCase: GetWeatherUseCase(
-                weatherRepo: WeatherRepository(
+            getWeatherUseCase: GetWeatherUseCase(
+                weatherRepository: WeatherRepository(
                     weatherService: WeatherService(client: NetworkClient()),
                     locationService: LocationService(client: NetworkClient()), realmService: RealmService())),
-            city: "Zagreb"
-        )
-    )
+            city: "Zagreb"))
 }
