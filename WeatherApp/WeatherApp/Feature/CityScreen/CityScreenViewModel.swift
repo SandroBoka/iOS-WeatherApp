@@ -9,18 +9,16 @@ class CityScreenViewModel: ObservableObject {
     @Published var city: String
     @Published var weather: WeatherModel?
 
-    init(router: RouterProtocol, useCase: GetWeatherUseCaseProtocol, city: String) {
+    init(router: RouterProtocol, getWeatherUseCase: GetWeatherUseCaseProtocol, city: String) {
         self.router = router
-        self.getWeatherUseCase = useCase
+        self.getWeatherUseCase = getWeatherUseCase
         self.city = city
 
         fetchWeather()
     }
 
     func fetchWeather() {
-        getWeatherUseCase.getWeather(cityName: city) {[weak self] result in
-            guard let self else { return }
-
+        getWeatherUseCase.getWeather(cityName: city) { result in
             switch result {
             case .success(let weatherModel):
                 DispatchQueue.main.async { [weak self] in
@@ -88,19 +86,19 @@ enum WeatherImage: String {
     var image: Image {
         switch self {
         case .sunny:
-            return Image(.sunny)
+            Image(.sunny)
         case .rain:
-            return Image(.rain)
+            Image(.rain)
         case .cloudy:
-            return Image(.cloudy)
+            Image(.cloudy)
         case .clearNight:
-            return Image(.clearNight)
+            Image(.clearNight)
         case .atmosphere:
-            return Image(.atmosphere)
+            Image(.atmosphere)
         case .snow:
-            return Image(.snow)
+            Image(.snow)
         case .thunderstorm:
-            return Image(.thunderstorm)
+            Image(.thunderstorm)
         }
     }
 

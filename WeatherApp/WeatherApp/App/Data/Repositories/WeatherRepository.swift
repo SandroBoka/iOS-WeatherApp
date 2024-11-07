@@ -90,16 +90,16 @@ class WeatherRepository: WeatherRepositoryProtocol {
         }
 
         return WeatherModel(
-            temperature: response.main.temp,
+            temperature: response.main.temperature,
             feelsLike: response.main.feelsLike,
             description: weatherDescription,
             humidity: response.main.humidity,
             speed: response.wind.speed,
-            degrees: response.wind.deg,
+            degrees: response.wind.degrees,
             sunrise: response.system.sunrise,
             sunset: response.system.sunset,
-            minTemperature: response.main.tempMin,
-            maxTemperature: response.main.tempMax,
+            minTemperature: response.main.minimalTemperature,
+            maxTemperature: response.main.maximalTemperature,
             statusId: response.weather[0].id,
             hourlyForecast: hourlyForecasts)
     }
