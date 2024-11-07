@@ -77,7 +77,6 @@ struct SunsetWidget: View {
     }
 
 }
-
 extension SunsetWidget {
 
     struct Model {
