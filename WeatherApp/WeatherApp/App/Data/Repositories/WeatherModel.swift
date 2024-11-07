@@ -7,8 +7,21 @@ struct WeatherModel {
     let description: String
     let humidity: Int
     let speed: Double
-    let degree: Int
+    let degrees: Int
     let sunrise: Int
     let sunset: Int
+    let minTemperature: Double
+    let maxTemperature: Double
+    let hourlyForecast: [HourlyForecast]
+
+}
+
+struct HourlyForecast {
+
+    let id = UUID()
+    let temperature: Double
+    let uvIndex: Double
+    let percipation: Double
+    let hour: Int
 
 }

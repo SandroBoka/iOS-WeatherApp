@@ -31,7 +31,7 @@ class CityListViewModel: ObservableObject {
             switch result {
             case .success(let weatherModel):
                 if let index = self.cities.firstIndex(where: { $0.id == city.id }) {
-                    DispatchQueue.main.sync { [weak self] in
+                    DispatchQueue.main.async { [weak self] in
                         self?.cities[index].temperature = weatherModel.temperature
                     }
                 }

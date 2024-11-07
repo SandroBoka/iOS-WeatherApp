@@ -4,6 +4,30 @@
     "" : {
 
     },
+    "----->" : {
+
+    },
+    "--->" : {
+
+    },
+    "%.1f°C" : {
+
+    },
+    "%@ %%" : {
+
+    },
+    "%@ °C" : {
+
+    },
+    "%@ km/h" : {
+
+    },
+    "%lld" : {
+
+    },
+    "<" : {
+
+    },
     "add_city" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -37,6 +61,17 @@
         }
       }
     },
+    "degree" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "°C"
+          }
+        }
+      }
+    },
     "enter_city_name" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -59,6 +94,20 @@
         }
       }
     },
+    "HOURLY FORECAST" : {
+
+    },
+    "hourly_forecast" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HOURLY FORECAST"
+          }
+        }
+      }
+    },
     "humidity" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -69,6 +118,23 @@
           }
         }
       }
+    },
+    "N" : {
+
+    },
+    "rain" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rain : "
+          }
+        }
+      }
+    },
+    "Rain : %lld%%" : {
+
     },
     "sunrise" : {
       "extractionState" : "manual",
@@ -88,6 +154,20 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sunset"
+          }
+        }
+      }
+    },
+    "UV :" : {
+
+    },
+    "uvIndex" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UV : "
           }
         }
       }

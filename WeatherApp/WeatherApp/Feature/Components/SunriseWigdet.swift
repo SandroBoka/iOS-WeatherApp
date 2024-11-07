@@ -25,6 +25,10 @@ struct SunriseWidget: View {
                 .padding(.bottom)
         }
         .frame(minHeight: 150)
+        .background {
+            Color.widgetGray
+                .cornerRadius(15)
+        }
     }
 
     private var animatedSunriseImage: some View {

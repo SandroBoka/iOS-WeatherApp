@@ -1,8 +1,10 @@
 import Foundation
+import Combine
 
 protocol WeatherServiceProtocol {
 
     func fetchWeather(for cityName: String, completion: @escaping (Result<CurrentWeatherResponse, ClientError>) -> Void)
+    func fetchExtraWeather(latitude: Double, longitude: Double) -> AnyPublisher<ExtraWeatherResponse, ClientError>
 
 }
 
@@ -10,8 +12,6 @@ class WeatherService: WeatherServiceProtocol {
 
     private let client: BaseApiClientProtocol
     private let endpointFactory: WeatherEndpointFactory
-
-    private let baseURL = "https://api.openweathermap.org/data/2.5/weather"
 
     init(client: BaseApiClientProtocol) {
         self.client = client
@@ -28,6 +28,17 @@ class WeatherService: WeatherServiceProtocol {
         client.get(endpoint: endpointFactory.makeCurrentWeather(cityName: cityName)) { result in
             completion(result)
         }
+    }
+
+    func fetchExtraWeather(latitude: Double, longitude: Double) -> AnyPublisher<ExtraWeatherResponse, ClientError> {
+        let endpoint = endpointFactory.makeExtraWeather(latitude: latitude, longitude: longitude)
+
+        return Future { [weak self] promise in
+            self?.client.get(endpoint: endpoint) { result in
+                promise(result)
+            }
+        }
+        .eraseToAnyPublisher()
     }
 
 }
@@ -49,6 +60,17 @@ private extension WeatherService {
                 URLQueryItem(name: "units", value: "metric")]
 
             return WeatherEndpoint(path: "/data/2.5/weather", queryItems: queryItems)
+        }
+
+        func makeExtraWeather(latitude: Double, longitude: Double) -> WeatherEndpoint {
+            let queryItems = [
+                URLQueryItem(name: "lat", value: String(latitude)),
+                URLQueryItem(name: "lon", value: String(longitude)),
+                URLQueryItem(name: "exclude", value: "minutely"),
+                URLQueryItem(name: "appid", value: apiKey),
+                URLQueryItem(name: "units", value: "metric")]
+
+            return WeatherEndpoint(path: "/data/3.0/onecall", queryItems: queryItems)
         }
 
     }

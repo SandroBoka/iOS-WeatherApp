@@ -23,34 +23,40 @@ struct CityScreenView: View {
                     temperatureInfo
 
                     Divider()
-                        .overlay(.white)
-                        .padding(.top)
-                        .padding(.horizontal)
+                        .overlay(.primaryForeground)
+                        .padding()
 
                     widgets
                         .padding()
+
+                    Divider()
+                        .overlay(.primaryForeground)
+                        .padding()
+
+                    hourly
                 }
             }
         }
-        .foregroundStyle(Color.white)
         .background {
-            Color.black
+            Color.primaryBackground
                 .ignoresSafeArea()
         }
+        .foregroundStyle(.primaryForeground)
     }
 
     private var mainInfo: some View {
         VStack(spacing: 10) {
             Text(viewModel.city)
-                .font(Font.custom("NDOT45inspiredbyNOTHING", size: 25))
+                .font(.dottedFont(size: 25))
 
             Image(.sunny)
                 .resizable()
+                .renderingMode(.template)
                 .scaledToFit()
                 .frame(maxWidth: 170, maxHeight: 170)
 
             Text(viewModel.weather!.description.uppercased())
-                .font(Font.custom("Noto Sans Mono", size: 12))
+                .font(.notoSansFont(size: 12))
         }
     }
 
@@ -74,24 +80,44 @@ struct CityScreenView: View {
             SunriseWidget(
                 model: SunriseWidget.Model(
                     title: String(localized: "sunrise"),
-                    value: "\(viewModel.formatTimeFromUnix(viewModel.weather!.sunrise, timeZoneOffset: 0))"
-                )
-            )
+                    value: "\(viewModel.formatTimeFromUnix(viewModel.weather!.sunrise, timeZoneOffset: 0))"))
 
             WindWidget(
                 model: WindWidget.Model(
                     title: String(localized: "wind"),
                     value: "\(viewModel.weather!.speed)",
-                    degree: Double(viewModel.weather!.degree)))
+                    degree: Double(viewModel.weather!.degrees)))
 
             HumidityWidget(
                 model: HumidityWidget.Model(
                     title: String(localized: "humidity"),
                     value: "\(viewModel.weather!.humidity)"))
 
-            SunsetWidget(model: SunsetWidget.Model(
-                title: String(localized: "sunset"),
-                value: "\(viewModel.formatTimeFromUnix(viewModel.weather!.sunset, timeZoneOffset: 0))"))
+            SunsetWidget(
+                model: SunsetWidget.Model(
+                    title: String(localized: "sunset"),
+                    value: "\(viewModel.formatTimeFromUnix(viewModel.weather!.sunset, timeZoneOffset: 0))"))
+        }
+    }
+
+    private var hourly: some View {
+        VStack {
+            Text(.hourlyForecast)
+                .font(.notoSansFont(size: 14))
+
+            ScrollView(.horizontal) {
+                HStack(spacing: 16) {
+                    ForEach(viewModel.weather!.hourlyForecast, id: \.id) { hourly in
+                        VStack {
+                            Text(viewModel.formatTimeFromUnix(hourly.hour, timeZoneOffset: 0))
+                                .font(.dottedFont(size: 18))
+
+                            HourlyForecastView(forecast: hourly)
+                        }
+                    }
+                }
+                .padding()
+            }
         }
     }
 
@@ -102,6 +128,8 @@ struct CityScreenView: View {
         viewModel: CityScreenViewModel(
             router: Router(navigationController: UINavigationController(), viewModelFactory: Dependencies()),
             getWeatherUseCase: GetWeatherUseCase(
-                weatherRepository: WeatherRepository(weatherService: WeatherService(client: NetworkClient()))),
-            city: "Atlantic City"))
+                weatherRepository: WeatherRepository(
+                    weatherService: WeatherService(client: NetworkClient()),
+                    locationService: LocationService(client: NetworkClient()))),
+            city: "Zagreb"))
 }

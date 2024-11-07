@@ -23,18 +23,16 @@ struct CityListView: View {
                 .padding(.horizontal)
 
             cityList
-                .background(Color.black)
                 .scrollContentBackground(.hidden)
         }
-        .foregroundStyle(Color.white)
-        .background(Color.black)
+        .foregroundStyle(.primaryForeground)
+        .background(.primaryBackground)
     }
 
     private var topInfo: some View {
         HStack {
             Text("Locations")
-                .foregroundColor(.white)
-                .font(Font.custom("NDOT45inspiredbyNOTHING", size: 18))
+                .font(.dottedFont(size: 18))
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             EditButton()
@@ -46,13 +44,11 @@ struct CityListView: View {
             TextField(
                 "",
                 text: $newCityName,
-                prompt: Text("Enter city name").foregroundColor(.white.opacity(0.5))
-            )
+                prompt: Text(.enterCityName).foregroundColor(.primaryForeground.opacity(0.5)))
             .padding(8)
-            .foregroundStyle(Color.white)
             .background(RoundedRectangle(cornerRadius: 10).fill(Color.gray.opacity(0.1)))
 
-            Button("Add City") {
+            Button(.addCity) {
                 guard !newCityName.isEmpty else { return }
                 viewModel.addCity(cityName: newCityName)
                 newCityName = ""
@@ -68,13 +64,13 @@ struct CityListView: View {
                 } label: {
                     HStack {
                         Text(city.name.uppercased())
-                            .font(Font.custom("Noto Sans Mono", size: 15))
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .font(.notoSansFont(size: 15))
+
+                        Spacer()
 
                         if let temperature = city.temperature {
                             Text("\(temperature, specifier: "%.1f")°C")
-                                .foregroundColor(.white)
-                                .font(Font.custom("NDOT45inspiredbyNOTHING", size: 20))
+                                .font(.dottedFont(size: 20))
                         } else {
                             ProgressView()
                         }
@@ -103,7 +99,9 @@ struct CityListView: View {
         viewModel: CityListViewModel(
             router: Router(navigationController: UINavigationController(), viewModelFactory: Dependencies()),
             getWeatherUseCase: GetWeatherUseCase(
-                weatherRepository: WeatherRepository(weatherService: WeatherService(client: NetworkClient()))),
+                weatherRepository: WeatherRepository(
+                    weatherService: WeatherService(client: NetworkClient()),
+                    locationService: LocationService(client: NetworkClient()))),
             getCitiesUseCase: GetCitiesUseCase(dataRepository: DataRepository(dataService: DataService())),
             storeCitiesUseCase: StoreCitiesUseCase(dataRepository: DataRepository(dataService: DataService()))))
 }

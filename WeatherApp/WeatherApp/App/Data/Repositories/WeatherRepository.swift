@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 protocol WeatherRepositoryProtocol {
 
@@ -9,19 +10,27 @@ protocol WeatherRepositoryProtocol {
 class WeatherRepository: WeatherRepositoryProtocol {
 
     private let weatherService: WeatherServiceProtocol
+    private let locationService: LocationServiceProtocol
 
-    init(weatherService: WeatherServiceProtocol) {
+    var extraWeatherResponse: ExtraWeatherResponse?
+    var cancellable: AnyCancellable?
+
+    init(weatherService: WeatherServiceProtocol, locationService: LocationServiceProtocol) {
         self.weatherService = weatherService
+        self.locationService = locationService
     }
 
     func fetchWeather(
         for cityName: String,
         completion: @escaping (Result<WeatherModel, ClientError>) -> Void
     ) {
-        weatherService.fetchWeather(for: cityName) { result in
+        fetchCityLocation(cityName: cityName)
+        weatherService.fetchWeather(for: cityName) { [weak self] result in
+            guard let self else { return }
+
             switch result {
             case .success(let currentWeatherResponse):
-                let weatherModel = WeatherModel(response: currentWeatherResponse)
+                let weatherModel = self.mapToWeatherModel(response: currentWeatherResponse)
                 completion(.success(weatherModel))
             case .failure(let error):
                 completion(.failure(error))
@@ -29,22 +38,65 @@ class WeatherRepository: WeatherRepositoryProtocol {
         }
     }
 
-}
+    func fetchExtraWeather(latitude: Double, longitude: Double) {
+        cancellable = weatherService.fetchExtraWeather(latitude: latitude, longitude: longitude)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    return
+                case .failure(let error):
+                    print("Error getting extra weather info: \(error)")
+                }
+            }, receiveValue: { [weak self] extraWeatherResponse in
+                self?.extraWeatherResponse = extraWeatherResponse
+            })
+    }
 
-private extension WeatherModel {
-
-    init(response: CurrentWeatherResponse) {
+    private func mapToWeatherModel(response: CurrentWeatherResponse) -> WeatherModel {
         let weatherDescription = response.weather.first?.description ?? "Not Avaliable"
 
-        self.init(
+        var hourlyForecasts: [HourlyForecast] = []
+
+        if let extraWeatherResponse = self.extraWeatherResponse {
+            hourlyForecasts = extraWeatherResponse.hourly.prefix(24).map { hourlyWeather in
+                HourlyForecast(
+                    temperature: hourlyWeather.temperature,
+                    uvIndex: hourlyWeather.uvIndex,
+                    percipation: hourlyWeather.percipation,
+                    hour: hourlyWeather.dateTime
+                )
+            }
+        }
+
+        return WeatherModel(
             temperature: response.main.temperature,
             feelsLike: response.main.feelsLike,
             description: weatherDescription,
             humidity: response.main.humidity,
             speed: response.wind.speed,
-            degree: response.wind.degree,
+            degrees: response.wind.degrees,
             sunrise: response.system.sunrise,
-            sunset: response.system.sunset)
+            sunset: response.system.sunset,
+            minTemperature: response.main.minimalTemperature,
+            maxTemperature: response.main.maximalTemperature,
+            hourlyForecast: hourlyForecasts
+        )
+    }
+
+    private func fetchCityLocation(cityName: String) {
+        cancellable = locationService.fetchLocation(for: cityName)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    return
+                case .failure(let error):
+                    print("Error fetching location: \(error)")
+                }
+            }, receiveValue: { [weak self] locationResponse in
+                let latitude = locationResponse[0].latitude
+                let longitude = locationResponse[0].longitude
+                self?.fetchExtraWeather(latitude: latitude, longitude: longitude)
+            })
     }
 
 }

@@ -9,7 +9,7 @@ struct WindWidget: View {
     var body: some View {
         VStack {
             Text(model.title.uppercased())
-                .font(Font.custom("Noto Sans Mono", size: 14))
+                .font(.notoSansFont(size: 14))
                 .foregroundColor(.white)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
@@ -17,7 +17,7 @@ struct WindWidget: View {
             animatedWindImage
 
             Text("\(model.value) km/h")
-                .font(Font.custom("NDOT45inspiredbyNOTHING", size: 16))
+                .font(.dottedFont(size: 16))
                 .foregroundColor(.white)
                 .frame(maxHeight: .infinity)
                 .padding(.bottom)
@@ -25,7 +25,7 @@ struct WindWidget: View {
         .frame(minHeight: 120)
         .background {
             Color
-                .darkGray
+                .widgetGray
                 .cornerRadius(15)
         }
     }
@@ -33,26 +33,24 @@ struct WindWidget: View {
     private var animatedWindImage: some View {
         ZStack {
             Circle()
-                .stroke(Color.white, lineWidth: 2)
+                .stroke(.primaryForeground, lineWidth: 2)
                 .frame(width: 100, height: 100)
 
             Text("N")
-                .font(Font.custom("Noto Sans Mono", size: 14))
-                .foregroundColor(.white)
+                .font(.notoSansFont(size: 14))
                 .offset(y: -42)
 
             Circle()
-                .foregroundStyle(Color.white).opacity(0.7)
+                .foregroundStyle(.primaryForeground).opacity(0.7)
                 .frame(width: 70, height: 70)
 
             Text("----->")
-                .font(Font.custom("NDOT45inspiredbyNOTHING", size: 16))
-                .rotationEffect(Angle(degrees: model.degree + (animateRotation ? 2 : -2)))
-                .foregroundStyle(Color.black)
+                .font(.dottedFont(size: 16))
+                .rotationEffect(Angle(degrees: Double(model.degree) + (animateRotation ? 2 : -2)))
+                .foregroundStyle(.primaryBackground)
                 .onAppear {
                     withAnimation(
-                        Animation
-                            .easeInOut(duration: 0.4)
+                        Animation.easeInOut(duration: 0.4)
                             .repeatForever(autoreverses: true)
                     ) {
                         animateRotation.toggle()
