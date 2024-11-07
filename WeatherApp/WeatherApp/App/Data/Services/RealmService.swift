@@ -8,6 +8,7 @@ protocol RealmServiceProtocol {
     func saveCities(cities: [CityListObject]) throws
     func loadCities() throws -> [CityListObject]
     func loadCitiesFromJson() -> Bool
+    func getCitiesByPrefix(prefix: String) -> [CityObject]
 
 }
 
@@ -106,7 +107,17 @@ class RealmService: RealmServiceProtocol {
             print("Error reading cities from json file: \(error)")
             return false
         }
+    }
 
+    func getCitiesByPrefix(prefix: String) -> [CityObject] {
+        do {
+            let realm = try Realm()
+            let predicate = NSPredicate(format: "cityName BEGINSWITH[c] %@", prefix)
+            let cities = realm.objects(CityObject.self).filter(predicate).sorted(byKeyPath: "cityName").prefix(5)
+            return Array(cities)
+        } catch {
+            return []
+        }
     }
 
 }

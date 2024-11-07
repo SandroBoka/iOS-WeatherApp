@@ -3,6 +3,7 @@ import SwiftUI
 class CityListViewModel: ObservableObject {
 
     @Published private(set) var cities: [City] = []
+    @Published var suggestedCities: [CityObject] = []
 
     private let router: RouterProtocol
     private let getWeatherUseCase: GetWeatherUseCaseProtocol
@@ -61,6 +62,10 @@ class CityListViewModel: ObservableObject {
     func removeCity(at offsets: IndexSet) {
         cities.remove(atOffsets: offsets)
         storeCitiesUseCase.storeCities(cities: cities)
+    }
+
+    func searchCities(withPrefix prefix: String) {
+        suggestedCities = RealmService().getCitiesByPrefix(prefix: prefix)
     }
 
 }

@@ -45,6 +45,9 @@
     "<" : {
 
     },
+    "Add City" : {
+
+    },
     "add_city" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -88,6 +91,9 @@
           }
         }
       }
+    },
+    "Enter city name" : {
+
     },
     "enter_city_name" : {
       "extractionState" : "manual",

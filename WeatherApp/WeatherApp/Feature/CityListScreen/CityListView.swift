@@ -22,6 +22,12 @@ struct CityListView: View {
             searchBar
                 .padding(.horizontal)
 
+            if !viewModel.suggestedCities.isEmpty {
+                suggestedCityList
+                    .padding(.horizontal, 15)
+                    .padding(.top, 5)
+            }
+
             cityList
                 .scrollContentBackground(.hidden)
         }
@@ -44,16 +50,39 @@ struct CityListView: View {
             TextField(
                 "",
                 text: $newCityName,
-                prompt: Text(.enterCityName).foregroundColor(.primaryForeground.opacity(0.5)))
+                prompt: Text("Enter city name").foregroundColor(.primaryForeground.opacity(0.5))
+            )
+            .onChange(of: newCityName) { _, newValue in
+                viewModel.searchCities(withPrefix: newValue)
+            }
             .padding(8)
             .background(RoundedRectangle(cornerRadius: 10).fill(Color.gray.opacity(0.1)))
 
-            Button(.addCity) {
+            Button("Add City") {
                 guard !newCityName.isEmpty else { return }
                 viewModel.addCity(cityName: newCityName)
                 newCityName = ""
             }
         }
+    }
+
+    private var suggestedCityList: some View {
+        VStack(alignment: .leading) {
+            ForEach(viewModel.suggestedCities, id: \.id) { city in
+                Button(action: {
+                    newCityName = city.cityName
+                    viewModel.suggestedCities = []
+                }, label: {
+                    Text(city.cityName)
+                        .font(.notoSansFont(size: 15))
+                        .padding(12)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                })
+                .buttonStyle(.bordered)
+                .tint(Color.gray.opacity(0.5))
+            }
+        }
+        .cornerRadius(10)
     }
 
     private var cityList: some View {
