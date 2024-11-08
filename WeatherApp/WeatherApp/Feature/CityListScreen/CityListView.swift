@@ -131,9 +131,9 @@ struct CityListView: View {
                 weatherRepository: WeatherRepository(
                     weatherService: WeatherService(client: NetworkClient()),
                     locationService: LocationService(client: NetworkClient()), realmService: RealmService())),
-            getCitiesUseCase: GetCitiesUseCase(dataRepository: LocationRepository(realmService: RealmService())),
-            storeCitiesUseCase: StoreCitiesUseCase(dataRepository: LocationRepository(realmService: RealmService())),
-            getSuggestionsUseCase: GetSuggestionsUseCase(dataRepository: LocationRepository(realmService: RealmService()))
-        )
-    )
+            getCitiesUseCase: GetCitiesUseCase(locationRepository: LocationRepository(realmService: RealmService())),
+            storeCitiesUseCase: StoreCitiesUseCase(
+                locationRepository: LocationRepository(realmService: RealmService())),
+            getSuggestionsUseCase: GetSuggestionsUseCase(
+                locationRepository: LocationRepository(realmService: RealmService()))))
 }

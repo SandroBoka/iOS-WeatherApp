@@ -3,19 +3,24 @@ import Foundation
 protocol StoreCitiesUseCaseProtocol {
 
     func storeCities(cities: [City])
+    func storeCity(city: City)
 
 }
 
 class StoreCitiesUseCase: StoreCitiesUseCaseProtocol {
 
-    private let dataRepository: LocationRepositoryProtocol
+    private let locationRepository: LocationRepositoryProtocol
 
-    init(dataRepository: LocationRepositoryProtocol) {
-        self.dataRepository = dataRepository
+    init(locationRepository: LocationRepositoryProtocol) {
+        self.locationRepository = locationRepository
     }
 
     func storeCities(cities: [City]) {
-        dataRepository.storeCities(cities: cities)
+        locationRepository.storeCities(cities: cities)
+    }
+
+    func storeCity(city: City) {
+
     }
 
 }

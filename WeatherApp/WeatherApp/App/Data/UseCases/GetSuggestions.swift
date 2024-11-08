@@ -8,14 +8,14 @@ protocol GetSuggestionsUseCaseProtocol {
 
 class GetSuggestionsUseCase: GetSuggestionsUseCaseProtocol {
 
-    private let dataRepository: LocationRepositoryProtocol
+    private let locationRepository: LocationRepositoryProtocol
 
-    init(dataRepository: LocationRepositoryProtocol) {
-        self.dataRepository = dataRepository
+    init(locationRepository: LocationRepositoryProtocol) {
+        self.locationRepository = locationRepository
     }
 
     func getSuggestedCities(prefix: String) -> [SuggestedCity] {
-        dataRepository.getSuggestions(prefix: prefix)
+        locationRepository.getSuggestions(prefix: prefix)
     }
 
 }
