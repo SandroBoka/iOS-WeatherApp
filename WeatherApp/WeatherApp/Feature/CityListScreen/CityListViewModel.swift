@@ -8,7 +8,6 @@ class CityListViewModel: ObservableObject {
     private let router: RouterProtocol
     private let getWeatherUseCase: GetWeatherUseCaseProtocol
     private let getCitiesUseCase: GetCitiesUseCaseProtocol
-    private let storeCityUseCase: StoreCityUseCaseProtocol
     private let removeCityUseCase: RemoveCityUseCaseProtocol
     private let getSuggestionsUseCase: GetSuggestionsUseCaseProtocol
 
@@ -16,19 +15,16 @@ class CityListViewModel: ObservableObject {
         router: RouterProtocol,
         getWeatherUseCase: GetWeatherUseCaseProtocol,
         getCitiesUseCase: GetCitiesUseCaseProtocol,
-        storeCityUseCase: StoreCityUseCaseProtocol,
         removeCityUseCase: RemoveCityUseCaseProtocol,
         getSuggestionsUseCase: GetSuggestionsUseCaseProtocol
     ) {
         self.router = router
         self.getWeatherUseCase = getWeatherUseCase
         self.getCitiesUseCase = getCitiesUseCase
-        self.storeCityUseCase = storeCityUseCase
         self.removeCityUseCase = removeCityUseCase
         self.getSuggestionsUseCase = getSuggestionsUseCase
 
         cities = getCitiesUseCase.getCities()
-        fetchWeatherForAllCities()
     }
 
     func fetchTemperature(for city: City) {
@@ -48,12 +44,6 @@ class CityListViewModel: ObservableObject {
         }
     }
 
-    func fetchWeatherForAllCities() {
-        for city in cities {
-            fetchTemperature(for: city)
-        }
-    }
-
     func showDetailsForCity(city: City) {
         router.showCityWeather(city: city)
     }
@@ -62,13 +52,12 @@ class CityListViewModel: ObservableObject {
         let newCity = City(name: cityName)
         cities.append(newCity)
         fetchTemperature(for: newCity)
-        storeCityUseCase.storeCity(city: newCity)
     }
 
     func removeCity(at offsets: IndexSet) {
         offsets.forEach { index in
             let cityToRemove = cities[index]
-            removeCityUseCase.removeCity(city: cityToRemove)
+            removeCityUseCase.removeCityWeather(city: cityToRemove)
         }
         cities.remove(atOffsets: offsets)
     }

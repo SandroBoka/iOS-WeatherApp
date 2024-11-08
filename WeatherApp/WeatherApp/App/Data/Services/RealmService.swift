@@ -6,9 +6,7 @@ protocol RealmServiceProtocol {
     func saveWeatherToRealm(weather: WeatherModel, cityName: String) throws
     func loadWeatherFromRealm(cityName: String) throws -> WeatherModel
     func removeWeatherFromRealm(cityName: String) throws
-    func saveCity(city: CityListObject) throws
-    func loadCities() throws -> [CityListObject]
-    func removeCity(id: UUID) throws
+    func loadLocationWeathers() throws -> [WeatherModelObject]
     func loadCitiesFromJson() -> Bool
     func getCitiesByPrefix(prefix: String) -> [CityObject]
 
@@ -84,29 +82,9 @@ class RealmService: RealmServiceProtocol {
         }
     }
 
-    func saveCity(city: CityListObject) throws {
+    func loadLocationWeathers() throws -> [WeatherModelObject] {
         let realm = try Realm()
-
-        try realm.write {
-            realm.add(city, update: .modified)
-        }
-    }
-
-    func loadCities() throws -> [CityListObject] {
-        let realm = try Realm()
-        return Array(realm.objects(CityListObject.self))
-    }
-
-    func removeCity(id: UUID) throws {
-        let realm = try Realm()
-
-        if let cityToDelete = realm.object(ofType: CityListObject.self, forPrimaryKey: id) {
-            try realm.write {
-                realm.delete(cityToDelete)
-            }
-        } else {
-            throw CityScreenError.realmInitializationFailed
-        }
+        return Array(realm.objects(WeatherModelObject.self))
     }
 
     func loadCitiesFromJson() -> Bool {

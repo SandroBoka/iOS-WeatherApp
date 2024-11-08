@@ -50,7 +50,7 @@ class Dependencies: SceneDelegateDependenciesProtocol {
     }()
 
     private lazy var locationRepository: LocationRepositoryProtocol = {
-        LocationRepository(realmService: realmService)
+        LocationRepository(realmService: realmService, weatherRepository: weatherRepository)
     }()
 
     lazy var getWeatherUseCase: GetWeatherUseCaseProtocol = {
@@ -59,10 +59,6 @@ class Dependencies: SceneDelegateDependenciesProtocol {
 
     lazy var getCitiesUseCase: GetCitiesUseCaseProtocol = {
         GetCitiesUseCase(locationRepository: locationRepository)
-    }()
-
-    lazy var storeCityUseCase: StoreCityUseCaseProtocol = {
-        StoreCityUseCase(locationRepository: locationRepository)
     }()
 
     lazy var removeCityUseCase: RemoveCityUseCaseProtocol = {
@@ -82,7 +78,6 @@ extension Dependencies: ViewModelFactoryProtocol {
             router: router,
             getWeatherUseCase: getWeatherUseCase,
             getCitiesUseCase: getCitiesUseCase,
-            storeCityUseCase: storeCityUseCase,
             removeCityUseCase: removeCityUseCase,
             getSuggestionsUseCase: getSuggestionsUseCase)
     }

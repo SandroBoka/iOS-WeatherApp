@@ -2,7 +2,7 @@ import Foundation
 
 protocol RemoveCityUseCaseProtocol {
 
-    func removeCity(city: City)
+    func removeCityWeather(city: City)
 }
 
 class RemoveCityUseCase: RemoveCityUseCaseProtocol {
@@ -13,8 +13,8 @@ class RemoveCityUseCase: RemoveCityUseCaseProtocol {
         self.locationRepository = locationRepository
     }
 
-    func removeCity(city: City) {
-        locationRepository.removeCity(city: city)
+    func removeCityWeather(city: City) {
+        locationRepository.removeCityWeather(city: city)
     }
 
 }

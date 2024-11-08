@@ -15,7 +15,7 @@ class GetCitiesUseCase: GetCitiesUseCaseProtocol {
     }
 
     func getCities() -> [City] {
-        locationRepository.getCities()
+        locationRepository.getLocationsWeather()
     }
 
 }

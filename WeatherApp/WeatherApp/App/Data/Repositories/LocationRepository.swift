@@ -2,9 +2,8 @@ import Foundation
 
 protocol LocationRepositoryProtocol {
 
-    func storeCity(city: City)
-    func getCities() -> [City]
-    func removeCity(city: City)
+    func getLocationsWeather() -> [City]
+    func removeCityWeather(city: City)
     func getSuggestions(prefix: String) -> [SuggestedCity]
 
 }
@@ -20,44 +19,50 @@ class LocationRepository: LocationRepositoryProtocol {
         City(name: "Los Angeles")]
 
     let realmService: RealmServiceProtocol
+    let weatherRepository: WeatherRepositoryProtocol
 
-    init(realmService: RealmServiceProtocol) {
+    init(realmService: RealmServiceProtocol, weatherRepository: WeatherRepositoryProtocol) {
         self.realmService = realmService
+        self.weatherRepository = weatherRepository
     }
 
-    func storeCity(city: City) {
-        do {
-            try realmService.saveCity(
-                city: CityListObject(
-                    id: city.id,
-                    name: city.name,
-                    temperature: city.temperature ?? 0))
-        } catch {
-            print("Failed to save city data to Realm: \(error)")
-        }
-    }
-
-    func getCities() -> [City] {
+    func getLocationsWeather() -> [City] {
         var cities: [City] = []
         do {
-            cities = try mapToCityModel(cityObjects: realmService.loadCities())
+            cities = try realmService.loadLocationWeathers().map {
+                City(
+                    name: $0.cityName,
+                    temperature: $0.temperature)
+            }
         } catch {
             print("Failed to load cities from to Realm: \(error)")
         }
 
         if cities.isEmpty {
             cities = defaultCities
-            cities.forEach { city in
-                storeCity(city: city)
+        }
+
+        for var city in cities {
+            weatherRepository.fetchWeather(for: city.name) { [weak self] result in
+                switch result {
+                case .success(let weather):
+                    do {
+                        try self?.realmService.saveWeatherToRealm(weather: weather, cityName: city.name)
+                        city.temperature = weather.temperature
+                    } catch {
+                        print("Failed to save weather to Realm: \(error)")
+                    }
+                case .failure(let error):
+                    print("Failed to fetch weather for \(city.name): \(error)")
+                }
             }
         }
 
         return cities
     }
 
-    func removeCity(city: City) {
+    func removeCityWeather(city: City) {
         do {
-            try realmService.removeCity(id: city.id)
             try realmService.removeWeatherFromRealm(cityName: city.name)
         } catch {
             print("Error deleting city: \(error)")
@@ -66,22 +71,6 @@ class LocationRepository: LocationRepositoryProtocol {
 
     func getSuggestions(prefix: String) -> [SuggestedCity] {
         realmService.getCitiesByPrefix(prefix: prefix).map { SuggestedCity(id: $0.id, cityName: $0.cityName) }
-    }
-
-}
-
-extension LocationRepository {
-
-    private func mapToCityModel(cityObjects: [CityListObject]) -> [City] {
-        cityObjects.map { cityObject in
-            City(name: cityObject.name, id: cityObject.id, temperature: cityObject.temperature)
-        }
-    }
-
-    private func mapToCityObject(cityModels: [City]) -> [CityListObject] {
-        cityModels.map { cityModel in
-            CityListObject(id: cityModel.id, name: cityModel.name, temperature: cityModel.temperature ?? 0.0)
-        }
     }
 
 }
