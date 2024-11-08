@@ -8,9 +8,9 @@ protocol GetCitiesUseCaseProtocol {
 
 class GetCitiesUseCase: GetCitiesUseCaseProtocol {
 
-    private let dataRepository: DataRepositoryProtocol
+    private let dataRepository: LocationRepositoryProtocol
 
-    init(dataRepository: DataRepositoryProtocol) {
+    init(dataRepository: LocationRepositoryProtocol) {
         self.dataRepository = dataRepository
     }
 

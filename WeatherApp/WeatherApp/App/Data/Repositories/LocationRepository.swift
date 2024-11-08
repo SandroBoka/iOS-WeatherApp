@@ -1,14 +1,15 @@
 import Foundation
 
-protocol DataRepositoryProtocol {
+protocol LocationRepositoryProtocol {
 
     func storeCities(cities: [City])
+    func storeCity(city: City)
     func getCities() -> [City]
     func getSuggestions(prefix: String) -> [SuggestedCity]
 
 }
 
-class DataRepository: DataRepositoryProtocol {
+class LocationRepository: LocationRepositoryProtocol {
 
     private let defaultCities: [City] = [
         City(name: "Zagreb"),
@@ -30,6 +31,10 @@ class DataRepository: DataRepositoryProtocol {
         } catch {
             print("Failed to save cities data to Realm: \(error)")
         }
+    }
+
+    func storeCity(city: City) {
+
     }
 
     func getCities() -> [City] {

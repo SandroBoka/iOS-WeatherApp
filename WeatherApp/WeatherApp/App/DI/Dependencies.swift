@@ -49,8 +49,8 @@ class Dependencies: SceneDelegateDependenciesProtocol {
             realmService: realmService)
     }()
 
-    private lazy var dataRepository: DataRepositoryProtocol = {
-        DataRepository(realmService: realmService)
+    private lazy var dataRepository: LocationRepositoryProtocol = {
+        LocationRepository(realmService: realmService)
     }()
 
     lazy var getWeatherUseCase: GetWeatherUseCaseProtocol = {
