@@ -53,7 +53,7 @@ struct CityListView: View {
                 prompt: Text("Enter city name").foregroundColor(.primaryForeground.opacity(0.5))
             )
             .onChange(of: newCityName) { _, newValue in
-                viewModel.searchCities(withPrefix: newValue)
+                viewModel.getSuggestions(withPrefix: newValue)
             }
             .padding(8)
             .background(RoundedRectangle(cornerRadius: 10).fill(Color.gray.opacity(0.1)))
@@ -132,5 +132,8 @@ struct CityListView: View {
                     weatherService: WeatherService(client: NetworkClient()),
                     locationService: LocationService(client: NetworkClient()), realmService: RealmService())),
             getCitiesUseCase: GetCitiesUseCase(dataRepository: DataRepository(realmService: RealmService())),
-            storeCitiesUseCase: StoreCitiesUseCase(dataRepository: DataRepository(realmService: RealmService()))))
+            storeCitiesUseCase: StoreCitiesUseCase(dataRepository: DataRepository(realmService: RealmService())),
+            getSuggestionsUseCase: GetSuggestionsUseCase(dataRepository: DataRepository(realmService: RealmService()))
+        )
+    )
 }

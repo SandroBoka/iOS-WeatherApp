@@ -65,6 +65,10 @@ class Dependencies: SceneDelegateDependenciesProtocol {
         StoreCitiesUseCase(dataRepository: dataRepository)
     }()
 
+    lazy var getSuggestionsUseCase: GetSuggestionsUseCase = {
+        GetSuggestionsUseCase(dataRepository: dataRepository)
+    }()
+
 }
 
 extension Dependencies: ViewModelFactoryProtocol {
@@ -74,7 +78,8 @@ extension Dependencies: ViewModelFactoryProtocol {
             router: router,
             getWeatherUseCase: getWeatherUseCase,
             getCitiesUseCase: getCitiesUseCase,
-            storeCitiesUseCase: storeCitiesUseCase)
+            storeCitiesUseCase: storeCitiesUseCase,
+            getSuggestionsUseCase: getSuggestionsUseCase)
     }
 
     func makeCityScreenViewModel(cityName: String) -> CityScreenViewModel {

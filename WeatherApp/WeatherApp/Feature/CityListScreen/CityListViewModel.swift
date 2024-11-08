@@ -9,17 +9,20 @@ class CityListViewModel: ObservableObject {
     private let getWeatherUseCase: GetWeatherUseCaseProtocol
     private let getCitiesUseCase: GetCitiesUseCaseProtocol
     private let storeCitiesUseCase: StoreCitiesUseCaseProtocol
+    private let getSuggestionsUseCase: GetSuggestionsUseCaseProtocol
 
     init(
         router: RouterProtocol,
         getWeatherUseCase: GetWeatherUseCaseProtocol,
         getCitiesUseCase: GetCitiesUseCaseProtocol,
-        storeCitiesUseCase: StoreCitiesUseCaseProtocol
+        storeCitiesUseCase: StoreCitiesUseCaseProtocol,
+        getSuggestionsUseCase: GetSuggestionsUseCaseProtocol
     ) {
         self.router = router
         self.getWeatherUseCase = getWeatherUseCase
         self.getCitiesUseCase = getCitiesUseCase
         self.storeCitiesUseCase = storeCitiesUseCase
+        self.getSuggestionsUseCase = getSuggestionsUseCase
 
         cities = getCitiesUseCase.getCities()
         fetchWeatherForAllCities()
@@ -64,8 +67,8 @@ class CityListViewModel: ObservableObject {
         storeCitiesUseCase.storeCities(cities: cities)
     }
 
-    func searchCities(withPrefix prefix: String) {
-        suggestedCities = RealmService().getCitiesByPrefix(prefix: prefix)
+    func getSuggestions(withPrefix prefix: String) {
+        suggestedCities = getSuggestionsUseCase.getSuggestedCities(prefix: prefix)
     }
 
 }
