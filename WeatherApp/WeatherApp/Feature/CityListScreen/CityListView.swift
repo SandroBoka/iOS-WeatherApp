@@ -133,20 +133,11 @@ struct CityListView: View {
                     locationService: LocationService(client: NetworkClient()), realmService: RealmService())),
             getCitiesUseCase: GetCitiesUseCase(
                 locationRepository: LocationRepository(
-                    realmService: RealmService(),
-                    weatherRepository: WeatherRepository(
+                    realmService: RealmService()), weatherRepository: WeatherRepository(
                         weatherService: WeatherService(client: NetworkClient()),
-                        locationService: LocationService(client: NetworkClient()), realmService: RealmService()))),
+                        locationService: LocationService(client: NetworkClient()), realmService: RealmService())),
             removeCityUseCase: RemoveCityUseCase(
-                locationRepository: LocationRepository(
-                    realmService: RealmService(),
-                    weatherRepository: WeatherRepository(
-                        weatherService: WeatherService(client: NetworkClient()),
-                        locationService: LocationService(client: NetworkClient()), realmService: RealmService()))),
+                locationRepository: LocationRepository(realmService: RealmService())),
             getSuggestionsUseCase: GetSuggestionsUseCase(
-                locationRepository: LocationRepository(
-                    realmService: RealmService(),
-                    weatherRepository: WeatherRepository(
-                        weatherService: WeatherService(client: NetworkClient()),
-                        locationService: LocationService(client: NetworkClient()), realmService: RealmService())))))
+                locationRepository: LocationRepository(realmService: RealmService()))))
 }
