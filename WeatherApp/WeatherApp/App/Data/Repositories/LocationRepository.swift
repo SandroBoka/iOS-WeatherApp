@@ -71,6 +71,10 @@ class LocationRepository: LocationRepositoryProtocol {
         realmService.getCitiesByPrefix(prefix: prefix).map { SuggestedCity(id: $0.id, cityName: $0.cityName) }
     }
 
+}
+
+extension LocationRepository {
+
     private func mapToCityModel(cityObjects: [CityListObject]) -> [City] {
         cityObjects.map { cityObject in
             City(name: cityObject.name, id: cityObject.id, temperature: cityObject.temperature)
