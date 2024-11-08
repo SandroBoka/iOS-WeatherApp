@@ -1,12 +1,11 @@
 import Foundation
 
-protocol StoreCityUseCaseProtocol {
+protocol RemoveCityUseCaseProtocol {
 
-    func storeCity(city: City)
-
+    func removeCity(city: City)
 }
 
-class StoreCityUseCase: StoreCityUseCaseProtocol {
+class RemoveCityUseCase: RemoveCityUseCaseProtocol {
 
     private let locationRepository: LocationRepositoryProtocol
 
@@ -14,8 +13,8 @@ class StoreCityUseCase: StoreCityUseCaseProtocol {
         self.locationRepository = locationRepository
     }
 
-    func storeCity(city: City) {
-        locationRepository.storeCity(city: city)
+    func removeCity(city: City) {
+        locationRepository.removeCity(city: city)
     }
 
 }

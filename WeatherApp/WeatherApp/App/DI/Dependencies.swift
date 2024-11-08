@@ -61,8 +61,12 @@ class Dependencies: SceneDelegateDependenciesProtocol {
         GetCitiesUseCase(locationRepository: locationRepository)
     }()
 
-    lazy var storeCitiesUseCase: StoreCitiesUseCaseProtocol = {
-        StoreCitiesUseCase(locationRepository: locationRepository)
+    lazy var storeCityUseCase: StoreCityUseCaseProtocol = {
+        StoreCityUseCase(locationRepository: locationRepository)
+    }()
+
+    lazy var removeCityUseCase: RemoveCityUseCaseProtocol = {
+        RemoveCityUseCase(locationRepository: locationRepository)
     }()
 
     lazy var getSuggestionsUseCase: GetSuggestionsUseCase = {
@@ -78,7 +82,8 @@ extension Dependencies: ViewModelFactoryProtocol {
             router: router,
             getWeatherUseCase: getWeatherUseCase,
             getCitiesUseCase: getCitiesUseCase,
-            storeCitiesUseCase: storeCitiesUseCase,
+            storeCityUseCase: storeCityUseCase,
+            removeCityUseCase: removeCityUseCase,
             getSuggestionsUseCase: getSuggestionsUseCase)
     }
 

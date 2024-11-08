@@ -5,6 +5,7 @@ protocol LocationRepositoryProtocol {
     func storeCities(cities: [City])
     func storeCity(city: City)
     func getCities() -> [City]
+    func removeCity(city: City)
     func getSuggestions(prefix: String) -> [SuggestedCity]
 
 }
@@ -34,7 +35,15 @@ class LocationRepository: LocationRepositoryProtocol {
     }
 
     func storeCity(city: City) {
-
+        do {
+            try realmService.saveCity(
+                city: CityListObject(
+                    id: city.id,
+                    name: city.name,
+                    temperature: city.temperature ?? 0))
+        } catch {
+            print("Failed to save city data to Realm: \(error)")
+        }
     }
 
     func getCities() -> [City] {
@@ -47,10 +56,24 @@ class LocationRepository: LocationRepositoryProtocol {
 
         if cities.isEmpty {
             cities = defaultCities
-            storeCities(cities: cities)
+            cities.forEach { city in
+                storeCity(city: city)
+            }
         }
 
         return cities
+    }
+
+    func removeCity(city: City) {
+        do {
+            try realmService.removeCity(
+                city: CityListObject(
+                    id: city.id,
+                    name: city.name,
+                    temperature: city.temperature ?? 0))
+        } catch {
+            print("Error deleting city: \(error)")
+        }
     }
 
     func getSuggestions(prefix: String) -> [SuggestedCity] {

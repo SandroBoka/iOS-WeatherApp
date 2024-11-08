@@ -8,20 +8,23 @@ class CityListViewModel: ObservableObject {
     private let router: RouterProtocol
     private let getWeatherUseCase: GetWeatherUseCaseProtocol
     private let getCitiesUseCase: GetCitiesUseCaseProtocol
-    private let storeCitiesUseCase: StoreCitiesUseCaseProtocol
+    private let storeCityUseCase: StoreCityUseCaseProtocol
+    private let removeCityUseCase: RemoveCityUseCaseProtocol
     private let getSuggestionsUseCase: GetSuggestionsUseCaseProtocol
 
     init(
         router: RouterProtocol,
         getWeatherUseCase: GetWeatherUseCaseProtocol,
         getCitiesUseCase: GetCitiesUseCaseProtocol,
-        storeCitiesUseCase: StoreCitiesUseCaseProtocol,
+        storeCityUseCase: StoreCityUseCaseProtocol,
+        removeCityUseCase: RemoveCityUseCaseProtocol,
         getSuggestionsUseCase: GetSuggestionsUseCaseProtocol
     ) {
         self.router = router
         self.getWeatherUseCase = getWeatherUseCase
         self.getCitiesUseCase = getCitiesUseCase
-        self.storeCitiesUseCase = storeCitiesUseCase
+        self.storeCityUseCase = storeCityUseCase
+        self.removeCityUseCase = removeCityUseCase
         self.getSuggestionsUseCase = getSuggestionsUseCase
 
         cities = getCitiesUseCase.getCities()
@@ -58,13 +61,16 @@ class CityListViewModel: ObservableObject {
     func addCity(cityName: String) {
         let newCity = City(name: cityName)
         cities.append(newCity)
-        storeCitiesUseCase.storeCities(cities: cities)
         fetchTemperature(for: newCity)
+        storeCityUseCase.storeCity(city: newCity)
     }
 
     func removeCity(at offsets: IndexSet) {
+        offsets.forEach { index in
+            let cityToRemove = cities[index]
+            removeCityUseCase.removeCity(city: cityToRemove)
+        }
         cities.remove(atOffsets: offsets)
-        storeCitiesUseCase.storeCities(cities: cities)
     }
 
     func getSuggestions(withPrefix prefix: String) {
