@@ -2,7 +2,6 @@ import Foundation
 
 protocol LocationRepositoryProtocol {
 
-    func storeCities(cities: [City])
     func storeCity(city: City)
     func getCities() -> [City]
     func removeCity(city: City)
@@ -24,14 +23,6 @@ class LocationRepository: LocationRepositoryProtocol {
 
     init(realmService: RealmServiceProtocol) {
         self.realmService = realmService
-    }
-
-    func storeCities(cities: [City]) {
-        do {
-            try realmService.saveCities(cities: mapToCityObject(cityModels: cities))
-        } catch {
-            print("Failed to save cities data to Realm: \(error)")
-        }
     }
 
     func storeCity(city: City) {
