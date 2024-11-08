@@ -3,7 +3,7 @@ import SwiftUI
 class CityListViewModel: ObservableObject {
 
     @Published private(set) var cities: [City] = []
-    @Published var suggestedCities: [CityObject] = []
+    @Published var suggestedCities: [SuggestedCity] = []
 
     private let router: RouterProtocol
     private let getWeatherUseCase: GetWeatherUseCaseProtocol

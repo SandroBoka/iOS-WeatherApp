@@ -4,7 +4,7 @@ protocol DataRepositoryProtocol {
 
     func storeCities(cities: [City])
     func getCities() -> [City]
-    func getSuggestions(prefix: String) -> [CityObject]
+    func getSuggestions(prefix: String) -> [SuggestedCity]
 
 }
 
@@ -48,8 +48,8 @@ class DataRepository: DataRepositoryProtocol {
         return cities
     }
 
-    func getSuggestions(prefix: String) -> [CityObject] {
-        realmService.getCitiesByPrefix(prefix: prefix)
+    func getSuggestions(prefix: String) -> [SuggestedCity] {
+        realmService.getCitiesByPrefix(prefix: prefix).map { SuggestedCity(id: $0.id, cityName: $0.cityName) }
     }
 
     private func mapToCityModel(cityObjects: [CityListObject]) -> [City] {

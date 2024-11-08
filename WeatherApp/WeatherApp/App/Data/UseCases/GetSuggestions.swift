@@ -2,7 +2,7 @@ import Foundation
 
 protocol GetSuggestionsUseCaseProtocol {
 
-    func getSuggestedCities(prefix: String) -> [CityObject]
+    func getSuggestedCities(prefix: String) -> [SuggestedCity]
 
 }
 
@@ -14,7 +14,7 @@ class GetSuggestionsUseCase: GetSuggestionsUseCaseProtocol {
         self.dataRepository = dataRepository
     }
 
-    func getSuggestedCities(prefix: String) -> [CityObject] {
+    func getSuggestedCities(prefix: String) -> [SuggestedCity] {
         dataRepository.getSuggestions(prefix: prefix)
     }
 
