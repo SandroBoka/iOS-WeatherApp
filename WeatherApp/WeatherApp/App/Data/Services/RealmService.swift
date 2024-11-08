@@ -5,9 +5,10 @@ protocol RealmServiceProtocol {
 
     func saveWeatherToRealm(weather: WeatherModel, cityName: String) throws
     func loadWeatherFromRealm(cityName: String) throws -> WeatherModel
+    func removeWeatherFromRealm(cityName: String) throws
     func saveCity(city: CityListObject) throws
     func loadCities() throws -> [CityListObject]
-    func removeCity(city: CityListObject) throws
+    func removeCity(id: UUID) throws
     func loadCitiesFromJson() -> Bool
     func getCitiesByPrefix(prefix: String) -> [CityObject]
 
@@ -71,6 +72,18 @@ class RealmService: RealmServiceProtocol {
             hourlyForecast: hourlyForecasts)
     }
 
+    func removeWeatherFromRealm(cityName: String) throws {
+        let realm = try Realm()
+
+        if let weatherToDelete = realm.object(ofType: WeatherModelObject.self, forPrimaryKey: cityName) {
+            try realm.write {
+                realm.delete(weatherToDelete)
+            }
+        } else {
+            throw CityScreenError.weatherNotFoundInRealm
+        }
+    }
+
     func saveCity(city: CityListObject) throws {
         let realm = try Realm()
 
@@ -84,10 +97,10 @@ class RealmService: RealmServiceProtocol {
         return Array(realm.objects(CityListObject.self))
     }
 
-    func removeCity(city: CityListObject) throws {
+    func removeCity(id: UUID) throws {
         let realm = try Realm()
 
-        if let cityToDelete = realm.object(ofType: CityListObject.self, forPrimaryKey: city.id) {
+        if let cityToDelete = realm.object(ofType: CityListObject.self, forPrimaryKey: id) {
             try realm.write {
                 realm.delete(cityToDelete)
             }

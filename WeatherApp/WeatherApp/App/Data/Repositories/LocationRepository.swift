@@ -57,11 +57,8 @@ class LocationRepository: LocationRepositoryProtocol {
 
     func removeCity(city: City) {
         do {
-            try realmService.removeCity(
-                city: CityListObject(
-                    id: city.id,
-                    name: city.name,
-                    temperature: city.temperature ?? 0))
+            try realmService.removeCity(id: city.id)
+            try realmService.removeWeatherFromRealm(cityName: city.name)
         } catch {
             print("Error deleting city: \(error)")
         }
