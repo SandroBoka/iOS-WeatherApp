@@ -9,13 +9,6 @@ class CityScreenViewModel: ObservableObject {
     @Published var city: String
     @Published var weather: WeatherModel?
 
-    //    let currentTemperatureModel: TemperatureInfo.Model
-    //    let feelsLikeTemperatureModel: TemperatureInfo.Model
-    //    let sunriseModel: SunriseWidget.Model
-    //    let windModel: WindWidget.Model
-    //    let humidityModel: HumidityWidget.Model
-    //    let sunsetModel: SunsetWidget.Model
-
     init(router: RouterProtocol, getWeatherUseCase: GetWeatherUseCaseProtocol, city: String) {
         self.router = router
         self.getWeatherUseCase = getWeatherUseCase
