@@ -1,8 +1,9 @@
 import Foundation
+import Combine
 
 protocol GetWeatherUseCaseProtocol {
 
-    func getWeather(cityName: String, completion: @escaping (Result<WeatherModel, ClientError>) -> Void)
+    func getWeather(cityName: String) -> AnyPublisher<WeatherModel, ClientError>
 
 }
 
@@ -14,8 +15,8 @@ class GetWeatherUseCase: GetWeatherUseCaseProtocol {
         self.weatherRepository = weatherRepository
     }
 
-    func getWeather(cityName: String, completion: @escaping (Result<WeatherModel, ClientError>) -> Void) {
-        weatherRepository.fetchWeather(for: cityName, completion: completion)
+    func getWeather(cityName: String) -> AnyPublisher<WeatherModel, ClientError> {
+        weatherRepository.fetchWeather(cityName: cityName)
     }
 
 }

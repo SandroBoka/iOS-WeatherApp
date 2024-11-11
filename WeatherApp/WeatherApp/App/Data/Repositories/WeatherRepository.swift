@@ -3,7 +3,7 @@ import Combine
 
 protocol WeatherRepositoryProtocol {
 
-    func fetchWeather(for cityName: String, completion: @escaping (Result<WeatherModel, ClientError>) -> Void)
+    func fetchWeather(cityName: String) -> AnyPublisher<WeatherModel, ClientError>
 
 }
 
@@ -26,38 +26,41 @@ class WeatherRepository: WeatherRepositoryProtocol {
         self.realmService = realmService
     }
 
-    func fetchWeather(
-        for cityName: String,
-        completion: @escaping (Result<WeatherModel, ClientError>) -> Void
-    ) {
+    func fetchWeather(cityName: String) -> AnyPublisher<WeatherModel, ClientError> {
         fetchCityLocation(cityName: cityName)
-        weatherService.fetchWeather(for: cityName) { [weak self] result in
-            guard let self else { return }
 
-            switch result {
-            case .success(let currentWeatherResponse):
-                let weatherModel = self.mapToWeatherModel(response: currentWeatherResponse)
+        return weatherService.fetchWeather(cityName: cityName)
+            .tryMap { [weak self] currentWeatherResponse -> WeatherModel in
+                guard let self else { throw ClientError.noData }
+                var weatherModel = self.mapToWeatherModel(response: currentWeatherResponse)
                 do {
                     try self.realmService.saveWeatherToRealm(weather: weatherModel, cityName: cityName)
                 } catch {
                     print("Failed to save weather data to Realm: \(error)")
                 }
                 do {
-                    let loadedWeatherModel = try self.realmService.loadWeatherFromRealm(cityName: cityName)
-                    completion(.success(loadedWeatherModel))
+                    weatherModel = try self.realmService.loadWeatherFromRealm(cityName: cityName)
                 } catch {
-                    completion(.failure(.noData))
+                    print("Failed to fetch weather data to Realm: \(error)")
                 }
-                completion(.success(weatherModel))
-            case .failure:
-                do {
-                    let loadedWeatherModel = try self.realmService.loadWeatherFromRealm(cityName: cityName)
-                    completion(.success(loadedWeatherModel))
-                } catch {
-                    completion(.failure(.noData))
-                }
+                return weatherModel
             }
-        }
+            .mapError { error -> ClientError in
+                return error as? ClientError ?? .unknown
+            }
+            .catch { [weak self] error -> AnyPublisher<WeatherModel, ClientError> in
+                do {
+                    if let cachedWeather = try self?.realmService.loadWeatherFromRealm(cityName: cityName) {
+                        return Just(cachedWeather)
+                            .setFailureType(to: ClientError.self)
+                            .eraseToAnyPublisher()
+                    }
+                } catch {
+                    return Fail(error: .noData).eraseToAnyPublisher()
+                }
+                return Fail(error: error).eraseToAnyPublisher()
+            }
+            .eraseToAnyPublisher()
     }
 
     func fetchExtraWeather(latitude: Double, longitude: Double) {

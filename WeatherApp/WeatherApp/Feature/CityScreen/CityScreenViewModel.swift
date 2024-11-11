@@ -1,10 +1,13 @@
 import SwiftUI
 import RealmSwift
+import Combine
 
 class CityScreenViewModel: ObservableObject {
 
     private let router: RouterProtocol
     private let getWeatherUseCase: GetWeatherUseCaseProtocol
+
+    private var cancellable: AnyCancellable?
 
     @Published var city: String
     @Published var weather: WeatherModel?
@@ -18,16 +21,20 @@ class CityScreenViewModel: ObservableObject {
     }
 
     func fetchWeather() {
-        getWeatherUseCase.getWeather(cityName: city) { result in
-            switch result {
-            case .success(let weatherModel):
+        cancellable = getWeatherUseCase.getWeather(cityName: city)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    return
+                case .failure(let error):
+                    print("Error fetching weather with Combine: \(error)")
+                }
+            }, receiveValue: { weatherModel in
                 DispatchQueue.main.async { [weak self] in
                     self?.weather = weatherModel
                 }
-            case .failure(let error):
-                print("Error fetching weather: \(error)")
-            }
-        }
+
+            })
     }
 
     var weatherImage: WeatherImage {

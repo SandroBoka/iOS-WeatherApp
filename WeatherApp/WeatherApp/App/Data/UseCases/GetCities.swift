@@ -1,8 +1,9 @@
 import Foundation
+import Combine
 
 protocol GetCitiesUseCaseProtocol {
 
-    func getCities() -> [City]
+    func getCities() -> AnyPublisher<[City], Never>
 
 }
 
@@ -16,22 +17,22 @@ class GetCitiesUseCase: GetCitiesUseCaseProtocol {
         self.weatherRepository = weatherRepository
     }
 
-    func getCities() -> [City] {
+    func getCities() -> AnyPublisher<[City], Never> {
         let cities = locationRepository.getLocationsWeather()
 
-        for var city in cities {
-            weatherRepository.fetchWeather(for: city.name) { [weak self] result in
-                switch result {
-                case .success(let weather):
-                    self?.locationRepository.saveWeatherToRealm(weather: weather, cityName: city.name)
-                    city.temperature = weather.temperature
-                case .failure(let error):
-                    print("Failed to fetch weather for \(city.name): \(error)")
+        let weatherFetches = cities.map { city in
+            weatherRepository.fetchWeather(cityName: city.name)
+                .map { weatherModel in
+                    var updatedCity = city
+                    updatedCity.temperature = weatherModel.temperature
+                    return updatedCity
                 }
-            }
+                .catch { _ in Just(city) }
         }
 
-        return cities
+        return Publishers.MergeMany(weatherFetches)
+            .collect()
+            .eraseToAnyPublisher()
     }
 
 }

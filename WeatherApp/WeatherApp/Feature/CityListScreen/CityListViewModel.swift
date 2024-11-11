@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 class CityListViewModel: ObservableObject {
 
@@ -10,6 +11,9 @@ class CityListViewModel: ObservableObject {
     private let getCitiesUseCase: GetCitiesUseCaseProtocol
     private let removeCityUseCase: RemoveCityUseCaseProtocol
     private let getSuggestionsUseCase: GetSuggestionsUseCaseProtocol
+
+    private var cancellable: AnyCancellable?
+    private var cancellables = Set<AnyCancellable>()
 
     init(
         router: RouterProtocol,
@@ -24,24 +28,37 @@ class CityListViewModel: ObservableObject {
         self.removeCityUseCase = removeCityUseCase
         self.getSuggestionsUseCase = getSuggestionsUseCase
 
-        cities = getCitiesUseCase.getCities()
+        getCitiesUseCase.getCities()
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print("Error fetching cities: \(error)")
+                }
+            }, receiveValue: { [weak self] cities in
+                self?.cities = cities
+            })
+            .store(in: &cancellables)
     }
 
-    func fetchTemperature(for city: City) {
-        getWeatherUseCase.getWeather(cityName: city.name) { [weak self] result in
-            guard let self else { return }
-
-            switch result {
-            case .success(let weatherModel):
+    func fetchTemperature(city: City) {
+        cancellable = getWeatherUseCase.getWeather(cityName: city.name)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    return
+                case .failure(let error):
+                    print("Error fetching weather with Combine: \(error)")
+                }
+            }, receiveValue: { weatherModel in
                 if let index = self.cities.firstIndex(where: { $0.id == city.id }) {
                     DispatchQueue.main.async { [weak self] in
                         self?.cities[index].temperature = weatherModel.temperature
                     }
                 }
-            case .failure(let error):
-                print("Error fetching temperature for \(city.name): \(error)")
-            }
-        }
+            })
     }
 
     func showDetailsForCity(city: City) {
@@ -51,7 +68,7 @@ class CityListViewModel: ObservableObject {
     func addCity(cityName: String) {
         let newCity = City(name: cityName)
         cities.append(newCity)
-        fetchTemperature(for: newCity)
+        fetchTemperature(city: newCity)
     }
 
     func removeCity(at offsets: IndexSet) {
