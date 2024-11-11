@@ -14,25 +14,27 @@ struct CityScreenView: View {
                 .padding(.horizontal)
 
             ScrollView {
-                if viewModel.weather != nil {
+                VStack(spacing: 0) {
+                    if viewModel.weather != nil {
 
-                    mainInfo
-                        .padding(.bottom)
+                        mainInfo
+                            .padding(.bottom)
 
-                    temperatureInfo
+                        temperatureInfo
 
-                    Divider()
-                        .overlay(.primaryForeground)
-                        .padding()
+                        Divider()
+                            .overlay(.primaryForeground)
+                            .padding()
 
-                    widgets
-                        .padding()
+                        widgets
+                            .padding()
 
-                    Divider()
-                        .overlay(.primaryForeground)
-                        .padding()
+                        Divider()
+                            .overlay(.primaryForeground)
+                            .padding()
 
-                    hourly
+                        hourly
+                    }
                 }
             }
         }
