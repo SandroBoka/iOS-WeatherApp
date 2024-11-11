@@ -19,6 +19,22 @@ class Dependencies: SceneDelegateDependenciesProtocol {
         Router(navigationController: mainNavigationController, viewModelFactory: self)
     }()
 
+    lazy var getWeatherUseCase: GetWeatherUseCaseProtocol = {
+        GetWeatherUseCase(weatherRepository: weatherRepository)
+    }()
+
+    lazy var getCitiesUseCase: GetCitiesUseCaseProtocol = {
+        GetCitiesUseCase(locationRepository: locationRepository, weatherRepository: weatherRepository)
+    }()
+
+    lazy var removeCityUseCase: RemoveCityUseCaseProtocol = {
+        RemoveCityUseCase(locationRepository: locationRepository)
+    }()
+
+    lazy var getSuggestionsUseCase: GetSuggestionsUseCase = {
+        GetSuggestionsUseCase(locationRepository: locationRepository)
+    }()
+
     private lazy var mainNavigationController: UINavigationController = {
         let navigationController = UINavigationController()
         navigationController.setNavigationBarHidden(false, animated: false)
@@ -51,22 +67,6 @@ class Dependencies: SceneDelegateDependenciesProtocol {
 
     private lazy var locationRepository: LocationRepositoryProtocol = {
         LocationRepository(realmService: realmService)
-    }()
-
-    lazy var getWeatherUseCase: GetWeatherUseCaseProtocol = {
-        GetWeatherUseCase(weatherRepository: weatherRepository)
-    }()
-
-    lazy var getCitiesUseCase: GetCitiesUseCaseProtocol = {
-        GetCitiesUseCase(locationRepository: locationRepository, weatherRepository: weatherRepository)
-    }()
-
-    lazy var removeCityUseCase: RemoveCityUseCaseProtocol = {
-        RemoveCityUseCase(locationRepository: locationRepository)
-    }()
-
-    lazy var getSuggestionsUseCase: GetSuggestionsUseCase = {
-        GetSuggestionsUseCase(locationRepository: locationRepository)
     }()
 
 }
