@@ -102,7 +102,7 @@ struct CityScreenView: View {
                             Text(viewModel.formatTimeFromUnix(hourly.hour, timeZoneOffset: 0))
                                 .font(.dottedFont(size: 18))
 
-                            HourlyForecastView(forecast: hourly)
+                            HourlyForecastWidget(forecast: hourly)
                         }
                     }
                 }

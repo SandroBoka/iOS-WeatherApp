@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct HourlyForecastView: View {
+struct HourlyForecastWidget: View {
 
     let forecast: HourlyForecast
 
@@ -9,13 +9,8 @@ struct HourlyForecastView: View {
             Text("\(String(format: "%.1f", forecast.temperature)) \(String(localized: "degree"))")
                 .font(.dottedFont(size: 20))
 
-            HStack(spacing: 15) {
-                Text(String(localized: "uvIndex"))
-                    .font(.dottedFont(size: 20))
-
-                Text("\(Int(forecast.uvIndex))")
-                    .font(.dottedFont(size: 20))
-            }
+            Text("\(String(localized: "uvIndex"))\(Int(forecast.uvIndex))")
+                .font(.dottedFont(size: 20))
 
             Text("\(String(localized: "rain"))\(Int(forecast.percipation * 100))%")
                 .font(.dottedFont(size: 20))
@@ -33,5 +28,5 @@ struct HourlyForecastView: View {
 }
 
 #Preview {
-    HourlyForecastView(forecast: HourlyForecast(temperature: 24, uvIndex: 3, percipation: 0.33, hour: 1684929490))
+    HourlyForecastWidget(forecast: HourlyForecast(temperature: 24, uvIndex: 3, percipation: 0.33, hour: 1684929490))
 }
