@@ -23,12 +23,6 @@
         }
       }
     },
-    "%@ %%" : {
-
-    },
-    "%@ km/h" : {
-
-    },
     "%@%lld%%" : {
       "localizations" : {
         "en" : {
@@ -40,6 +34,9 @@
       }
     },
     "%lld" : {
+
+    },
+    "%lld %%" : {
 
     },
     "<" : {
@@ -81,6 +78,9 @@
         }
       }
     },
+    "currentString" : {
+
+    },
     "degree" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -116,6 +116,9 @@
           }
         }
       }
+    },
+    "feelsLike" : {
+
     },
     "hourly_forecast" : {
       "extractionState" : "manual",

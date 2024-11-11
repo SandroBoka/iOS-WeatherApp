@@ -9,6 +9,13 @@ class CityScreenViewModel: ObservableObject {
     @Published var city: String
     @Published var weather: WeatherModel?
 
+    //    let currentTemperatureModel: TemperatureInfo.Model
+    //    let feelsLikeTemperatureModel: TemperatureInfo.Model
+    //    let sunriseModel: SunriseWidget.Model
+    //    let windModel: WindWidget.Model
+    //    let humidityModel: HumidityWidget.Model
+    //    let sunsetModel: SunsetWidget.Model
+
     init(router: RouterProtocol, getWeatherUseCase: GetWeatherUseCaseProtocol, city: String) {
         self.router = router
         self.getWeatherUseCase = getWeatherUseCase
@@ -69,6 +76,41 @@ class CityScreenViewModel: ObservableObject {
 
     func goBack() {
         router.goBack()
+    }
+
+}
+
+extension CityScreenViewModel {
+
+    func getCurrentTemperatureModel() -> TemperatureInfo.Model {
+        TemperatureInfo.Model(title: String(localized: "currentString"), temperature: weather?.temperature ?? 0.0)
+    }
+
+    func getFeelsLikeTemperatureModel() -> TemperatureInfo.Model {
+        TemperatureInfo.Model(title: String(localized: "feelsLike"), temperature: weather?.feelsLike ?? 0.0)
+    }
+
+    func getSunriseModel() -> SunriseWidget.Model {
+        SunriseWidget.Model(
+            title: String(localized: "sunrise"),
+            value: formatTimeFromUnix(weather?.sunrise ?? 0, timeZoneOffset: 0))
+    }
+
+    func getSunsetModel() -> SunsetWidget.Model {
+        SunsetWidget.Model(
+            title: String(localized: "sunset"),
+            value: formatTimeFromUnix(weather?.sunset ?? 0, timeZoneOffset: 0))
+    }
+
+    func getWindModel() -> WindWidget.Model {
+        WindWidget.Model(
+            title: String(localized: "wind"),
+            value: weather?.speed ?? 0.0,
+            degree: Double(weather?.degrees ?? 0))
+    }
+
+    func getHumidtyModel() -> HumidityWidget.Model {
+        HumidityWidget.Model(title: String(localized: "humidity"), value: weather?.humidity ?? 0)
     }
 
 }

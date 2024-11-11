@@ -78,26 +78,13 @@ struct CityScreenView: View {
 
     private var widgets: some View {
         LazyVGrid(columns: columns, spacing: 18) {
-            SunriseWidget(
-                model: SunriseWidget.Model(
-                    title: String(localized: "sunrise"),
-                    value: "\(viewModel.formatTimeFromUnix(viewModel.weather!.sunrise, timeZoneOffset: 0))"))
+            SunriseWidget(model: viewModel.getSunriseModel())
 
-            WindWidget(
-                model: WindWidget.Model(
-                    title: String(localized: "wind"),
-                    value: "\(viewModel.weather!.speed)",
-                    degree: Double(viewModel.weather!.degrees)))
+            WindWidget(model: viewModel.getWindModel())
 
-            HumidityWidget(
-                model: HumidityWidget.Model(
-                    title: String(localized: "humidity"),
-                    value: "\(viewModel.weather!.humidity)"))
+            HumidityWidget(model: viewModel.getHumidtyModel())
 
-            SunsetWidget(
-                model: SunsetWidget.Model(
-                    title: String(localized: "sunset"),
-                    value: "\(viewModel.formatTimeFromUnix(viewModel.weather!.sunset, timeZoneOffset: 0))"))
+            SunsetWidget(model: viewModel.getSunsetModel())
         }
     }
 

@@ -10,22 +10,20 @@ struct WindWidget: View {
         VStack {
             Text(model.title.uppercased())
                 .font(.notoSansFont(size: 14))
-                .foregroundColor(.white)
+
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
 
             animatedWindImage
 
-            Text("\(model.value) km/h")
+            Text(String(format: "%.2f km/h", model.value))
                 .font(.dottedFont(size: 16))
-                .foregroundColor(.white)
                 .frame(maxHeight: .infinity)
                 .padding(.bottom)
         }
         .frame(minHeight: 120)
         .background {
-            Color
-                .widgetGray
+            Color.widgetGray
                 .cornerRadius(15)
         }
     }
@@ -66,7 +64,7 @@ extension WindWidget {
     struct Model {
 
         var title: String
-        var value: String
+        var value: Double
         var degree: Double
 
     }
@@ -74,5 +72,5 @@ extension WindWidget {
 }
 
 #Preview {
-    WindWidget(model: WindWidget.Model(title: "Title", value: "Value", degree: 46))
+    WindWidget(model: WindWidget.Model(title: "Title", value: 2.4, degree: 46))
 }
