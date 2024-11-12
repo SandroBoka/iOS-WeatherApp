@@ -32,6 +32,18 @@ struct HourlyForecastWidget: View {
 
 }
 
+private extension HourlyForecast {
+
+    var formattedHour: String {
+        let date = Date(timeIntervalSince1970: TimeInterval(hour))
+        let formatter = DateFormatter()
+        formatter.timeStyle = .short
+        formatter.timeZone = TimeZone(secondsFromGMT: 3600)
+        return formatter.string(from: date)
+    }
+
+}
+
 #Preview {
     HourlyForecastWidget(forecast: HourlyForecast(temperature: 24, uvIndex: 3, percipation: 0.33, hour: 1684929490))
 }
