@@ -83,11 +83,11 @@ class CityScreenViewModel: ObservableObject {
 extension CityScreenViewModel {
 
     func getCurrentTemperatureModel() -> TemperatureInfo.Model {
-        TemperatureInfo.Model(title: String(localized: "currentString"), temperature: weather?.temperature ?? 0.0)
+        TemperatureInfo.Model(title: String(localized: "current_string"), temperature: weather?.temperature ?? 0.0)
     }
 
     func getFeelsLikeTemperatureModel() -> TemperatureInfo.Model {
-        TemperatureInfo.Model(title: String(localized: "feelsLike"), temperature: weather?.feelsLike ?? 0.0)
+        TemperatureInfo.Model(title: String(localized: "feels_like"), temperature: weather?.feelsLike ?? 0.0)
     }
 
     func getSunriseModel() -> SunriseWidget.Model {

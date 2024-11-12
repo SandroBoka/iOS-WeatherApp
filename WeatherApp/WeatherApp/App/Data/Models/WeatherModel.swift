@@ -18,11 +18,17 @@ struct WeatherModel {
 }
 
 struct HourlyForecast {
-
     let id = UUID()
     let temperature: Double
     let uvIndex: Double
     let percipation: Double
     let hour: Int
 
+    var formattedHour: String {
+        let date = Date(timeIntervalSince1970: TimeInterval(hour))
+        let formatter = DateFormatter()
+        formatter.timeStyle = .short
+        formatter.timeZone = TimeZone(secondsFromGMT: 3600)
+        return formatter.string(from: date)
+    }
 }

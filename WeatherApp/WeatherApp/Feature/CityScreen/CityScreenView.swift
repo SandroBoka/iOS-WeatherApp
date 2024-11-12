@@ -16,33 +16,41 @@ struct CityScreenView: View {
             ScrollView {
                 VStack(spacing: 0) {
                     if viewModel.weather != nil {
-
-                        mainInfo
-                            .padding(.bottom)
-
-                        temperatureInfo
-
-                        Divider()
-                            .overlay(.primaryForeground)
-                            .padding()
-
-                        widgets
-                            .padding()
-
-                        Divider()
-                            .overlay(.primaryForeground)
-                            .padding()
-
-                        hourly
+                        scrollContent
+                    } else {
+                        ProgressView()
                     }
                 }
             }
         }
         .background {
-            Color.primaryBackground
+            Color
+                .primaryBackground
                 .ignoresSafeArea()
         }
         .foregroundStyle(.primaryForeground)
+    }
+
+    private var scrollContent: some View {
+        VStack(spacing: 0) {
+            mainInfo
+                .padding(.bottom)
+
+            temperatureInfo
+
+            Divider()
+                .overlay(.primaryForeground)
+                .padding()
+
+            widgets
+                .padding()
+
+            Divider()
+                .overlay(.primaryForeground)
+                .padding()
+
+            hourly
+        }
     }
 
     private var mainInfo: some View {
@@ -67,12 +75,11 @@ struct CityScreenView: View {
         HStack(spacing: 24) {
             Spacer()
 
-            TemperatureInfo(model: TemperatureInfo.Model(title: "Current", temperature: viewModel.weather!.temperature))
+            TemperatureInfo(model: viewModel.getCurrentTemperatureModel())
 
             Spacer()
 
-            TemperatureInfo(
-                model: TemperatureInfo.Model(title: "Feels Like", temperature: viewModel.weather!.feelsLike))
+            TemperatureInfo(model: viewModel.getFeelsLikeTemperatureModel())
 
             Spacer()
         }
@@ -98,12 +105,7 @@ struct CityScreenView: View {
             ScrollView(.horizontal) {
                 HStack(spacing: 16) {
                     ForEach(viewModel.weather!.hourlyForecast, id: \.id) { hourly in
-                        VStack {
-                            Text(viewModel.formatTimeFromUnix(hourly.hour, timeZoneOffset: 0))
-                                .font(.dottedFont(size: 18))
-
-                            HourlyForecastWidget(forecast: hourly)
-                        }
+                        HourlyForecastWidget(forecast: hourly)
                     }
                 }
                 .padding()

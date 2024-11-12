@@ -85,9 +85,6 @@
         }
       }
     },
-    "currentString" : {
-
-    },
     "degree" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -123,9 +120,6 @@
           }
         }
       }
-    },
-    "feelsLike" : {
-
     },
     "hourly_forecast" : {
       "extractionState" : "manual",

@@ -5,24 +5,29 @@ struct HourlyForecastWidget: View {
     let forecast: HourlyForecast
 
     var body: some View {
-        VStack(spacing: 10) {
-            Text("\(String(format: "%.1f", forecast.temperature)) \(String(localized: "degree"))")
-                .font(.dottedFont(size: 20))
+        VStack {
+            Text(forecast.formattedHour)
+                .font(.dottedFont(size: 18))
 
-            Text("\(String(localized: "uvIndex"))\(Int(forecast.uvIndex))")
-                .font(.dottedFont(size: 20))
+            VStack(spacing: 10) {
+                Text("\(String(format: "%.1f", forecast.temperature)) \(String(localized: "degree"))")
+                    .font(.dottedFont(size: 20))
 
-            Text("\(String(localized: "rain"))\(Int(forecast.percipation * 100))%")
-                .font(.dottedFont(size: 20))
+                Text("\(String(localized: "uvIndex"))\(Int(forecast.uvIndex))")
+                    .font(.dottedFont(size: 20))
+
+                Text("\(String(localized: "rain"))\(Int(forecast.percipation * 100))%")
+                    .font(.dottedFont(size: 20))
+            }
+            .frame(minHeight: 120)
+            .padding(25)
+            .background {
+                Color
+                    .widgetGray
+                    .cornerRadius(15)
+            }
+            .cornerRadius(10)
         }
-        .frame(minHeight: 120)
-        .padding(25)
-        .background {
-            Color
-                .widgetGray
-                .cornerRadius(15)
-        }
-        .cornerRadius(10)
     }
 
 }
