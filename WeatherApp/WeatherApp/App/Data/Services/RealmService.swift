@@ -31,6 +31,7 @@ class RealmService: RealmServiceProtocol {
         weatherModelRealm.sunset = weather.sunset
         weatherModelRealm.minTemperature = weather.minTemperature
         weatherModelRealm.maxTemperature = weather.maxTemperature
+        weatherModelRealm.statusId = weather.statusId
 
         weatherModelRealm.hourlyForecasts.append(objectsIn: weather.hourlyForecast.map {
             let hourlyForecastObject = HourlyForecastObject()
