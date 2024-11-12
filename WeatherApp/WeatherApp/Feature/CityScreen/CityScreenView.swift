@@ -73,11 +73,11 @@ struct CityScreenView: View {
         HStack(spacing: 24) {
             Spacer()
 
-            TemperatureInfo(model: viewModel.getCurrentTemperatureModel())
+            TemperatureInfo(model: viewModel.currentTempratureModel)
 
             Spacer()
 
-            TemperatureInfo(model: viewModel.getFeelsLikeTemperatureModel())
+            TemperatureInfo(model: viewModel.feelsLikeTempratureModel)
 
             Spacer()
         }
@@ -85,13 +85,13 @@ struct CityScreenView: View {
 
     private var widgets: some View {
         LazyVGrid(columns: columns, spacing: 18) {
-            SunriseWidget(model: viewModel.getSunriseModel())
+            SunriseWidget(model: viewModel.sunriseModel)
 
-            WindWidget(model: viewModel.getWindModel())
+            WindWidget(model: viewModel.windModel)
 
-            HumidityWidget(model: viewModel.getHumidtyModel())
+            HumidityWidget(model: viewModel.humidityModel)
 
-            SunsetWidget(model: viewModel.getSunsetModel())
+            SunsetWidget(model: viewModel.sunsetModel)
         }
     }
 

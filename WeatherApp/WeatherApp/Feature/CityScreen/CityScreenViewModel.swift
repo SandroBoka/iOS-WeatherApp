@@ -37,6 +37,31 @@ class CityScreenViewModel: ObservableObject {
         return formatTimeFromUnix(unixTime: weather.sunset, timeZoneOffset: 0)
     }
 
+    var currentTempratureModel: TemperatureInfo.Model {
+        TemperatureInfo.Model(title: String(localized: "current_string"), temperature: weather?.temperature ?? 0.0)
+    }
+
+    var feelsLikeTempratureModel: TemperatureInfo.Model {
+        TemperatureInfo.Model(title: String(localized: "feels_like"), temperature: weather?.feelsLike ?? 0.0)
+    }
+
+    var sunriseModel: SunriseWidget.Model {
+        SunriseWidget.Model(title: String(localized: "sunrise"), value: sunriseTime)
+    }
+
+    var sunsetModel: SunsetWidget.Model {
+        SunsetWidget.Model(title: String(localized: "sunset"), value: sunsetTime)
+    }
+
+    var windModel: WindWidget.Model {
+        WindWidget.Model(
+            title: String(localized: "wind"), value: weather?.speed ?? 0.0, degree: Double(weather?.degrees ?? 0))
+    }
+
+    var humidityModel: HumidityWidget.Model {
+        HumidityWidget.Model(title: String(localized: "humidity"), value: weather?.humidity ?? 0)
+    }
+
     init(router: RouterProtocol, getWeatherUseCase: GetWeatherUseCaseProtocol, city: City) {
         self.router = router
         self.getWeatherUseCase = getWeatherUseCase
@@ -68,35 +93,6 @@ class CityScreenViewModel: ObservableObject {
     private func formatTimeFromUnix(unixTime: Int, timeZoneOffset: Int) -> String {
         let date = Date(timeIntervalSince1970: TimeInterval(unixTime + timeZoneOffset))
         return dateFormatter.string(from: date)
-    }
-
-}
-
-extension CityScreenViewModel {
-
-    func getCurrentTemperatureModel() -> TemperatureInfo.Model {
-        TemperatureInfo.Model(title: String(localized: "current_string"), temperature: weather?.temperature ?? 0.0)
-    }
-
-    func getFeelsLikeTemperatureModel() -> TemperatureInfo.Model {
-        TemperatureInfo.Model(title: String(localized: "feels_like"), temperature: weather?.feelsLike ?? 0.0)
-    }
-
-    func getSunriseModel() -> SunriseWidget.Model {
-        SunriseWidget.Model(title: String(localized: "sunrise"), value: sunriseTime)
-    }
-
-    func getSunsetModel() -> SunsetWidget.Model {
-        SunsetWidget.Model(title: String(localized: "sunset"), value: sunsetTime)
-    }
-
-    func getWindModel() -> WindWidget.Model {
-        WindWidget.Model(
-            title: String(localized: "wind"), value: weather?.speed ?? 0.0, degree: Double(weather?.degrees ?? 0))
-    }
-
-    func getHumidtyModel() -> HumidityWidget.Model {
-        HumidityWidget.Model(title: String(localized: "humidity"), value: weather?.humidity ?? 0)
     }
 
 }
