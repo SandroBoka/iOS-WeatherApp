@@ -3,21 +3,23 @@ import Foundation
 
 protocol RealmServiceProtocol {
 
-    func saveWeatherToRealm(weather: WeatherModel, cityName: String) throws
-    func loadWeatherFromRealm(cityName: String) throws -> WeatherModel
-    func removeWeatherFromRealm(cityName: String) throws
+    func saveWeatherToRealm(weather: WeatherModel, cityId: Int, cityName: String) throws
+    func loadWeatherFromRealm(cityId: Int) throws -> WeatherModel
+    func removeWeatherFromRealm(cityId: Int) throws
     func loadLocationWeathers() throws -> [WeatherModelObject]
     func loadCitiesFromJson() -> Bool
     func getCitiesByPrefix(prefix: String) -> [CityObject]
+    func getCityId(cityName: String) -> Int
 
 }
 
 class RealmService: RealmServiceProtocol {
 
-    func saveWeatherToRealm(weather: WeatherModel, cityName: String) throws {
+    func saveWeatherToRealm(weather: WeatherModel, cityId: Int, cityName: String) throws {
         let realm = try Realm()
 
         let weatherModelRealm = WeatherModelObject()
+        weatherModelRealm.cityId = cityId
         weatherModelRealm.cityName = cityName
         weatherModelRealm.temperature = weather.temperature
         weatherModelRealm.feelsLike = weather.feelsLike
@@ -44,10 +46,10 @@ class RealmService: RealmServiceProtocol {
         }
     }
 
-    func loadWeatherFromRealm(cityName: String) throws -> WeatherModel {
+    func loadWeatherFromRealm(cityId: Int) throws -> WeatherModel {
         let realm = try Realm()
 
-        guard let savedWeather = realm.object(ofType: WeatherModelObject.self, forPrimaryKey: cityName) else {
+        guard let savedWeather = realm.object(ofType: WeatherModelObject.self, forPrimaryKey: cityId) else {
             throw CityScreenError.weatherNotFoundInRealm
         }
 
@@ -70,10 +72,10 @@ class RealmService: RealmServiceProtocol {
             hourlyForecast: hourlyForecasts)
     }
 
-    func removeWeatherFromRealm(cityName: String) throws {
+    func removeWeatherFromRealm(cityId: Int) throws {
         let realm = try Realm()
 
-        if let weatherToDelete = realm.object(ofType: WeatherModelObject.self, forPrimaryKey: cityName) {
+        if let weatherToDelete = realm.object(ofType: WeatherModelObject.self, forPrimaryKey: cityId) {
             try realm.write {
                 realm.delete(weatherToDelete)
             }
@@ -120,6 +122,22 @@ class RealmService: RealmServiceProtocol {
             return Array(cities)
         } catch {
             return []
+        }
+    }
+
+    func getCityId(cityName: String) -> Int {
+        do {
+            let realm = try Realm()
+            if let city = realm.objects(CityObject.self)
+                .filter("cityName ==[c] %@", cityName)
+                .first {
+                return city.id
+            } else {
+                return 0
+            }
+        } catch {
+            print("Error accessing Realm: \(error)")
+            return 0
         }
     }
 

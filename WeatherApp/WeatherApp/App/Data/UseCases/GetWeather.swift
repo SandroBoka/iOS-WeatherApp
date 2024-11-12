@@ -3,7 +3,7 @@ import Combine
 
 protocol GetWeatherUseCaseProtocol {
 
-    func getWeather(cityName: String) -> AnyPublisher<WeatherModel, ClientError>
+    func getWeather(cityId: Int, cityName: String) -> AnyPublisher<WeatherModel, ClientError>
 
 }
 
@@ -15,8 +15,8 @@ class GetWeatherUseCase: GetWeatherUseCaseProtocol {
         self.weatherRepository = weatherRepository
     }
 
-    func getWeather(cityName: String) -> AnyPublisher<WeatherModel, ClientError> {
-        weatherRepository.fetchWeather(cityName: cityName)
+    func getWeather(cityId: Int, cityName: String) -> AnyPublisher<WeatherModel, ClientError> {
+        weatherRepository.fetchWeather(cityId: cityId, cityName: cityName)
     }
 
 }

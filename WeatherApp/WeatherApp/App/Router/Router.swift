@@ -5,7 +5,6 @@ protocol RouterProtocol {
     func start(in window: UIWindow)
     func goBack()
 
-    func showHomeScreen()
     func showCityList()
     func showCityWeather(city: City)
 
@@ -34,13 +33,6 @@ class Router: RouterProtocol {
         navigationController.popViewController(animated: true)
     }
 
-    func showHomeScreen() {
-        let viewModel = viewModelFactory.makeCityScreenViewModel(cityName: "Zagreb")
-        let view = CityScreenView(viewModel: viewModel)
-        let viewController = UIHostingController(rootView: view)
-        navigationController.pushViewController(viewController, animated: false)
-    }
-
     func showCityList() {
         let viewModel = viewModelFactory.makeCityListViewModel()
         let view = CityListView(viewModel: viewModel)
@@ -49,7 +41,7 @@ class Router: RouterProtocol {
     }
 
     func showCityWeather(city: City) {
-        let viewModel = viewModelFactory.makeCityScreenViewModel(cityName: city.name)
+        let viewModel = viewModelFactory.makeCityScreenViewModel(city: city)
         let view = CityScreenView(viewModel: viewModel)
         let viewController = UIHostingController(rootView: view)
         navigationController.pushViewController(viewController, animated: true)

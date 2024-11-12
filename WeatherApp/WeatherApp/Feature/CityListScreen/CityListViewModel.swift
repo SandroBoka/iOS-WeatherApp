@@ -44,7 +44,7 @@ class CityListViewModel: ObservableObject {
     }
 
     func fetchTemperature(city: City) {
-        cancellable = getWeatherUseCase.getWeather(cityName: city.name)
+        cancellable = getWeatherUseCase.getWeather(cityId: city.id, cityName: city.name)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
@@ -66,7 +66,8 @@ class CityListViewModel: ObservableObject {
     }
 
     func addCity(cityName: String) {
-        let newCity = City(name: cityName)
+        let id = getSuggestionsUseCase.getCityId(cityName: cityName)
+        let newCity = City(id: id, name: cityName)
         cities.append(newCity)
         fetchTemperature(city: newCity)
     }

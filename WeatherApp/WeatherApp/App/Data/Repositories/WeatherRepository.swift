@@ -3,7 +3,7 @@ import Combine
 
 protocol WeatherRepositoryProtocol {
 
-    func fetchWeather(cityName: String) -> AnyPublisher<WeatherModel, ClientError>
+    func fetchWeather(cityId: Int, cityName: String) -> AnyPublisher<WeatherModel, ClientError>
 
 }
 
@@ -26,7 +26,7 @@ class WeatherRepository: WeatherRepositoryProtocol {
         self.realmService = realmService
     }
 
-    func fetchWeather(cityName: String) -> AnyPublisher<WeatherModel, ClientError> {
+    func fetchWeather(cityId: Int, cityName: String) -> AnyPublisher<WeatherModel, ClientError> {
         fetchCityLocation(cityName: cityName)
 
         return weatherService.fetchWeather(cityName: cityName)
@@ -34,12 +34,12 @@ class WeatherRepository: WeatherRepositoryProtocol {
                 guard let self else { throw ClientError.noData }
                 var weatherModel = self.mapToWeatherModel(response: currentWeatherResponse)
                 do {
-                    try self.realmService.saveWeatherToRealm(weather: weatherModel, cityName: cityName)
+                    try self.realmService.saveWeatherToRealm(weather: weatherModel, cityId: cityId, cityName: cityName)
                 } catch {
                     print("Failed to save weather data to Realm: \(error)")
                 }
                 do {
-                    weatherModel = try self.realmService.loadWeatherFromRealm(cityName: cityName)
+                    weatherModel = try self.realmService.loadWeatherFromRealm(cityId: cityId)
                 } catch {
                     print("Failed to fetch weather data to Realm: \(error)")
                 }
@@ -50,7 +50,7 @@ class WeatherRepository: WeatherRepositoryProtocol {
             }
             .catch { [weak self] error -> AnyPublisher<WeatherModel, ClientError> in
                 do {
-                    if let cachedWeather = try self?.realmService.loadWeatherFromRealm(cityName: cityName) {
+                    if let cachedWeather = try self?.realmService.loadWeatherFromRealm(cityId: cityId) {
                         return Just(cachedWeather)
                             .setFailureType(to: ClientError.self)
                             .eraseToAnyPublisher()

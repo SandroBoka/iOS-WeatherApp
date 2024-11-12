@@ -3,7 +3,7 @@ import UIKit
 protocol ViewModelFactoryProtocol {
 
     func makeCityListViewModel() -> CityListViewModel
-    func makeCityScreenViewModel(cityName: String) -> CityScreenViewModel
+    func makeCityScreenViewModel(city: City) -> CityScreenViewModel
 
 }
 
@@ -82,8 +82,8 @@ extension Dependencies: ViewModelFactoryProtocol {
             getSuggestionsUseCase: getSuggestionsUseCase)
     }
 
-    func makeCityScreenViewModel(cityName: String) -> CityScreenViewModel {
-        CityScreenViewModel(router: router, getWeatherUseCase: getWeatherUseCase, city: cityName)
+    func makeCityScreenViewModel(city: City) -> CityScreenViewModel {
+        CityScreenViewModel(router: router, getWeatherUseCase: getWeatherUseCase, city: city)
     }
 
 }

@@ -4,20 +4,21 @@ protocol LocationRepositoryProtocol {
 
     func getLocationsWeather() -> [City]
     func removeCityWeather(city: City)
-    func saveWeatherToRealm(weather: WeatherModel, cityName: String)
+    func saveWeatherToRealm(weather: WeatherModel, cityId: Int, cityName: String)
     func getSuggestions(prefix: String) -> [SuggestedCity]
+    func getCityId(cityName: String) -> Int
 
 }
 
 class LocationRepository: LocationRepositoryProtocol {
 
     private let defaultCities: [City] = [
-        City(name: "Zagreb"),
-        City(name: "Paris"),
-        City(name: "New York"),
-        City(name: "Tokyo"),
-        City(name: "London"),
-        City(name: "Los Angeles")]
+        City(id: 3186886, name: "Zagreb"),
+        City(id: 2968815, name: "Paris"),
+        City(id: 5128638, name: "New York"),
+        City(id: 1850147, name: "Tokyo"),
+        City(id: 2643743, name: "London"),
+        City(id: 5368361, name: "Los Angeles")]
 
     let realmService: RealmServiceProtocol
 
@@ -30,6 +31,7 @@ class LocationRepository: LocationRepositoryProtocol {
         do {
             cities = try realmService.loadLocationWeathers().map {
                 City(
+                    id: $0.cityId,
                     name: $0.cityName,
                     temperature: $0.temperature)
             }
@@ -46,16 +48,17 @@ class LocationRepository: LocationRepositoryProtocol {
 
     func removeCityWeather(city: City) {
         do {
-            try realmService.removeWeatherFromRealm(cityName: city.name)
+            try realmService.removeWeatherFromRealm(cityId: city.id)
         } catch {
             print("Error deleting city: \(error)")
         }
     }
 
-    func saveWeatherToRealm(weather: WeatherModel, cityName: String) {
+    func saveWeatherToRealm(weather: WeatherModel, cityId: Int, cityName: String) {
         do {
             try realmService.saveWeatherToRealm(
                 weather: weather,
+                cityId: cityId,
                 cityName: cityName
             )
         } catch {
@@ -65,6 +68,10 @@ class LocationRepository: LocationRepositoryProtocol {
 
     func getSuggestions(prefix: String) -> [SuggestedCity] {
         realmService.getCitiesByPrefix(prefix: prefix).map { SuggestedCity(id: $0.id, cityName: $0.cityName) }
+    }
+
+    func getCityId(cityName: String) -> Int {
+        realmService.getCityId(cityName: cityName)
     }
 
 }

@@ -2,7 +2,8 @@ import RealmSwift
 
 class WeatherModelObject: Object {
 
-    @Persisted(primaryKey: true) var cityName: String
+    @Persisted(primaryKey: true) var cityId: Int
+    @Persisted var cityName: String
     @Persisted var temperature: Double
     @Persisted var feelsLike: Double
     @Persisted var weatherDescription: String

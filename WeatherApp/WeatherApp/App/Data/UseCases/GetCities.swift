@@ -21,7 +21,7 @@ class GetCitiesUseCase: GetCitiesUseCaseProtocol {
         let cities = locationRepository.getLocationsWeather()
 
         let weatherFetches = cities.map { city in
-            weatherRepository.fetchWeather(cityName: city.name)
+            weatherRepository.fetchWeather(cityId: city.id, cityName: city.name)
                 .map { weatherModel in
                     var updatedCity = city
                     updatedCity.temperature = weatherModel.temperature

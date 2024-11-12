@@ -9,10 +9,10 @@ class CityScreenViewModel: ObservableObject {
 
     private var cancellable: AnyCancellable?
 
-    @Published var city: String
+    @Published var city: City
     @Published var weather: WeatherModel?
 
-    init(router: RouterProtocol, getWeatherUseCase: GetWeatherUseCaseProtocol, city: String) {
+    init(router: RouterProtocol, getWeatherUseCase: GetWeatherUseCaseProtocol, city: City) {
         self.router = router
         self.getWeatherUseCase = getWeatherUseCase
         self.city = city
@@ -21,7 +21,7 @@ class CityScreenViewModel: ObservableObject {
     }
 
     func fetchWeather() {
-        cancellable = getWeatherUseCase.getWeather(cityName: city)
+        cancellable = getWeatherUseCase.getWeather(cityId: city.id, cityName: city.name)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:

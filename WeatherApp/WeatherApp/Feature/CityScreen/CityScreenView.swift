@@ -47,7 +47,7 @@ struct CityScreenView: View {
 
     private var mainInfo: some View {
         VStack(spacing: 10) {
-            Text(viewModel.city)
+            Text(viewModel.city.name)
                 .font(.dottedFont(size: 25))
 
             viewModel
@@ -121,5 +121,5 @@ struct CityScreenView: View {
                 weatherRepository: WeatherRepository(
                     weatherService: WeatherService(client: NetworkClient()),
                     locationService: LocationService(client: NetworkClient()), realmService: RealmService())),
-            city: "Zagreb"))
+            city: City(id: 3186886, name: "Zagreb")))
 }

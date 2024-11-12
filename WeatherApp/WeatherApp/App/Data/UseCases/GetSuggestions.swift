@@ -3,6 +3,7 @@ import Foundation
 protocol GetSuggestionsUseCaseProtocol {
 
     func getSuggestedCities(prefix: String) -> [SuggestedCity]
+    func getCityId(cityName: String) -> Int
 
 }
 
@@ -16,6 +17,10 @@ class GetSuggestionsUseCase: GetSuggestionsUseCaseProtocol {
 
     func getSuggestedCities(prefix: String) -> [SuggestedCity] {
         locationRepository.getSuggestions(prefix: prefix)
+    }
+
+    func getCityId(cityName: String) -> Int {
+        locationRepository.getCityId(cityName: cityName)
     }
 
 }
