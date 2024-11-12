@@ -16,7 +16,7 @@ struct WindWidget: View {
 
             animatedWindImage
 
-            Text(String(format: "%.2f km/h", model.value))
+            Text(String(format: "%.2f \(String(localized: "kmPerHour"))", model.value))
                 .font(.dottedFont(size: 16))
                 .frame(maxHeight: .infinity)
                 .padding(.bottom)

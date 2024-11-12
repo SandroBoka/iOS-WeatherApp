@@ -14,5 +14,6 @@ extension LocalizedStringKey {
     static let hourlyForecast: Self = "hourly_forecast"
     static let uvIndex: Self = "uvIndex"
     static let rain: Self = "rain"
+    static let kmPerHour: Self = "kmPerHour"
 
 }
