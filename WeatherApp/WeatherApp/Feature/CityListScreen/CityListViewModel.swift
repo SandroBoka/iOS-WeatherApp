@@ -11,6 +11,7 @@ class CityListViewModel: ObservableObject {
     private let getCitiesUseCase: GetCitiesUseCaseProtocol
     private let removeCityUseCase: RemoveCityUseCaseProtocol
     private let getSuggestionsUseCase: GetSuggestionsUseCaseProtocol
+    private let getIdUseCase: GetIdUseCaseProtocol
 
     private var cancellable: AnyCancellable?
     private var cancellables = Set<AnyCancellable>()
@@ -20,13 +21,15 @@ class CityListViewModel: ObservableObject {
         getWeatherUseCase: GetWeatherUseCaseProtocol,
         getCitiesUseCase: GetCitiesUseCaseProtocol,
         removeCityUseCase: RemoveCityUseCaseProtocol,
-        getSuggestionsUseCase: GetSuggestionsUseCaseProtocol
+        getSuggestionsUseCase: GetSuggestionsUseCaseProtocol,
+        getIdUseCase: GetIdUseCaseProtocol
     ) {
         self.router = router
         self.getWeatherUseCase = getWeatherUseCase
         self.getCitiesUseCase = getCitiesUseCase
         self.removeCityUseCase = removeCityUseCase
         self.getSuggestionsUseCase = getSuggestionsUseCase
+        self.getIdUseCase = getIdUseCase
 
         getCitiesUseCase.getCities()
             .receive(on: DispatchQueue.main)
@@ -66,7 +69,7 @@ class CityListViewModel: ObservableObject {
     }
 
     func addCity(cityName: String) {
-        let id = getSuggestionsUseCase.getCityId(cityName: cityName)
+        let id = getIdUseCase.getCityId(cityName: cityName)
         let newCity = City(id: id, name: cityName)
         cities.append(newCity)
         fetchTemperature(city: newCity)

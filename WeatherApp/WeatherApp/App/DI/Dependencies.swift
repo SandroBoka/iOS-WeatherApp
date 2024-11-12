@@ -35,6 +35,10 @@ class Dependencies: SceneDelegateDependenciesProtocol {
         GetSuggestionsUseCase(locationRepository: locationRepository)
     }()
 
+    lazy var getIdUseCase: GetIdUseCase = {
+        GetIdUseCase(locationRepository: locationRepository)
+    }()
+
     private lazy var mainNavigationController: UINavigationController = {
         let navigationController = UINavigationController()
         navigationController.setNavigationBarHidden(false, animated: false)
@@ -79,7 +83,8 @@ extension Dependencies: ViewModelFactoryProtocol {
             getWeatherUseCase: getWeatherUseCase,
             getCitiesUseCase: getCitiesUseCase,
             removeCityUseCase: removeCityUseCase,
-            getSuggestionsUseCase: getSuggestionsUseCase)
+            getSuggestionsUseCase: getSuggestionsUseCase,
+            getIdUseCase: getIdUseCase)
     }
 
     func makeCityScreenViewModel(city: City) -> CityScreenViewModel {

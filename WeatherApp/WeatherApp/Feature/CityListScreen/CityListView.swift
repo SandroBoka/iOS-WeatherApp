@@ -139,5 +139,7 @@ struct CityListView: View {
             removeCityUseCase: RemoveCityUseCase(
                 locationRepository: LocationRepository(realmService: RealmService())),
             getSuggestionsUseCase: GetSuggestionsUseCase(
+                locationRepository: LocationRepository(realmService: RealmService())),
+            getIdUseCase: GetIdUseCase(
                 locationRepository: LocationRepository(realmService: RealmService()))))
 }
