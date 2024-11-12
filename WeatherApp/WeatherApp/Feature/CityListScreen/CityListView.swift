@@ -6,11 +6,7 @@ struct CityListView: View {
     @State private var newCityName: String = ""
 
     init(viewModel: CityListViewModel) {
-        let appearance = UINavigationBarAppearance()
-
         self.viewModel = viewModel
-
-        setNavigationBarAppearance(appearance: appearance)
     }
 
     var body: some View {
@@ -30,6 +26,10 @@ struct CityListView: View {
 
             cityList
                 .scrollContentBackground(.hidden)
+        }
+        .onAppear {
+            let appearance = UINavigationBarAppearance()
+            setNavigationBarAppearance(appearance: appearance)
         }
         .foregroundStyle(.primaryForeground)
         .background(.primaryBackground)
