@@ -2,7 +2,7 @@ import SwiftUI
 
 struct SunsetWidget: View {
 
-    var model: Model
+    let model: Model
 
     @State private var isAnimating = false
 
@@ -81,8 +81,8 @@ extension SunsetWidget {
 
     struct Model {
 
-        var title: String
-        var value: String
+        let title: String
+        let value: String
 
     }
 

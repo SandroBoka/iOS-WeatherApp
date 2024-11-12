@@ -2,7 +2,7 @@ import SwiftUI
 
 struct HumidityWidget: View {
 
-    var model: Model
+    let model: Model
 
     @State private var animateHumidity = false
 
@@ -63,8 +63,8 @@ extension HumidityWidget {
 
     struct Model {
 
-        var title: String
-        var value: Int
+        let title: String
+        let value: Int
 
     }
 

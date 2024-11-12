@@ -2,7 +2,7 @@ import SwiftUI
 
 struct WindWidget: View {
 
-    var model: Model
+    let model: Model
 
     @State private var animateRotation = false
 
@@ -63,9 +63,9 @@ extension WindWidget {
 
     struct Model {
 
-        var title: String
-        var value: Double
-        var degree: Double
+        let title: String
+        let value: Double
+        let degree: Double
 
     }
 

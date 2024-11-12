@@ -9,8 +9,8 @@ class CityScreenViewModel: ObservableObject {
 
     private var cancellable: AnyCancellable?
 
-    @Published var city: City
-    @Published var weather: WeatherModel?
+    @Published private(set) var city: City
+    @Published private(set) var weather: WeatherModel?
 
     init(router: RouterProtocol, getWeatherUseCase: GetWeatherUseCaseProtocol, city: City) {
         self.router = router
@@ -61,11 +61,6 @@ class CityScreenViewModel: ObservableObject {
         }
     }
 
-    private func isAfterSunsetOrBeforeSunrise(_ sunrise: Int, sunset: Int) -> Bool {
-        let currentTime = Int(Date().timeIntervalSince1970)
-        return currentTime < sunrise || currentTime >= sunset
-    }
-
     func formatTimeFromUnix(_ unixTime: Int, timeZoneOffset: Int) -> String {
         let date = Date(timeIntervalSince1970: TimeInterval(unixTime + timeZoneOffset))
         let formatter = DateFormatter()
@@ -76,6 +71,11 @@ class CityScreenViewModel: ObservableObject {
 
     func goBack() {
         router.goBack()
+    }
+
+    private func isAfterSunsetOrBeforeSunrise(_ sunrise: Int, sunset: Int) -> Bool {
+        let currentTime = Int(Date().timeIntervalSince1970)
+        return currentTime < sunrise || currentTime >= sunset
     }
 
 }
