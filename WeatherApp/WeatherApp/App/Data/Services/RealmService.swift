@@ -1,10 +1,11 @@
 import RealmSwift
+import Combine
 import Foundation
 
 protocol RealmServiceProtocol {
 
     func saveWeather(weather: WeatherModel, cityId: Int, cityName: String) throws
-    func getWeather(cityId: Int) throws -> WeatherModelObject
+    func getWeather(cityId: Int) throws -> AnyPublisher<WeatherModelObject, Error>
     func removeWeather(cityId: Int) throws
     func getLocationWeathers() throws -> [WeatherModelObject]
     func getCitiesFromJson() -> Bool
@@ -25,14 +26,19 @@ class RealmService: RealmServiceProtocol {
         }
     }
 
-    func getWeather(cityId: Int) throws -> WeatherModelObject {
-        let realm = try Realm()
-
-        guard let savedWeather = realm.object(ofType: WeatherModelObject.self, forPrimaryKey: cityId) else {
-            throw CityScreenError.weatherNotFoundInRealm
+    func getWeather(cityId: Int) throws -> AnyPublisher<WeatherModelObject, Error> {
+        return Future<WeatherModelObject, Error> { promise in
+            do {
+                let realm = try Realm()
+                guard let savedWeather = realm.object(ofType: WeatherModelObject.self, forPrimaryKey: cityId) else {
+                    throw CityScreenError.weatherNotFoundInRealm
+                }
+                promise(.success(savedWeather))
+            } catch  {
+                promise(.failure(error))
+            }
         }
-
-        return savedWeather
+        .eraseToAnyPublisher()
     }
 
     func removeWeather(cityId: Int) throws {
