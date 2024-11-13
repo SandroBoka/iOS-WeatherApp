@@ -4,8 +4,8 @@ import Combine
 class CityListViewModel: ObservableObject {
 
     @Published private(set) var cities: [City] = []
-    @Published private(set) var suggestedCities: [SuggestedCity] = []
-    @Published private(set) var newCityName: String = ""
+    @Published var suggestedCities: [SuggestedCity] = []
+    @Published var newCityName: String = ""
 
     private let router: RouterProtocol
     private let getWeatherUseCase: GetWeatherUseCaseProtocol

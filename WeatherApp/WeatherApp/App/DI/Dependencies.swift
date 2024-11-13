@@ -19,6 +19,10 @@ class Dependencies: SceneDelegateDependenciesProtocol {
         Router(navigationController: mainNavigationController, viewModelFactory: self)
     }()
 
+    lazy var realmService: RealmServiceProtocol = {
+         RealmService()
+     }()
+
     lazy var getWeatherUseCase: GetWeatherUseCaseProtocol = {
         GetWeatherUseCase(weatherRepository: weatherRepository)
     }()
@@ -56,10 +60,6 @@ class Dependencies: SceneDelegateDependenciesProtocol {
 
     private lazy var locationService: LocationServiceProtocol = {
         LocationService(client: weatherClient)
-    }()
-
-    private lazy var realmService: RealmServiceProtocol = {
-        RealmService()
     }()
 
     private lazy var weatherRepository: WeatherRepositoryProtocol = {
