@@ -18,29 +18,7 @@ class RealmService: RealmServiceProtocol {
     func saveWeather(weather: WeatherModel, cityId: Int, cityName: String) throws {
         let realm = try Realm()
 
-        let weatherModelRealm = WeatherModelObject()
-        weatherModelRealm.cityId = cityId
-        weatherModelRealm.cityName = cityName
-        weatherModelRealm.temperature = weather.temperature
-        weatherModelRealm.feelsLike = weather.feelsLike
-        weatherModelRealm.weatherDescription = weather.description
-        weatherModelRealm.humidity = weather.humidity
-        weatherModelRealm.speed = weather.speed
-        weatherModelRealm.degrees = weather.degrees
-        weatherModelRealm.sunrise = weather.sunrise
-        weatherModelRealm.sunset = weather.sunset
-        weatherModelRealm.minTemperature = weather.minTemperature
-        weatherModelRealm.maxTemperature = weather.maxTemperature
-        weatherModelRealm.statusId = weather.statusId
-
-        weatherModelRealm.hourlyForecasts.append(objectsIn: weather.hourlyForecast.map {
-            let hourlyForecastObject = HourlyForecastObject()
-            hourlyForecastObject.temperature = $0.temperature
-            hourlyForecastObject.uvIndex = $0.uvIndex
-            hourlyForecastObject.percipation = $0.percipation
-            hourlyForecastObject.hour = $0.hour
-            return hourlyForecastObject
-        })
+        let weatherModelRealm = WeatherModelObject(weather: weather, cityId: cityId, cityName: cityName)
 
         try realm.write {
             realm.add(weatherModelRealm, update: .modified)
