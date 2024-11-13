@@ -24,23 +24,15 @@ class WeatherService: WeatherServiceProtocol {
     func fetchWeather(cityName: String) -> AnyPublisher<CurrentWeatherResponse, ClientError> {
         let endpoint = endpointFactory.makeCurrentWeather(cityName: cityName)
 
-        return Future { [weak self] promise in
-            self?.client.get(endpoint: endpoint) { result in
-                promise(result)
-            }
-        }
-        .eraseToAnyPublisher()
+        return client.get(endpoint: endpoint)
+            .eraseToAnyPublisher()
     }
 
     func fetchExtraWeather(latitude: Double, longitude: Double) -> AnyPublisher<ExtraWeatherResponse, ClientError> {
         let endpoint = endpointFactory.makeExtraWeather(latitude: latitude, longitude: longitude)
 
-        return Future { [weak self] promise in
-            self?.client.get(endpoint: endpoint) { result in
-                promise(result)
-            }
-        }
-        .eraseToAnyPublisher()
+        return client.get(endpoint: endpoint)
+            .eraseToAnyPublisher()
     }
 
 }

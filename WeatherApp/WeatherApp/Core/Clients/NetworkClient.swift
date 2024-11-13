@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 
 enum ClientError: Error {
@@ -13,47 +14,37 @@ enum ClientError: Error {
 
 protocol BaseApiClientProtocol {
 
-    func get<T: Decodable>(endpoint: Endpoint, completion: @escaping (Result<T, ClientError>) -> Void)
+    func get<T: Decodable>(endpoint: Endpoint) -> AnyPublisher<T, ClientError>
 
 }
 
 class NetworkClient: BaseApiClientProtocol {
 
-    func get<T: Decodable>(endpoint: Endpoint, completion: @escaping (Result<T, ClientError>) -> Void) {
+    func get<T>(endpoint: any Endpoint) -> AnyPublisher<T, ClientError> where T: Decodable {
         guard let request = endpoint.buildRequest() else {
-            completion(.failure(.badURL))
-            return
+            return Fail(error: ClientError.badURL)
+                .eraseToAnyPublisher()
         }
 
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(.networkError(error)))
-                return
-            }
+        return URLSession.shared.dataTaskPublisher(for: request)
+            .mapError { ClientError.networkError($0) }
+            .tryMap { output in
+                let statusCode = (output.response as? HTTPURLResponse)?.statusCode ?? -1
+                guard (200...299).contains(statusCode) else { throw ClientError.httpError(statusCode) }
 
-            let statusCode = (response as? HTTPURLResponse)?.statusCode ?? -1
-            guard
-                let httpResponse = response as? HTTPURLResponse,
-                (200...299).contains(statusCode)
-            else {
-                completion(.failure(.httpError(statusCode)))
-                return
+                return output.data
             }
-
-            guard let data = data else {
-                completion(.failure(.noData))
-                return
+            .decode(type: T.self, decoder: JSONDecoder())
+            .mapError { error in
+                if let decodingError = error as? DecodingError {
+                    return ClientError.decodingError(decodingError)
+                } else if let clientError = error as? ClientError {
+                    return clientError
+                } else {
+                    return ClientError.unknown
+                }
             }
-
-            do {
-                let decodedData = try JSONDecoder().decode(T.self, from: data)
-                completion(.success(decodedData))
-            } catch let decodingError {
-                completion(.failure(.decodingError(decodingError)))
-            }
-        }
-
-        task.resume()
+            .eraseToAnyPublisher()
     }
 
 }
