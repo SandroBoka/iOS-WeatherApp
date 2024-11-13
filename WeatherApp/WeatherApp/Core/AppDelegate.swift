@@ -7,16 +7,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
+        getCitiesFromJSON()
+
+        return true
+    }
+
+    private func getCitiesFromJSON() {
         let userDefaults = UserDefaults.standard
         let hasLoadedCitiesKey = "hasLoadedCities"
 
-        if !userDefaults.bool(forKey: hasLoadedCitiesKey) {
-            if RealmService().loadCitiesFromJson() {
-                userDefaults.set(true, forKey: hasLoadedCitiesKey)
-            }
+        if !userDefaults.bool(forKey: hasLoadedCitiesKey) && RealmService().loadCitiesFromJson() {
+            userDefaults.set(true, forKey: hasLoadedCitiesKey)
         }
-
-        return true
     }
 
 }
