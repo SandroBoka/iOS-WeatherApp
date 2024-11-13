@@ -4,7 +4,7 @@ protocol LocationRepositoryProtocol {
 
     func getLocationsWeather() -> [City]
     func removeCityWeather(city: City)
-    func saveWeatherToRealm(weather: WeatherModel, cityId: Int, cityName: String)
+    func saveWeather(weather: WeatherModel, cityId: Int, cityName: String)
     func getSuggestions(prefix: String) -> [SuggestedCity]
     func getCityId(cityName: String) -> Int
 
@@ -54,7 +54,7 @@ class LocationRepository: LocationRepositoryProtocol {
         }
     }
 
-    func saveWeatherToRealm(weather: WeatherModel, cityId: Int, cityName: String) {
+    func saveWeather(weather: WeatherModel, cityId: Int, cityName: String) {
         do {
             try realmService.saveWeather(
                 weather: weather,
