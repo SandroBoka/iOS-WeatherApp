@@ -27,39 +27,49 @@ class WeatherRepository: WeatherRepositoryProtocol {
     }
 
     func fetchWeather(cityId: Int, cityName: String) -> AnyPublisher<WeatherModel, ClientError> {
-        fetchCityLocation(cityName: cityName)
+        locationService
+            .fetchLocation(for: cityName)
+            .flatMap { [weak self] locationResponse in
+                guard let self else { return [] }
 
-        return weatherService.fetchWeather(cityName: cityName)
-            .tryMap { [weak self] currentWeatherResponse -> WeatherModel in
-                guard let self else { throw ClientError.noData }
-                var weatherModel = self.mapToWeatherModel(response: currentWeatherResponse)
-                do {
-                    try self.realmService.saveWeather(weather: weatherModel, cityId: cityId, cityName: cityName)
-                } catch {
-                    print("Failed to save weather data to Realm: \(error)")
-                }
-                do {
-                    let cashedWeather = try self.realmService.getWeather(cityId: cityId)
-                    weatherModel = WeatherModel(from: cashedWeather)
-                } catch {
-                    print("Failed to fetch weather data to Realm: \(error)")
-                }
-                return weatherModel
+                let latitude = locationResponse[0].latitude
+                let longitude = locationResponse[0].longitude
+
+                return self.weatherService.fetchExtraWeather(latitude: latitude, longitude: longitude)
             }
-            .mapError { error -> ClientError in
-                return error as? ClientError ?? .unknown
-            }
-            .catch { [weak self] error -> AnyPublisher<WeatherModel, ClientError> in
-                do {
-                    if let cachedWeather = try self?.realmService.getWeather(cityId: cityId) {
-                        return Just(WeatherModel(from: cachedWeather))
-                            .setFailureType(to: ClientError.self)
-                            .eraseToAnyPublisher()
+            .flatMap { extraWeatherResponse in
+                self.weatherService
+                    .fetchWeather(cityName: cityName)
+                    .tryMap { [weak self] currentWeatherResponse -> WeatherModel in
+                        guard let self else { throw ClientError.noData }
+
+                        var weatherModel = self.mapToWeatherModel(response: currentWeatherResponse)
+
+                        do {
+                            try realmService.saveWeather(weather: weatherModel, cityId: cityId, cityName: cityName)
+                        } catch {
+                            print("Failed to save weather data to Realm: \(error)")
+                        }
+
+                        return weatherModel
                     }
-                } catch {
+                    .mapError { error -> ClientError in
+                        error as? ClientError ?? .unknown
+                    }
+                    .eraseToAnyPublisher()
+            }
+            .flatMap { [weak self] _ -> AnyPublisher<WeatherModel, ClientError> in
+                guard let self = self else {
                     return Fail(error: .noData).eraseToAnyPublisher()
                 }
-                return Fail(error: error).eraseToAnyPublisher()
+                return self.realmService.getWeather(cityId: cityId)
+                    .map { cachedWeather in
+                        WeatherModel(from: cachedWeather)
+                    }
+                    .mapError { error in
+                        error as? ClientError ?? .unknown
+                    }
+
             }
             .eraseToAnyPublisher()
     }
