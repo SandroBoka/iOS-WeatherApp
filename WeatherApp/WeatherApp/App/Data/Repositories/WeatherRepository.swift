@@ -69,7 +69,7 @@ class WeatherRepository: WeatherRepositoryProtocol {
                     .mapError { error in
                         error as? ClientError ?? .unknown
                     }
-
+                    .eraseToAnyPublisher()
             }
             .eraseToAnyPublisher()
     }
