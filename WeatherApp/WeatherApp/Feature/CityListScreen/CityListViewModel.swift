@@ -4,8 +4,8 @@ import Combine
 class CityListViewModel: ObservableObject {
 
     @Published private(set) var cities: [City] = []
-    @Published var suggestedCities: [SuggestedCity] = []
-    @Published var newCityName: String = ""
+    @Published private(set) var suggestedCities: [SuggestedCity] = []
+    @Published private(set) var newCityName: String = ""
 
     private let router: RouterProtocol
     private let getWeatherUseCase: GetWeatherUseCaseProtocol
@@ -89,8 +89,9 @@ class CityListViewModel: ObservableObject {
 
     func removeCity(at offsets: IndexSet) {
         offsets.forEach { index in
-            let cityToRemove = cities[index]
-            removeCityUseCase.removeCityWeather(city: cityToRemove)
+            if let cityToRemove = cities.at(index) {
+                removeCityUseCase.removeCityWeather(city: cityToRemove)
+            }
         }
         cities.remove(atOffsets: offsets)
     }
