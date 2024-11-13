@@ -60,6 +60,7 @@ struct CityListView: View {
 
             Button("Add City") {
                 guard !newCityName.isEmpty else { return }
+
                 viewModel.addCity(cityName: newCityName)
                 newCityName = ""
             }
@@ -88,23 +89,8 @@ struct CityListView: View {
     private var cityList: some View {
         List {
             ForEach(viewModel.cities) { city in
-                Button {
-                    viewModel.showDetailsForCity(city: city)
-                } label: {
-                    HStack {
-                        Text(city.name.uppercased())
-                            .font(.notoSansFont(size: 15))
-
-                        Spacer()
-
-                        if let temperature = city.temperature {
-                            Text("\(temperature, specifier: "%.1f")°C")
-                                .font(.dottedFont(size: 20))
-                        } else {
-                            ProgressView()
-                        }
-                    }
-                }
+                CityListItem(city: city, action: { selectedCity in
+                    viewModel.showDetailsForCity(city: selectedCity) })
                 .padding(.vertical, 8)
                 .listRowBackground(Color.gray.opacity(0.1))
             }
