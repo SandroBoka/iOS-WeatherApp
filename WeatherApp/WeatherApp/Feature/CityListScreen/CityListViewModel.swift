@@ -5,6 +5,7 @@ class CityListViewModel: ObservableObject {
 
     @Published private(set) var cities: [City] = []
     @Published var suggestedCities: [SuggestedCity] = []
+    @Published var newCityName: String = ""
 
     private let router: RouterProtocol
     private let getWeatherUseCase: GetWeatherUseCaseProtocol
@@ -13,7 +14,6 @@ class CityListViewModel: ObservableObject {
     private let getSuggestionsUseCase: GetSuggestionsUseCaseProtocol
     private let getIdUseCase: GetIdUseCaseProtocol
 
-    private var cancellable: AnyCancellable?
     private var cancellables = Set<AnyCancellable>()
 
     init(
@@ -44,10 +44,18 @@ class CityListViewModel: ObservableObject {
                 self?.cities = cities
             })
             .store(in: &cancellables)
+
+        $newCityName
+            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
+            .removeDuplicates()
+            .sink { [weak self] newValue in
+                self?.getSuggestions(withPrefix: newValue)
+            }
+            .store(in: &cancellables)
     }
 
     func fetchTemperature(city: City) {
-        cancellable = getWeatherUseCase.getWeather(cityId: city.id, cityName: city.name)
+        getWeatherUseCase.getWeather(cityId: city.id, cityName: city.name)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
@@ -62,17 +70,21 @@ class CityListViewModel: ObservableObject {
                     }
                 }
             })
+            .store(in: &cancellables)
     }
 
     func showDetailsForCity(city: City) {
         router.showCityWeather(city: city)
     }
 
-    func addCity(cityName: String) {
-        let id = getIdUseCase.getCityId(cityName: cityName)
-        let newCity = City(id: id, name: cityName)
+    func addCity() {
+        guard !newCityName.isEmpty else { return }
+
+        let id = getIdUseCase.getCityId(cityName: newCityName)
+        let newCity = City(id: id, name: newCityName)
         cities.append(newCity)
         fetchTemperature(city: newCity)
+        newCityName = ""
     }
 
     func removeCity(at offsets: IndexSet) {

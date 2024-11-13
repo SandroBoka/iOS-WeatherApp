@@ -3,7 +3,6 @@ import SwiftUI
 struct CityListView: View {
 
     @ObservedObject var viewModel: CityListViewModel
-    @State private var newCityName: String = ""
 
     init(viewModel: CityListViewModel) {
         self.viewModel = viewModel
@@ -49,20 +48,14 @@ struct CityListView: View {
         HStack {
             TextField(
                 "",
-                text: $newCityName,
+                text: $viewModel.newCityName,
                 prompt: Text("Enter city name").foregroundColor(.primaryForeground.opacity(0.5))
             )
-            .onChange(of: newCityName) { _, newValue in
-                viewModel.getSuggestions(withPrefix: newValue)
-            }
             .padding(8)
             .background(RoundedRectangle(cornerRadius: 10).fill(Color.gray.opacity(0.1)))
 
             Button("Add City") {
-                guard !newCityName.isEmpty else { return }
-
-                viewModel.addCity(cityName: newCityName)
-                newCityName = ""
+                viewModel.addCity()
             }
         }
     }
@@ -71,7 +64,7 @@ struct CityListView: View {
         VStack(alignment: .leading) {
             ForEach(viewModel.suggestedCities, id: \.id) { city in
                 Button(action: {
-                    newCityName = city.cityName
+                    viewModel.newCityName = city.cityName
                     viewModel.suggestedCities = []
                 }, label: {
                     Text(city.cityName)
