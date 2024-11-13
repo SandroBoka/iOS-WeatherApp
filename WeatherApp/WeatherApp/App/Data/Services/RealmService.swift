@@ -4,7 +4,7 @@ import Foundation
 protocol RealmServiceProtocol {
 
     func saveWeather(weather: WeatherModel, cityId: Int, cityName: String) throws
-    func getWeather(cityId: Int) throws -> WeatherModel
+    func getWeather(cityId: Int) throws -> WeatherModelObject
     func removeWeather(cityId: Int) throws
     func getLocationWeathers() throws -> [WeatherModelObject]
     func getCitiesFromJson() -> Bool
@@ -25,30 +25,14 @@ class RealmService: RealmServiceProtocol {
         }
     }
 
-    func getWeather(cityId: Int) throws -> WeatherModel {
+    func getWeather(cityId: Int) throws -> WeatherModelObject {
         let realm = try Realm()
 
         guard let savedWeather = realm.object(ofType: WeatherModelObject.self, forPrimaryKey: cityId) else {
             throw CityScreenError.weatherNotFoundInRealm
         }
 
-        let hourlyForecasts = Array(savedWeather.hourlyForecasts.map {
-            HourlyForecast(temperature: $0.temperature, uvIndex: $0.uvIndex, percipation: $0.percipation, hour: $0.hour)
-        })
-
-        return WeatherModel(
-            temperature: savedWeather.temperature,
-            feelsLike: savedWeather.feelsLike,
-            description: savedWeather.weatherDescription,
-            humidity: savedWeather.humidity,
-            speed: savedWeather.speed,
-            degrees: savedWeather.degrees,
-            sunrise: savedWeather.sunrise,
-            sunset: savedWeather.sunset,
-            minTemperature: savedWeather.minTemperature,
-            maxTemperature: savedWeather.maxTemperature,
-            statusId: savedWeather.statusId,
-            hourlyForecast: hourlyForecasts)
+        return savedWeather
     }
 
     func removeWeather(cityId: Int) throws {
@@ -107,13 +91,13 @@ class RealmService: RealmServiceProtocol {
     func getCityId(cityName: String) -> Int {
         do {
             let realm = try Realm()
-            if let city = realm.objects(CityObject.self)
-                .filter("cityName ==[c] %@", cityName)
-                .first {
-                return city.id
-            } else {
-                return 0
-            }
+            guard
+                let city = realm.objects(CityObject.self)
+                    .filter("cityName ==[c] %@", cityName)
+                    .first
+            else { return 0 }
+
+            return city.id
         } catch {
             print("Error accessing Realm: \(error)")
             return 0

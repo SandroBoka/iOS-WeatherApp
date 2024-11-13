@@ -39,7 +39,8 @@ class WeatherRepository: WeatherRepositoryProtocol {
                     print("Failed to save weather data to Realm: \(error)")
                 }
                 do {
-                    weatherModel = try self.realmService.getWeather(cityId: cityId)
+                    let cashedWeather = try self.realmService.getWeather(cityId: cityId)
+                    weatherModel = WeatherModel(from: cashedWeather)
                 } catch {
                     print("Failed to fetch weather data to Realm: \(error)")
                 }
@@ -51,7 +52,7 @@ class WeatherRepository: WeatherRepositoryProtocol {
             .catch { [weak self] error -> AnyPublisher<WeatherModel, ClientError> in
                 do {
                     if let cachedWeather = try self?.realmService.getWeather(cityId: cityId) {
-                        return Just(cachedWeather)
+                        return Just(WeatherModel(from: cachedWeather))
                             .setFailureType(to: ClientError.self)
                             .eraseToAnyPublisher()
                     }
