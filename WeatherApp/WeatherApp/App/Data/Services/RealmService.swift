@@ -3,11 +3,11 @@ import Foundation
 
 protocol RealmServiceProtocol {
 
-    func saveWeatherToRealm(weather: WeatherModel, cityId: Int, cityName: String) throws
-    func loadWeatherFromRealm(cityId: Int) throws -> WeatherModel
-    func removeWeatherFromRealm(cityId: Int) throws
-    func loadLocationWeathers() throws -> [WeatherModelObject]
-    func loadCitiesFromJson() -> Bool
+    func saveWeather(weather: WeatherModel, cityId: Int, cityName: String) throws
+    func getWeather(cityId: Int) throws -> WeatherModel
+    func removeWeather(cityId: Int) throws
+    func getLocationWeathers() throws -> [WeatherModelObject]
+    func getCitiesFromJson() -> Bool
     func getCitiesByPrefix(prefix: String) -> [CityObject]
     func getCityId(cityName: String) -> Int
 
@@ -15,7 +15,7 @@ protocol RealmServiceProtocol {
 
 class RealmService: RealmServiceProtocol {
 
-    func saveWeatherToRealm(weather: WeatherModel, cityId: Int, cityName: String) throws {
+    func saveWeather(weather: WeatherModel, cityId: Int, cityName: String) throws {
         let realm = try Realm()
 
         let weatherModelRealm = WeatherModelObject()
@@ -47,7 +47,7 @@ class RealmService: RealmServiceProtocol {
         }
     }
 
-    func loadWeatherFromRealm(cityId: Int) throws -> WeatherModel {
+    func getWeather(cityId: Int) throws -> WeatherModel {
         let realm = try Realm()
 
         guard let savedWeather = realm.object(ofType: WeatherModelObject.self, forPrimaryKey: cityId) else {
@@ -73,7 +73,7 @@ class RealmService: RealmServiceProtocol {
             hourlyForecast: hourlyForecasts)
     }
 
-    func removeWeatherFromRealm(cityId: Int) throws {
+    func removeWeather(cityId: Int) throws {
         let realm = try Realm()
 
         if let weatherToDelete = realm.object(ofType: WeatherModelObject.self, forPrimaryKey: cityId) {
@@ -85,12 +85,12 @@ class RealmService: RealmServiceProtocol {
         }
     }
 
-    func loadLocationWeathers() throws -> [WeatherModelObject] {
+    func getLocationWeathers() throws -> [WeatherModelObject] {
         let realm = try Realm()
         return Array(realm.objects(WeatherModelObject.self))
     }
 
-    func loadCitiesFromJson() -> Bool {
+    func getCitiesFromJson() -> Bool {
         guard let path = Bundle.main.path(forResource: "city_list", ofType: "json") else {
             print("JSON file not found")
             return false

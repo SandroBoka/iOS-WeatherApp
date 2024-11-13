@@ -23,7 +23,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let userDefaults = UserDefaults.standard
         let hasLoadedCitiesKey = "hasLoadedCities"
 
-        if !userDefaults.bool(forKey: hasLoadedCitiesKey) && dependencies.realmService.loadCitiesFromJson() {
+        if !userDefaults.bool(forKey: hasLoadedCitiesKey) && dependencies.realmService.getCitiesFromJson() {
             userDefaults.set(true, forKey: hasLoadedCitiesKey)
         }
     }

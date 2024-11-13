@@ -29,7 +29,7 @@ class LocationRepository: LocationRepositoryProtocol {
     func getLocationsWeather() -> [City] {
         var cities: [City] = []
         do {
-            cities = try realmService.loadLocationWeathers().map {
+            cities = try realmService.getLocationWeathers().map {
                 City(
                     id: $0.cityId,
                     name: $0.cityName,
@@ -48,7 +48,7 @@ class LocationRepository: LocationRepositoryProtocol {
 
     func removeCityWeather(city: City) {
         do {
-            try realmService.removeWeatherFromRealm(cityId: city.id)
+            try realmService.removeWeather(cityId: city.id)
         } catch {
             print("Error deleting city: \(error)")
         }
@@ -56,7 +56,7 @@ class LocationRepository: LocationRepositoryProtocol {
 
     func saveWeatherToRealm(weather: WeatherModel, cityId: Int, cityName: String) {
         do {
-            try realmService.saveWeatherToRealm(
+            try realmService.saveWeather(
                 weather: weather,
                 cityId: cityId,
                 cityName: cityName
