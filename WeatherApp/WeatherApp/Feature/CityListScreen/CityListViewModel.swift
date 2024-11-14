@@ -31,19 +31,7 @@ class CityListViewModel: ObservableObject {
         self.getSuggestionsUseCase = getSuggestionsUseCase
         self.getIdUseCase = getIdUseCase
 
-        getCitiesUseCase.getCities()
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { completion in
-                switch completion {
-                case .finished:
-                    break
-                case .failure(let error):
-                    print("Error fetching cities: \(error)")
-                }
-            }, receiveValue: { [weak self] cities in
-                self?.cities = cities
-            })
-            .store(in: &cancellables)
+        updateCityList()
 
         $newCityName
             .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
@@ -93,11 +81,29 @@ class CityListViewModel: ObservableObject {
                 removeCityUseCase.removeCityWeather(city: cityToRemove)
             }
         }
-        cities.remove(atOffsets: offsets)
+        updateCityList()
     }
 
     func getSuggestions(withPrefix prefix: String) {
         suggestedCities = getSuggestionsUseCase.getSuggestedCities(prefix: prefix)
+    }
+
+    private func updateCityList() {
+        getCitiesUseCase.getCities()
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print("Error fetching cities: \(error)")
+                }
+            }, receiveValue: { [weak self] cities in
+                self?.cities = cities.sorted { city1, city2 in
+                    city1.name < city2.name
+                }
+            })
+            .store(in: &cancellables)
     }
 
 }
