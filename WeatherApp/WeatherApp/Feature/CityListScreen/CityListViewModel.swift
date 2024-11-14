@@ -66,7 +66,7 @@ class CityListViewModel: ObservableObject {
     func addCity() {
         guard !newCityName.isEmpty else { return }
 
-        let id = getIdUseCase.getCityId(cityName: newCityName)
+        let id = getCityId(cityName: newCityName)
         let newCity = City(id: id, name: newCityName)
         fetchTemperature(city: newCity)
         newCityName = ""
@@ -113,6 +113,26 @@ class CityListViewModel: ObservableObject {
                 }
             })
             .store(in: &cancellables)
+    }
+
+    private func getCityId(cityName: String) -> Int {
+        var cityId = 0
+
+        getIdUseCase.getCityId(cityName: cityName)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print("Error fetching city id: \(error)")
+                }
+            }, receiveValue: { id in
+                cityId = id
+            })
+            .store(in: &cancellables)
+
+        return cityId
     }
 
 }

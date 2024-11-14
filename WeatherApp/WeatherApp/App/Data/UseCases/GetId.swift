@@ -1,8 +1,9 @@
 import Foundation
+import Combine
 
 protocol GetIdUseCaseProtocol {
 
-    func getCityId(cityName: String) -> Int
+    func getCityId(cityName: String) -> AnyPublisher<Int, Error>
 
 }
 
@@ -14,7 +15,7 @@ class GetIdUseCase: GetIdUseCaseProtocol {
         self.locationRepository = locationRepository
     }
 
-    func getCityId(cityName: String) -> Int {
+    func getCityId(cityName: String) -> AnyPublisher<Int, Error> {
         locationRepository.getCityId(cityName: cityName)
     }
 

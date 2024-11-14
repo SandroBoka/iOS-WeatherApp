@@ -7,7 +7,7 @@ protocol LocationRepositoryProtocol {
     func removeCityWeather(city: City)
     func saveWeather(weather: WeatherModel, cityId: Int, cityName: String)
     func getSuggestions(prefix: String) -> AnyPublisher<[SuggestedCity], Error>
-    func getCityId(cityName: String) -> Int
+    func getCityId(cityName: String) -> AnyPublisher<Int, Error>
 
 }
 
@@ -75,7 +75,7 @@ class LocationRepository: LocationRepositoryProtocol {
             .eraseToAnyPublisher()
     }
 
-    func getCityId(cityName: String) -> Int {
+    func getCityId(cityName: String) -> AnyPublisher<Int, Error> {
         realmService.getCityId(cityName: cityName)
     }
 

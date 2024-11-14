@@ -10,7 +10,7 @@ protocol RealmServiceProtocol {
     func getLocationWeathers() -> AnyPublisher<[WeatherModelObject], Error>
     func getCitiesFromJson() -> Bool
     func getCitiesByPrefix(prefix: String) -> AnyPublisher<[CityObject], Error>
-    func getCityId(cityName: String) -> Int
+    func getCityId(cityName: String) -> AnyPublisher<Int, Error>
 
 }
 
@@ -108,20 +108,18 @@ class RealmService: RealmServiceProtocol {
         .eraseToAnyPublisher()
     }
 
-    func getCityId(cityName: String) -> Int {
-        do {
-            let realm = try Realm()
-            guard
+    func getCityId(cityName: String) -> AnyPublisher<Int, Error> {
+        Future <Int, Error> { promise in
+            do {
+                let realm = try Realm()
                 let city = realm.objects(CityObject.self)
                     .filter("cityName ==[c] %@", cityName)
                     .first
-            else { return 0 }
-
-            return city.id
-        } catch {
-            print("Error accessing Realm: \(error)")
-            return 0
+            } catch  {
+                promise(.failure(error))
+            }
         }
+        .eraseToAnyPublisher()
     }
 
 }
