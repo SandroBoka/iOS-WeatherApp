@@ -13,8 +13,6 @@ class WeatherRepository: WeatherRepositoryProtocol {
     let locationService: LocationServiceProtocol
     let realmService: RealmServiceProtocol
 
-    var cancellable: AnyCancellable?
-
     init(
         weatherService: WeatherServiceProtocol,
         locationService: LocationServiceProtocol,
