@@ -9,7 +9,7 @@ protocol RealmServiceProtocol {
     func removeWeather(cityId: Int) throws
     func getLocationWeathers() -> AnyPublisher<[WeatherModelObject], Error>
     func getCitiesFromJson() -> Bool
-    func getCitiesByPrefix(prefix: String) -> [CityObject]
+    func getCitiesByPrefix(prefix: String) -> AnyPublisher<[CityObject], Error>
     func getCityId(cityName: String) -> Int
 
 }
@@ -93,15 +93,19 @@ class RealmService: RealmServiceProtocol {
         }
     }
 
-    func getCitiesByPrefix(prefix: String) -> [CityObject] {
-        do {
-            let realm = try Realm()
-            let predicate = NSPredicate(format: "cityName BEGINSWITH[c] %@", prefix)
-            let cities = realm.objects(CityObject.self).filter(predicate).sorted(byKeyPath: "cityName").prefix(5)
-            return Array(cities)
-        } catch {
-            return []
+    func getCitiesByPrefix(prefix: String) -> AnyPublisher<[CityObject], Error> {
+        Future <[CityObject], Error> { promise in
+            do {
+                let realm = try Realm()
+                let predicate = NSPredicate(format: "cityName BEGINSWITH[c] %@", prefix)
+                let cities = realm.objects(CityObject.self).filter(predicate).sorted(byKeyPath: "cityName").prefix(5)
+
+                promise(.success(Array(cities)))
+            } catch {
+                promise(.failure(error))
+            }
         }
+        .eraseToAnyPublisher()
     }
 
     func getCityId(cityName: String) -> Int {

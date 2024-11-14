@@ -82,7 +82,19 @@ class CityListViewModel: ObservableObject {
     }
 
     func getSuggestions(withPrefix prefix: String) {
-        suggestedCities = getSuggestionsUseCase.getSuggestedCities(prefix: prefix)
+        getSuggestionsUseCase.getSuggestedCities(prefix: prefix)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print("Error getting suggestions: \(error)")
+                }
+            }, receiveValue: { [weak self] suggestions in
+                self?.suggestedCities = suggestions
+            })
+            .store(in: &cancellables)
     }
 
     private func updateCityList() {

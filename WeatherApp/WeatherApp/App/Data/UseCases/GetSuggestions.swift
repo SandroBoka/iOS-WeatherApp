@@ -1,8 +1,9 @@
 import Foundation
+import Combine
 
 protocol GetSuggestionsUseCaseProtocol {
 
-    func getSuggestedCities(prefix: String) -> [SuggestedCity]
+    func getSuggestedCities(prefix: String) -> AnyPublisher<[SuggestedCity], Error>
 
 }
 
@@ -14,7 +15,7 @@ class GetSuggestionsUseCase: GetSuggestionsUseCaseProtocol {
         self.locationRepository = locationRepository
     }
 
-    func getSuggestedCities(prefix: String) -> [SuggestedCity] {
+    func getSuggestedCities(prefix: String) -> AnyPublisher<[SuggestedCity], Error> {
         locationRepository.getSuggestions(prefix: prefix)
     }
 

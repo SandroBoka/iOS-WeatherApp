@@ -6,7 +6,7 @@ protocol LocationRepositoryProtocol {
     func getLocationsWeather() -> AnyPublisher<[City], Error>
     func removeCityWeather(city: City)
     func saveWeather(weather: WeatherModel, cityId: Int, cityName: String)
-    func getSuggestions(prefix: String) -> [SuggestedCity]
+    func getSuggestions(prefix: String) -> AnyPublisher<[SuggestedCity], Error>
     func getCityId(cityName: String) -> Int
 
 }
@@ -61,8 +61,18 @@ class LocationRepository: LocationRepositoryProtocol {
         }
     }
 
-    func getSuggestions(prefix: String) -> [SuggestedCity] {
-        realmService.getCitiesByPrefix(prefix: prefix).map { SuggestedCity(id: $0.id, cityName: $0.cityName) }
+    func getSuggestions(prefix: String) -> AnyPublisher<[SuggestedCity], Error> {
+        realmService
+            .getCitiesByPrefix(prefix: prefix)
+            .map { cityObjects in
+                cityObjects.map { SuggestedCity(id: $0.id, cityName: $0.cityName) }
+            }
+            .catch { error -> AnyPublisher<[SuggestedCity], Error> in
+                print("Error fetching suggestions from Realm: \(error)")
+
+                return Just([]).setFailureType(to: Error.self).eraseToAnyPublisher()
+            }
+            .eraseToAnyPublisher()
     }
 
     func getCityId(cityName: String) -> Int {
