@@ -44,20 +44,18 @@ class CityListViewModel: ObservableObject {
 
     func fetchTemperature(city: City) {
         getWeatherUseCase.getWeather(cityId: city.id, cityName: city.name)
-            .sink(receiveCompletion: { completion in
+            .sink(receiveCompletion: { [weak self] completion in
+                guard let self else { return }
+
                 switch completion {
                 case .finished:
+                    self.updateCityList()
                     return
                 case .failure(let error):
                     print("Error fetching weather with Combine: \(error)")
                 }
-            }, receiveValue: { weatherModel in
-                if let index = self.cities.firstIndex(where: { $0.id == city.id }) {
-                    DispatchQueue.main.async { [weak self] in
-                        self?.cities[index].temperature = weatherModel.temperature
-                    }
-                }
-            })
+            }, receiveValue: { _ in
+                })
             .store(in: &cancellables)
     }
 
@@ -70,7 +68,6 @@ class CityListViewModel: ObservableObject {
 
         let id = getIdUseCase.getCityId(cityName: newCityName)
         let newCity = City(id: id, name: newCityName)
-        cities.append(newCity)
         fetchTemperature(city: newCity)
         newCityName = ""
     }
