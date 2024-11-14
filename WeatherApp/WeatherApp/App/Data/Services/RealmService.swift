@@ -5,7 +5,7 @@ import Foundation
 protocol RealmServiceProtocol {
 
     func saveWeather(weather: WeatherModel, cityId: Int, cityName: String) throws
-    func getWeather(cityId: Int) throws -> AnyPublisher<WeatherModelObject, Error>
+    func getWeather(cityId: Int) -> AnyPublisher<WeatherModelObject, Error>
     func removeWeather(cityId: Int) throws
     func getLocationWeathers() throws -> [WeatherModelObject]
     func getCitiesFromJson() -> Bool
@@ -26,7 +26,7 @@ class RealmService: RealmServiceProtocol {
         }
     }
 
-    func getWeather(cityId: Int) throws -> AnyPublisher<WeatherModelObject, Error> {
+    func getWeather(cityId: Int) -> AnyPublisher<WeatherModelObject, Error> {
         return Future<WeatherModelObject, Error> { promise in
             do {
                 let realm = try Realm()
@@ -34,7 +34,7 @@ class RealmService: RealmServiceProtocol {
                     throw CityScreenError.weatherNotFoundInRealm
                 }
                 promise(.success(savedWeather))
-            } catch  {
+            } catch {
                 promise(.failure(error))
             }
         }
