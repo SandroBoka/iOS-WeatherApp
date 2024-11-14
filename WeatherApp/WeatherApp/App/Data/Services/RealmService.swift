@@ -7,7 +7,7 @@ protocol RealmServiceProtocol {
     func saveWeather(weather: WeatherModel, cityId: Int, cityName: String) throws
     func getWeather(cityId: Int) -> AnyPublisher<WeatherModelObject, Error>
     func removeWeather(cityId: Int) throws
-    func getLocationWeathers() throws -> [WeatherModelObject]
+    func getLocationWeathers() -> AnyPublisher<[WeatherModelObject], Error>
     func getCitiesFromJson() -> Bool
     func getCitiesByPrefix(prefix: String) -> [CityObject]
     func getCityId(cityName: String) -> Int
@@ -27,12 +27,13 @@ class RealmService: RealmServiceProtocol {
     }
 
     func getWeather(cityId: Int) -> AnyPublisher<WeatherModelObject, Error> {
-        return Future<WeatherModelObject, Error> { promise in
+       Future<WeatherModelObject, Error> { promise in
             do {
                 let realm = try Realm()
                 guard let savedWeather = realm.object(ofType: WeatherModelObject.self, forPrimaryKey: cityId) else {
                     throw CityScreenError.weatherNotFoundInRealm
                 }
+
                 promise(.success(savedWeather))
             } catch {
                 promise(.failure(error))
@@ -53,9 +54,18 @@ class RealmService: RealmServiceProtocol {
         }
     }
 
-    func getLocationWeathers() throws -> [WeatherModelObject] {
-        let realm = try Realm()
-        return Array(realm.objects(WeatherModelObject.self))
+    func getLocationWeathers() -> AnyPublisher<[WeatherModelObject], Error> {
+        Future <[WeatherModelObject], Error> { promise in
+            do {
+                let realm = try Realm()
+                let locationWeathers = realm.objects(WeatherModelObject.self)
+
+                promise(.success(Array(locationWeathers)))
+            } catch {
+                promise(.failure(error))
+            }
+        }
+        .eraseToAnyPublisher()
     }
 
     func getCitiesFromJson() -> Bool {

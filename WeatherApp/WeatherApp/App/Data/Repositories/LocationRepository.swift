@@ -1,8 +1,9 @@
 import Foundation
+import Combine
 
 protocol LocationRepositoryProtocol {
 
-    func getLocationsWeather() -> [City]
+    func getLocationsWeather() -> AnyPublisher<[City], Error>
     func removeCityWeather(city: City)
     func saveWeather(weather: WeatherModel, cityId: Int, cityName: String)
     func getSuggestions(prefix: String) -> [SuggestedCity]
@@ -26,24 +27,18 @@ class LocationRepository: LocationRepositoryProtocol {
         self.realmService = realmService
     }
 
-    func getLocationsWeather() -> [City] {
-        var cities: [City] = []
-        do {
-            cities = try realmService.getLocationWeathers().map {
-                City(
-                    id: $0.cityId,
-                    name: $0.cityName,
-                    temperature: $0.temperature)
+    func getLocationsWeather() -> AnyPublisher<[City], Error> {
+        realmService
+            .getLocationWeathers()
+            .map { weatherModelObjects in
+                weatherModelObjects.map { City(id: $0.cityId, name: $0.cityName, temperature: $0.temperature) }
             }
-        } catch {
-            print("Failed to load cities from to Realm: \(error)")
-        }
+            .catch { error -> AnyPublisher<[City], Error> in
+                print("Error fetching weather data: \(error)")
 
-        if cities.isEmpty {
-            cities = defaultCities
-        }
-
-        return cities
+                return Just([]).setFailureType(to: Error.self).eraseToAnyPublisher()
+            }
+            .eraseToAnyPublisher()
     }
 
     func removeCityWeather(city: City) {

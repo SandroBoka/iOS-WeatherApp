@@ -18,20 +18,26 @@ class GetCitiesUseCase: GetCitiesUseCaseProtocol {
     }
 
     func getCities() -> AnyPublisher<[City], Never> {
-        let cities = locationRepository.getLocationsWeather()
+        locationRepository.getLocationsWeather()
+            .flatMap { cities in
+                Publishers.MergeMany(
+                    cities.map { [weak self] city in
+                        guard let self else {
+                            return Just(city).eraseToAnyPublisher()
+                        }
 
-        let weatherFetches = cities.map { city in
-            weatherRepository.fetchWeather(cityId: city.id, cityName: city.name)
-                .map { weatherModel in
-                    var updatedCity = city
-                    updatedCity.temperature = weatherModel.temperature
-                    return updatedCity
-                }
-                .catch { _ in Just(city) }
-        }
-
-        return Publishers.MergeMany(weatherFetches)
-            .collect()
+                            return self.weatherRepository.fetchWeather(cityId: city.id, cityName: city.name)
+                            .map { weatherModel -> City in
+                                var updatedCity = city
+                                updatedCity.temperature = weatherModel.temperature
+                                return updatedCity
+                            }
+                            .catch { _ in Just(city) }
+                            .eraseToAnyPublisher()
+                    })
+                .collect()
+            }
+            .replaceError(with: [])
             .eraseToAnyPublisher()
     }
 
