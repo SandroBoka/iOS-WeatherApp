@@ -30,7 +30,6 @@ struct HourlyForecast {
 extension WeatherModel {
 
     init(from weatherModelObject: WeatherModelObject) {
-
         let hourlyForecasts = Array(
             weatherModelObject.hourlyForecasts.map {
                 HourlyForecast(
@@ -52,6 +51,29 @@ extension WeatherModel {
         self.maxTemperature = weatherModelObject.maxTemperature
         self.statusId = weatherModelObject.statusId
         self.hourlyForecast = hourlyForecasts
+    }
+
+    init(response: CurrentWeatherResponse, extraResponse: ExtraWeatherResponse) {
+        let hourly: [HourlyForecast] = extraResponse.hourly.prefix(24).map { hourlyWeather in
+            HourlyForecast(
+                temperature: hourlyWeather.temperature,
+                uvIndex: hourlyWeather.uvIndex,
+                percipation: hourlyWeather.percipation,
+                hour: hourlyWeather.dateTime)
+        }
+
+        self.temperature = response.main.temperature
+        self.feelsLike = response.main.feelsLike
+        self.description = response.weather.first?.description ?? "Not Avaliable"
+        self.humidity = response.main.humidity
+        self.speed = response.wind.speed
+        self.degrees = response.wind.degrees
+        self.sunrise = response.system.sunrise
+        self.sunset = response.system.sunset
+        self.minTemperature = response.main.minimalTemperature
+        self.maxTemperature = response.main.maximalTemperature
+        self.statusId = response.weather[0].id
+        self.hourlyForecast = hourly
     }
 
 }

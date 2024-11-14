@@ -47,10 +47,7 @@ class WeatherRepository: WeatherRepositoryProtocol {
                     .tryMap { [weak self] weatherResponse -> WeatherModel in
                         guard let self else { throw ClientError.noData }
 
-                        var weatherModel = self.returnWeatherModel(
-                            response: weatherResponse,
-                            extraResponse: extraWeatherResponse
-                        )
+                        let weatherModel = WeatherModel(response: weatherResponse, extraResponse: extraWeatherResponse)
 
                         do {
                             try self.realmService.saveWeather(weather: weatherModel, cityId: cityId, cityName: cityName)
@@ -68,59 +65,29 @@ class WeatherRepository: WeatherRepositoryProtocol {
                             return Fail(error: ClientError.noData).eraseToAnyPublisher()
                         }
 
-                        return self.realmService.getWeather(cityId: cityId)
-                            .map { WeatherModel(from: $0) }
-                            .mapError { error in
-                                return error as? ClientError ?? ClientError.noData
-                            }
-                            .eraseToAnyPublisher()
+                        return self.getWeatherFromStorage(cityId: cityId)
                     }
                     .eraseToAnyPublisher()
             }
-            .catch { [weak self] error -> AnyPublisher<WeatherModel, ClientError> in
-                guard let self = self else {
+            .catch { [weak self] _ -> AnyPublisher<WeatherModel, ClientError> in
+                guard let self else {
                     return Fail(error: ClientError.unknown).eraseToAnyPublisher()
                 }
 
-                return self.realmService.getWeather(cityId: cityId)
-                    .tryMap { weatherModelObject in
-                        WeatherModel(from: weatherModelObject)
-                    }
-                    .mapError { error in
-                        return error as? ClientError ?? ClientError.noData
-                    }
-                    .eraseToAnyPublisher()
+                return self.getWeatherFromStorage(cityId: cityId)
             }
             .eraseToAnyPublisher()
     }
 
-    private func returnWeatherModel(
-        response: CurrentWeatherResponse,
-        extraResponse: ExtraWeatherResponse
-    ) -> WeatherModel {
-        let weatherDescription = response.weather.first?.description ?? "Not Avaliable"
-
-        var hourly: [HourlyForecast] = extraResponse.hourly.prefix(24).map { hourlyWeather in
-            HourlyForecast(
-                temperature: hourlyWeather.temperature,
-                uvIndex: hourlyWeather.uvIndex,
-                percipation: hourlyWeather.percipation,
-                hour: hourlyWeather.dateTime)
-        }
-
-        return WeatherModel(
-            temperature: response.main.temperature,
-            feelsLike: response.main.feelsLike,
-            description: weatherDescription,
-            humidity: response.main.humidity,
-            speed: response.wind.speed,
-            degrees: response.wind.degrees,
-            sunrise: response.system.sunrise,
-            sunset: response.system.sunset,
-            minTemperature: response.main.minimalTemperature,
-            maxTemperature: response.main.maximalTemperature,
-            statusId: response.weather[0].id,
-            hourlyForecast: hourly)
+    private func getWeatherFromStorage(cityId: Int) -> AnyPublisher<WeatherModel, ClientError> {
+        return realmService.getWeather(cityId: cityId)
+            .tryMap { weatherModelObject in
+                WeatherModel(from: weatherModelObject)
+            }
+            .mapError { error in
+                return error as? ClientError ?? ClientError.noData
+            }
+            .eraseToAnyPublisher()
     }
 
 }
