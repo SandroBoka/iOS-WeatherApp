@@ -1,11 +1,13 @@
 import SwiftUI
 import Combine
+import CoreLocation
 
 class CityListViewModel: ObservableObject {
 
     @Published private(set) var cities: [City] = []
     @Published var suggestedCities: [SuggestedCity] = []
     @Published var newCityName: String = ""
+    @Published var authorizationStatus: CLAuthorizationStatus?
 
     private let router: RouterProtocol
     private let getWeatherUseCase: GetWeatherUseCaseProtocol
@@ -14,6 +16,7 @@ class CityListViewModel: ObservableObject {
     private let getSuggestionsUseCase: GetSuggestionsUseCaseProtocol
     private let getIdUseCase: GetIdUseCaseProtocol
 
+    private var locationManager = LocationDataManager()
     private var cancellables = Set<AnyCancellable>()
 
     init(
@@ -30,6 +33,11 @@ class CityListViewModel: ObservableObject {
         self.removeCityUseCase = removeCityUseCase
         self.getSuggestionsUseCase = getSuggestionsUseCase
         self.getIdUseCase = getIdUseCase
+
+        locationManager
+            .$authorizationStatus
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$authorizationStatus)
 
         updateCityList()
 
@@ -95,6 +103,10 @@ class CityListViewModel: ObservableObject {
                 self?.suggestedCities = suggestions
             })
             .store(in: &cancellables)
+    }
+
+    func requestLocationAccess() {
+        locationManager.requestLocation()
     }
 
     private func updateCityList() {

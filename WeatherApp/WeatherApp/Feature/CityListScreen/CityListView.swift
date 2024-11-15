@@ -29,6 +29,7 @@ struct CityListView: View {
         .onAppear {
             let appearance = UINavigationBarAppearance()
             setNavigationBarAppearance(appearance: appearance)
+            viewModel.requestLocationAccess()
         }
         .foregroundStyle(.primaryForeground)
         .background(.primaryBackground)

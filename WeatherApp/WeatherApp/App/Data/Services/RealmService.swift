@@ -109,13 +109,13 @@ class RealmService: RealmServiceProtocol {
     }
 
     func getCityId(cityName: String) -> AnyPublisher<Int, Error> {
-
         Future <Int, Error> { promise in
             do {
                 let realm = try Realm()
                 let city = realm.objects(CityObject.self)
                     .filter("cityName ==[c] %@", cityName)
                     .first
+
                 promise(.success(city?.id ?? 0))
             } catch {
                 promise(.failure(error))
