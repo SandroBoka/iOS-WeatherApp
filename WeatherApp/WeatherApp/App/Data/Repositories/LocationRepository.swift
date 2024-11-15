@@ -30,8 +30,14 @@ class LocationRepository: LocationRepositoryProtocol {
     func getLocationsWeather() -> AnyPublisher<[City], Error> {
         realmService
             .getLocationWeathers()
-            .map { weatherModelObjects in
-                weatherModelObjects.map { City(id: $0.cityId, name: $0.cityName, temperature: $0.temperature) }
+            .map { [weak self] weatherModelObjects in
+                if weatherModelObjects.isEmpty {
+                    return self?.defaultCities ?? []
+                } else {
+                    return weatherModelObjects.map {
+                        City(id: $0.cityId, name: $0.cityName, temperature: $0.temperature)
+                    }
+                }
             }
             .catch { error -> AnyPublisher<[City], Error> in
                 print("Error fetching weather data: \(error)")

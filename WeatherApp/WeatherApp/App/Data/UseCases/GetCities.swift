@@ -26,7 +26,7 @@ class GetCitiesUseCase: GetCitiesUseCaseProtocol {
                             return Just(city).eraseToAnyPublisher()
                         }
 
-                            return self.weatherRepository.fetchWeather(cityId: city.id, cityName: city.name)
+                        return self.weatherRepository.fetchWeather(cityId: city.id, cityName: city.name)
                             .map { weatherModel -> City in
                                 var updatedCity = city
                                 updatedCity.temperature = weatherModel.temperature

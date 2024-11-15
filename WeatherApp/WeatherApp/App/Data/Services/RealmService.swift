@@ -117,7 +117,7 @@ class RealmService: RealmServiceProtocol {
                     .first
 
                 promise(.success(city?.id ?? 0))
-            } catch  {
+            } catch {
                 promise(.failure(error))
             }
         }
