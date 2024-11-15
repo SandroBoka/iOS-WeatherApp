@@ -9,6 +9,8 @@ class CityListViewModel: ObservableObject {
     @Published var newCityName: String = ""
     @Published var authorizationStatus: CLAuthorizationStatus?
 
+    @ObservedObject private var locationManager = LocationDataManager()
+
     private let router: RouterProtocol
     private let getWeatherUseCase: GetWeatherUseCaseProtocol
     private let getCitiesUseCase: GetCitiesUseCaseProtocol
@@ -16,8 +18,9 @@ class CityListViewModel: ObservableObject {
     private let getSuggestionsUseCase: GetSuggestionsUseCaseProtocol
     private let getIdUseCase: GetIdUseCaseProtocol
 
-    private var locationManager = LocationDataManager()
     private var cancellables = Set<AnyCancellable>()
+    private var latitude: Double = 0
+    private var longitude: Double = 0
 
     init(
         router: RouterProtocol,
@@ -107,6 +110,14 @@ class CityListViewModel: ObservableObject {
 
     func requestLocationAccess() {
         locationManager.requestLocation()
+
+        locationManager.$currentLocation
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] location in
+                self?.latitude = location?.coordinate.latitude ?? 0
+                self?.longitude = location?.coordinate.longitude ?? 0
+            }
+            .store(in: &cancellables)
     }
 
     private func updateCityList() {

@@ -3,6 +3,7 @@ import CoreLocation
 class LocationDataManager: NSObject, CLLocationManagerDelegate, ObservableObject {
 
     @Published var authorizationStatus: CLAuthorizationStatus?
+    @Published var currentLocation: CLLocation?
 
     var locationManager = CLLocationManager()
 
@@ -11,6 +12,7 @@ class LocationDataManager: NSObject, CLLocationManagerDelegate, ObservableObject
 
         locationManager.delegate = self
         authorizationStatus = locationManager.authorizationStatus
+        currentLocation = CLLocation()
     }
 
     func requestLocation() {
@@ -45,7 +47,9 @@ class LocationDataManager: NSObject, CLLocationManagerDelegate, ObservableObject
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        print(locations.first?.coordinate ?? "No location available")
+        if let location = locations.first {
+            currentLocation = location
+        }
     }
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: any Error) {
