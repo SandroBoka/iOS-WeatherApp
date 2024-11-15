@@ -1,9 +1,11 @@
 import CoreLocation
+import Combine
 
 class LocationDataManager: NSObject, CLLocationManagerDelegate, ObservableObject {
 
-    @Published var authorizationStatus: CLAuthorizationStatus?
+    @Published private(set) var authorizationStatus: CLAuthorizationStatus?
     @Published var currentLocation: CLLocation?
+    @Published var currentCityName: String = ""
 
     var locationManager = CLLocationManager()
 
@@ -27,10 +29,14 @@ class LocationDataManager: NSObject, CLLocationManagerDelegate, ObservableObject
         case .authorizedWhenInUse:
             authorizationStatus = .authorizedWhenInUse
             manager.requestLocation()
+            currentLocation = manager.location
+            getCityName()
 
         case .authorizedAlways:
             authorizationStatus = .authorizedAlways
             manager.requestLocation()
+            currentLocation = manager.location
+            getCityName()
 
         case .restricted:
             authorizationStatus = .restricted
@@ -54,6 +60,20 @@ class LocationDataManager: NSObject, CLLocationManagerDelegate, ObservableObject
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: any Error) {
         print("error: \(error.localizedDescription)")
+    }
+
+    func getCityName() {
+        guard let location = currentLocation else { return }
+
+        CLGeocoder().reverseGeocodeLocation(location) { [weak self] placemarks, error in
+            if let error = error {
+                print("Error in reverse geocoding: \(error.localizedDescription)")
+            } else if let placemark = placemarks?.first, let city = placemark.locality {
+                self?.currentCityName = city
+            } else {
+                self?.currentCityName = ""
+            }
+        }
     }
 
 }
