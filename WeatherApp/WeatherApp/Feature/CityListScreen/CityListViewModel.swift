@@ -48,6 +48,9 @@ class CityListViewModel: ObservableObject {
                 self.currentCityName = cityName
                 if self.locationEnabled {
                     self.addLocationCity()
+                } else {
+                    print("removing")
+                    removeCityUseCase.removeCityWeather(city: City(id: 21, name: ""))
                 }
             }
             .store(in: &cancellables)
@@ -105,12 +108,9 @@ class CityListViewModel: ObservableObject {
 
     func addLocationCity() {
         guard !currentCityName.isEmpty
-        else {
-            removeCityUseCase.removeCityWeather(city: City(id: 21, name: ""))
-            return
-        }
+        else { return }
 
-        let newCity = City(id: 21, name: self.currentCityName)
+        let newCity = City(id: 21, name: currentCityName)
         self.fetchTemperature(city: newCity)
     }
 
