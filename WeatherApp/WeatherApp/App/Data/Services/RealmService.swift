@@ -116,7 +116,7 @@ class RealmService: RealmServiceProtocol {
                     .filter("cityName ==[c] %@", cityName)
                     .first
 
-                promise(.success(city?.id ?? 0))
+                promise(.success(city?.id ?? 11))
             } catch {
                 promise(.failure(error))
             }

@@ -7,10 +7,8 @@ class CityListViewModel: ObservableObject {
     @Published private(set) var cities: [City] = []
     @Published var suggestedCities: [SuggestedCity] = []
     @Published var newCityName: String = ""
-    @Published var authorizationStatus: CLAuthorizationStatus?
-    @Published private var currentCityName = ""
-
-    @ObservedObject private var locationManager = LocationDataManager()
+    @Published private(set) var currentCityName = ""
+    @Published private(set) var locationEnabled: Bool = false
 
     private let router: RouterProtocol
     private let getWeatherUseCase: GetWeatherUseCaseProtocol
@@ -18,8 +16,10 @@ class CityListViewModel: ObservableObject {
     private let removeCityUseCase: RemoveCityUseCaseProtocol
     private let getSuggestionsUseCase: GetSuggestionsUseCaseProtocol
     private let getIdUseCase: GetIdUseCaseProtocol
+    private let getLocationUseCase: GetLocationUseCaseProtocol
 
     private var cancellables = Set<AnyCancellable>()
+    private var newId = 0
 
     init(
         router: RouterProtocol,
@@ -27,7 +27,8 @@ class CityListViewModel: ObservableObject {
         getCitiesUseCase: GetCitiesUseCaseProtocol,
         removeCityUseCase: RemoveCityUseCaseProtocol,
         getSuggestionsUseCase: GetSuggestionsUseCaseProtocol,
-        getIdUseCase: GetIdUseCaseProtocol
+        getIdUseCase: GetIdUseCaseProtocol,
+        getLocationUseCase: GetLocationUseCaseProtocol
     ) {
         self.router = router
         self.getWeatherUseCase = getWeatherUseCase
@@ -35,16 +36,26 @@ class CityListViewModel: ObservableObject {
         self.removeCityUseCase = removeCityUseCase
         self.getSuggestionsUseCase = getSuggestionsUseCase
         self.getIdUseCase = getIdUseCase
+        self.getLocationUseCase = getLocationUseCase
 
-        locationManager
-            .$authorizationStatus
+        getLocationUseCase
+            .getCurrentCity()
+            .catch { _ in Just("") }
             .receive(on: DispatchQueue.main)
-            .assign(to: &$authorizationStatus)
+            .sink { [weak self] cityName in
+                guard let self else { return }
 
-        locationManager
-            .$currentCityName
+                self.currentCityName = cityName
+                if self.locationEnabled {
+                    self.addLocationCity()
+                }
+            }
+            .store(in: &cancellables)
+
+        getLocationUseCase
+            .isLocationEnabled()
             .receive(on: DispatchQueue.main)
-            .assign(to: &$currentCityName)
+            .assign(to: &$locationEnabled)
 
         updateCityList()
 
@@ -70,22 +81,33 @@ class CityListViewModel: ObservableObject {
                     print("Error fetching weather with Combine: \(error)")
                 }
             }, receiveValue: { _ in
-                })
+            })
             .store(in: &cancellables)
     }
 
     func showDetailsForCity(city: City) {
-        print(currentCityName)
         router.showCityWeather(city: city)
     }
 
     func addCity() {
         guard !newCityName.isEmpty else { return }
 
-        let id = getCityId(cityName: newCityName)
-        let newCity = City(id: id, name: newCityName)
-        fetchTemperature(city: newCity)
-        newCityName = ""
+        getCityId(cityName: newCityName)
+            .sink(receiveValue: { [weak self] id in
+                guard let self else { return }
+
+                print(id, self.newCityName)
+                let newCity = City(id: id, name: self.newCityName)
+                self.fetchTemperature(city: newCity)
+                self.newCityName = ""
+            })
+            .store(in: &cancellables)
+    }
+
+    func addLocationCity() {
+        guard !currentCityName.isEmpty else { return }
+
+        print("Current city wether would be added")
     }
 
     func removeCity(at offsets: IndexSet) {
@@ -114,7 +136,7 @@ class CityListViewModel: ObservableObject {
     }
 
     func requestLocationAccess() {
-        locationManager.requestLocation()
+        getLocationUseCase.requestLocation()
     }
 
     private func updateCityList() {
@@ -135,24 +157,14 @@ class CityListViewModel: ObservableObject {
             .store(in: &cancellables)
     }
 
-    private func getCityId(cityName: String) -> Int {
-        var cityId = 0
-
-        getIdUseCase.getCityId(cityName: cityName)
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { completion in
-                switch completion {
-                case .finished:
-                    break
-                case .failure(let error):
-                    print("Error fetching city id: \(error)")
-                }
-            }, receiveValue: { id in
-                cityId = id
-            })
-            .store(in: &cancellables)
-
-        return cityId
+    private func getCityId(cityName: String) -> AnyPublisher<Int, Never> {
+        getIdUseCase
+            .getCityId(cityName: cityName)
+            .catch{ error -> Just<Int> in
+                print("Error fetching city id: \(error)")
+                return Just(0)
+            }
+            .eraseToAnyPublisher()
     }
 
 }

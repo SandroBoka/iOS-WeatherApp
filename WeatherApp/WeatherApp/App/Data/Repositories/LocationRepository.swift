@@ -8,6 +8,9 @@ protocol LocationRepositoryProtocol {
     func saveWeather(weather: WeatherModel, cityId: Int, cityName: String)
     func getSuggestions(prefix: String) -> AnyPublisher<[SuggestedCity], Error>
     func getCityId(cityName: String) -> AnyPublisher<Int, Error>
+    func getCurrentCity() -> AnyPublisher<String, Error>
+    func isLocationEnabled() -> AnyPublisher<Bool, Never>
+    func requestLocation()
 
 }
 
@@ -22,16 +25,24 @@ class LocationRepository: LocationRepositoryProtocol {
         City(id: 5368361, name: "Los Angeles")]
 
     let realmService: RealmServiceProtocol
+    let locationManager: LocationDataManager
 
-    init(realmService: RealmServiceProtocol) {
+    init(realmService: RealmServiceProtocol, locationManager: LocationDataManager) {
         self.realmService = realmService
+        self.locationManager = locationManager
     }
 
     func getLocationsWeather() -> AnyPublisher<[City], Error> {
         realmService
             .getLocationWeathers()
-            .map { weatherModelObjects in
-                weatherModelObjects.map { City(id: $0.cityId, name: $0.cityName, temperature: $0.temperature) }
+            .map { [weak self] weatherModelObjects in
+                if weatherModelObjects.isEmpty {
+                    return self?.defaultCities ?? []
+                } else {
+                    return weatherModelObjects.map {
+                        City(id: $0.cityId, name: $0.cityName, temperature: $0.temperature)
+                    }
+                }
             }
             .catch { error -> AnyPublisher<[City], Error> in
                 print("Error fetching weather data: \(error)")
@@ -77,6 +88,22 @@ class LocationRepository: LocationRepositoryProtocol {
 
     func getCityId(cityName: String) -> AnyPublisher<Int, Error> {
         realmService.getCityId(cityName: cityName)
+    }
+
+    func getCurrentCity() -> AnyPublisher<String, Error> {
+        locationManager
+            .$currentCityName
+            .setFailureType(to: Error.self)
+            .eraseToAnyPublisher()
+    }
+
+    func isLocationEnabled() -> AnyPublisher<Bool, Never> {
+        locationManager
+            .authorizationEnabled
+    }
+
+    func requestLocation() {
+        locationManager.requestLocation()
     }
 
 }

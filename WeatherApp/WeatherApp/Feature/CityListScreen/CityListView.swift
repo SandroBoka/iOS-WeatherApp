@@ -82,6 +82,13 @@ struct CityListView: View {
 
     private var cityList: some View {
         List {
+            if viewModel.locationEnabled {
+                CurrentListItem(city: City(id: 21, name: viewModel.currentCityName, temperature: 23),
+                                action: { selectedCity in
+                    viewModel.showDetailsForCity(city: selectedCity) })
+                .padding(.vertical, 8)
+                .listRowBackground(Color.gray.opacity(0.1))
+            }
             ForEach(viewModel.cities) { city in
                 CityListItem(city: city, action: { selectedCity in
                     viewModel.showDetailsForCity(city: selectedCity) })
@@ -113,13 +120,26 @@ struct CityListView: View {
                     locationService: LocationService(client: NetworkClient()), realmService: RealmService())),
             getCitiesUseCase: GetCitiesUseCase(
                 locationRepository: LocationRepository(
-                    realmService: RealmService()), weatherRepository: WeatherRepository(
-                        weatherService: WeatherService(client: NetworkClient()),
-                        locationService: LocationService(client: NetworkClient()), realmService: RealmService())),
+                    realmService: RealmService(),
+                    locationManager: LocationDataManager()),
+                weatherRepository: WeatherRepository(
+                    weatherService: WeatherService(client: NetworkClient()),
+                    locationService: LocationService(client: NetworkClient()), realmService: RealmService())
+            ),
             removeCityUseCase: RemoveCityUseCase(
-                locationRepository: LocationRepository(realmService: RealmService())),
+                locationRepository: LocationRepository(
+                    realmService: RealmService(),
+                    locationManager: LocationDataManager())),
             getSuggestionsUseCase: GetSuggestionsUseCase(
-                locationRepository: LocationRepository(realmService: RealmService())),
+                locationRepository: LocationRepository(
+                    realmService: RealmService(),
+                    locationManager: LocationDataManager())),
             getIdUseCase: GetIdUseCase(
-                locationRepository: LocationRepository(realmService: RealmService()))))
+                locationRepository: LocationRepository(
+                    realmService: RealmService(),
+                    locationManager: LocationDataManager())),
+            getLocationUseCase: GetLocationUseCase(
+                locationRepository: LocationRepository(
+                    realmService: RealmService(),
+                    locationManager: LocationDataManager()))))
 }

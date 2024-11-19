@@ -9,6 +9,13 @@ class LocationDataManager: NSObject, CLLocationManagerDelegate, ObservableObject
 
     var locationManager = CLLocationManager()
 
+    private let authorizationEnabledSubject = CurrentValueSubject<Bool, Never>(false)
+
+    var authorizationEnabled: AnyPublisher<Bool, Never> {
+        authorizationEnabledSubject
+            .eraseToAnyPublisher()
+    }
+
     override init() {
         super.init()
 
@@ -28,21 +35,25 @@ class LocationDataManager: NSObject, CLLocationManagerDelegate, ObservableObject
 
         case .authorizedWhenInUse:
             authorizationStatus = .authorizedWhenInUse
+            authorizationEnabledSubject.send(true)
             manager.requestLocation()
             currentLocation = manager.location
             getCityName()
 
         case .authorizedAlways:
             authorizationStatus = .authorizedAlways
+            authorizationEnabledSubject.send(true)
             manager.requestLocation()
             currentLocation = manager.location
             getCityName()
 
         case .restricted:
             authorizationStatus = .restricted
+            authorizationEnabledSubject.send(false)
 
         case .denied:
             authorizationStatus = .denied
+            authorizationEnabledSubject.send(false)
 
         case .notDetermined:
             manager.requestWhenInUseAuthorization()
