@@ -96,7 +96,6 @@ class CityListViewModel: ObservableObject {
             .sink(receiveValue: { [weak self] id in
                 guard let self else { return }
 
-                print(id, self.newCityName)
                 let newCity = City(id: id, name: self.newCityName)
                 self.fetchTemperature(city: newCity)
                 self.newCityName = ""
@@ -105,14 +104,22 @@ class CityListViewModel: ObservableObject {
     }
 
     func addLocationCity() {
-        guard !currentCityName.isEmpty else { return }
+        guard !currentCityName.isEmpty
+        else {
+            removeCityUseCase.removeCityWeather(city: City(id: 21, name: ""))
+            return
+        }
 
-        print("Current city wether would be added")
+        let newCity = City(id: 21, name: self.currentCityName)
+        self.fetchTemperature(city: newCity)
     }
 
     func removeCity(at offsets: IndexSet) {
         offsets.forEach { index in
+            var index = index
+            if locationEnabled { index += 1 }
             if let cityToRemove = cities.at(index) {
+                print(cityToRemove.name)
                 removeCityUseCase.removeCityWeather(city: cityToRemove)
             }
         }
@@ -160,7 +167,7 @@ class CityListViewModel: ObservableObject {
     private func getCityId(cityName: String) -> AnyPublisher<Int, Never> {
         getIdUseCase
             .getCityId(cityName: cityName)
-            .catch{ error -> Just<Int> in
+            .catch { error -> Just<Int> in
                 print("Error fetching city id: \(error)")
                 return Just(0)
             }

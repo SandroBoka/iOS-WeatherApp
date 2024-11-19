@@ -82,14 +82,13 @@ struct CityListView: View {
 
     private var cityList: some View {
         List {
-            if viewModel.locationEnabled {
-                CurrentListItem(city: City(id: 21, name: viewModel.currentCityName, temperature: 23),
-                                action: { selectedCity in
+            if viewModel.locationEnabled, let currentCity = viewModel.cities.first(where: { $0.id == 21 }) {
+                CurrentListItem(city: currentCity, action: { selectedCity in
                     viewModel.showDetailsForCity(city: selectedCity) })
                 .padding(.vertical, 8)
                 .listRowBackground(Color.gray.opacity(0.1))
             }
-            ForEach(viewModel.cities) { city in
+            ForEach(viewModel.cities.filter { $0.id != 21 }) { city in
                 CityListItem(city: city, action: { selectedCity in
                     viewModel.showDetailsForCity(city: selectedCity) })
                 .padding(.vertical, 8)
