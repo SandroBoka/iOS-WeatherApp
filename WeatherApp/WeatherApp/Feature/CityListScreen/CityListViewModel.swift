@@ -150,11 +150,7 @@ class CityListViewModel: ObservableObject {
             })
             .store(in: &cancellables)
     }
-
-    func requestLocationAccess() {
-        getLocationUseCase.requestLocation()
-    }
-
+    
     func getCurrentCityId() -> Int {
         userDefaultsUseCase.getCurrentId()
     }

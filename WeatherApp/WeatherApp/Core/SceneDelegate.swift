@@ -15,6 +15,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
         guard let window else { return }
 
+        dependencies.getLocationUseCase.requestLocation()
         getCitiesFromJSON()
         dependencies.router.start(in: window)
     }
