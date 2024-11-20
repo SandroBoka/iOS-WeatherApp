@@ -1,6 +1,7 @@
 import SwiftUI
+import UserNotifications
 
-class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+class SceneDelegate: UIResponder, UIWindowSceneDelegate, UNUserNotificationCenterDelegate {
 
     var window: UIWindow?
     lazy var dependencies = Dependencies()
@@ -16,6 +17,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let window else { return }
 
         dependencies.getLocationUseCase.requestLocation()
+        requestNotificationPermission()
+        setupNotificationDelegate()
         getCitiesFromJSON()
         dependencies.router.start(in: window)
     }
@@ -28,4 +31,50 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             userDefaults.set(true, forKey: hasLoadedCitiesKey)
         }
     }
+
+    private func requestNotificationPermission() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            if let error = error {
+                print("Error requesting notification authorization: \(error)")
+            }
+            if granted {
+                print("Notification authorization granted")
+            } else {
+                print("Notification authorization denied")
+            }
+        }
+    }
+
+    private func setupNotificationDelegate() {
+        let center = UNUserNotificationCenter.current()
+        center.delegate = self
+    }
+}
+
+extension SceneDelegate {
+
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse,
+        withCompletionHandler completionHandler: @escaping () -> Void
+    ) {
+        let userInfo = response.notification.request.content.userInfo
+        if let cityId = userInfo["cityId"] as? Int, let cityName = userInfo["cityName"] as? String {
+            let city = City(id: cityId, name: cityName)
+
+            NotificationCenter.default.post(
+                name: .didReceiveNotificationForCity,
+                object: nil,
+                userInfo: ["city": city]
+            )
+        }
+        completionHandler()
+    }
+
+}
+
+extension Notification.Name {
+
+    static let didReceiveNotificationForCity = Notification.Name("didReceiveNotificationForCity")
+
 }

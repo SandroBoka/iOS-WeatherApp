@@ -29,6 +29,7 @@ struct CityListView: View {
         .onAppear {
             let appearance = UINavigationBarAppearance()
             setNavigationBarAppearance(appearance: appearance)
+
         }
         .foregroundStyle(.primaryForeground)
         .background(.primaryBackground)
@@ -84,13 +85,13 @@ struct CityListView: View {
             if viewModel.locationEnabled, let currentCity = viewModel.cities.first(
                 where: { $0.id == viewModel.getCurrentCityId()
                 }) {
-                    CurrentListItem(city: currentCity, action: { selectedCity in
-                        viewModel.showDetailsForCity(city: selectedCity)
-                    })
-                    .padding(.vertical, 8)
-                    .listRowBackground(Color.gray.opacity(0.1))
+                CurrentListItem(city: currentCity, action: { selectedCity in
+                    viewModel.showDetailsForCity(city: selectedCity)
+                })
+                .padding(.vertical, 8)
+                .listRowBackground(Color.gray.opacity(0.1))
             }
-            ForEach(viewModel.cities.filter { $0.id != viewModel.getCurrentCityId() }) { city in
+            ForEach(viewModel.locationEnabled ? viewModel.filteredCities : viewModel.cities) { city in
                 CityListItem(city: city, action: { selectedCity in
                     viewModel.showDetailsForCity(city: selectedCity) })
                 .padding(.vertical, 8)
