@@ -82,13 +82,16 @@ struct CityListView: View {
 
     private var cityList: some View {
         List {
-            if viewModel.locationEnabled, let currentCity = viewModel.cities.first(where: { $0.id == 21 }) {
-                CurrentListItem(city: currentCity, action: { selectedCity in
-                    viewModel.showDetailsForCity(city: selectedCity) })
-                .padding(.vertical, 8)
-                .listRowBackground(Color.gray.opacity(0.1))
+            if viewModel.locationEnabled, let currentCity = viewModel.cities.first(
+                where: { $0.id == viewModel.getCurrentCityId()
+                }) {
+                    CurrentListItem(city: currentCity, action: { selectedCity in
+                        viewModel.showDetailsForCity(city: selectedCity)
+                    })
+                    .padding(.vertical, 8)
+                    .listRowBackground(Color.gray.opacity(0.1))
             }
-            ForEach(viewModel.cities.filter { $0.id != 21 }) { city in
+            ForEach(viewModel.cities.filter { $0.id != viewModel.getCurrentCityId() }) { city in
                 CityListItem(city: city, action: { selectedCity in
                     viewModel.showDetailsForCity(city: selectedCity) })
                 .padding(.vertical, 8)
@@ -140,5 +143,6 @@ struct CityListView: View {
             getLocationUseCase: GetLocationUseCase(
                 locationRepository: LocationRepository(
                     realmService: RealmService(),
-                    locationManager: LocationDataManager()))))
+                    locationManager: LocationDataManager())),
+            userDefaultsUseCase: UserDefaultsUseCase()))
 }
