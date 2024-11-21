@@ -71,12 +71,7 @@ class CityListViewModel: ObservableObject {
             }
             .store(in: &cancellables)
 
-        NotificationCenter.default.publisher(for: .didReceiveNotificationForCity)
-            .compactMap { $0.userInfo?["city"] as? City }
-            .sink { [weak self] city in
-                self?.showDetailsForCity(city: city)
-            }
-            .store(in: &cancellables)
+        configureNotificationClick()
     }
 
     func fetchTemperature(city: City) {
@@ -193,6 +188,10 @@ class CityListViewModel: ObservableObject {
             .eraseToAnyPublisher()
     }
 
+}
+
+extension CityListViewModel {
+
     private func fetchWeatherAndScheduleNotification() {
         guard locationEnabled else { return }
 
@@ -230,6 +229,15 @@ class CityListViewModel: ObservableObject {
                     }
                 }
             })
+            .store(in: &cancellables)
+    }
+
+    private func configureNotificationClick() {
+        NotificationCenter.default.publisher(for: .didReceiveNotificationForCity)
+            .compactMap { $0.userInfo?["city"] as? City }
+            .sink { [weak self] city in
+                self?.showDetailsForCity(city: city)
+            }
             .store(in: &cancellables)
     }
 
