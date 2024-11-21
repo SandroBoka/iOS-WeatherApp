@@ -2,7 +2,7 @@ import RealmSwift
 import Combine
 import Foundation
 
-protocol RealmServiceProtocol {
+public protocol RealmServiceProtocol {
 
     func saveWeather(weather: WeatherModel, cityId: Int, cityName: String) throws
     func getWeather(cityId: Int) -> AnyPublisher<WeatherModelObject, Error>
@@ -14,9 +14,11 @@ protocol RealmServiceProtocol {
 
 }
 
-class RealmService: RealmServiceProtocol {
+public class RealmService: RealmServiceProtocol {
 
-    func saveWeather(weather: WeatherModel, cityId: Int, cityName: String) throws {
+    public init() {}
+
+    public func saveWeather(weather: WeatherModel, cityId: Int, cityName: String) throws {
         let realm = try Realm()
 
         let weatherModelRealm = WeatherModelObject(weather: weather, cityId: cityId, cityName: cityName)
@@ -26,7 +28,7 @@ class RealmService: RealmServiceProtocol {
         }
     }
 
-    func getWeather(cityId: Int) -> AnyPublisher<WeatherModelObject, Error> {
+    public func getWeather(cityId: Int) -> AnyPublisher<WeatherModelObject, Error> {
         Future<WeatherModelObject, Error> { promise in
             do {
                 let realm = try Realm()
@@ -42,7 +44,7 @@ class RealmService: RealmServiceProtocol {
         .eraseToAnyPublisher()
     }
 
-    func removeWeather(cityId: Int) throws {
+    public func removeWeather(cityId: Int) throws {
         let realm = try Realm()
 
         if let weatherToDelete = realm.object(ofType: WeatherModelObject.self, forPrimaryKey: cityId) {
@@ -54,7 +56,7 @@ class RealmService: RealmServiceProtocol {
         }
     }
 
-    func getLocationWeathers() -> AnyPublisher<[WeatherModelObject], Error> {
+    public func getLocationWeathers() -> AnyPublisher<[WeatherModelObject], Error> {
         Future <[WeatherModelObject], Error> { promise in
             do {
                 let realm = try Realm()
@@ -68,7 +70,7 @@ class RealmService: RealmServiceProtocol {
         .eraseToAnyPublisher()
     }
 
-    func getCitiesFromJson() -> Bool {
+    public func getCitiesFromJson() -> Bool {
         guard let path = Bundle.main.path(forResource: "city_list", ofType: "json") else {
             print("JSON file not found")
             return false
@@ -93,7 +95,7 @@ class RealmService: RealmServiceProtocol {
         }
     }
 
-    func getCitiesByPrefix(prefix: String) -> AnyPublisher<[CityObject], Error> {
+    public func getCitiesByPrefix(prefix: String) -> AnyPublisher<[CityObject], Error> {
         Future <[CityObject], Error> { promise in
             do {
                 let realm = try Realm()
@@ -108,7 +110,7 @@ class RealmService: RealmServiceProtocol {
         .eraseToAnyPublisher()
     }
 
-    func getCityId(cityName: String) -> AnyPublisher<Int, Error> {
+    public func getCityId(cityName: String) -> AnyPublisher<Int, Error> {
         Future <Int, Error> { promise in
             do {
                 let realm = try Realm()

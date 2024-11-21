@@ -1,6 +1,6 @@
 import RealmSwift
 
-class WeatherModelObject: Object {
+public class WeatherModelObject: Object {
 
     @Persisted(primaryKey: true) var cityId: Int
     @Persisted var cityName: String
@@ -17,7 +17,7 @@ class WeatherModelObject: Object {
     @Persisted var statusId: Int
     @Persisted var hourlyForecasts = List<HourlyForecastObject>()
 
-    init(weather: WeatherModel, cityId: Int, cityName: String) {
+    public init(weather: WeatherModel, cityId: Int, cityName: String) {
         super.init()
 
         self.cityId = cityId
@@ -50,7 +50,7 @@ class WeatherModelObject: Object {
 
 }
 
-class HourlyForecastObject: Object {
+public class HourlyForecastObject: Object {
 
     @Persisted var temperature: Double
     @Persisted var uvIndex: Double

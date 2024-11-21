@@ -1,4 +1,5 @@
 import SwiftUI
+import WeatherFramework
 
 struct HourlyForecastWidget: View {
 

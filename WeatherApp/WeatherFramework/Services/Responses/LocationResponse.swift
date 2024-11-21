@@ -1,4 +1,4 @@
-struct LocationResponse: Decodable {
+public struct LocationResponse: Decodable {
 
     let name: String
     let localNames: [String: String]?

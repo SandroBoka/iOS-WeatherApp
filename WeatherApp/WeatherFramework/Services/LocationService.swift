@@ -1,18 +1,18 @@
 import Foundation
 import Combine
 
-protocol LocationServiceProtocol {
+public protocol LocationServiceProtocol {
 
     func fetchLocation(for cityName: String) -> AnyPublisher<[LocationResponse], ClientError>
 
 }
 
-class LocationService: LocationServiceProtocol {
+public class LocationService: LocationServiceProtocol {
 
     private let client: BaseApiClientProtocol
     private let endPointFactory: LocationEndpointFactory
 
-    init(client: BaseApiClientProtocol) {
+    public init(client: BaseApiClientProtocol) {
         self.client = client
 
         guard let apiKey = InfoConstants.openWeatherMapApiKey else { fatalError("API Key not found") }
@@ -20,7 +20,7 @@ class LocationService: LocationServiceProtocol {
         endPointFactory = LocationEndpointFactory(apiKey: apiKey)
     }
 
-    func fetchLocation(for cityName: String) -> AnyPublisher<[LocationResponse], ClientError> {
+    public func fetchLocation(for cityName: String) -> AnyPublisher<[LocationResponse], ClientError> {
         let endpoint = endPointFactory.makeLocationEndpoint(cityName: cityName)
 
         return client.get(endpoint: endpoint)

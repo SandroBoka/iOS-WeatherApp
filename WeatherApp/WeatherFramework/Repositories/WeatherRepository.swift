@@ -1,19 +1,19 @@
 import Foundation
 import Combine
 
-protocol WeatherRepositoryProtocol {
+public protocol WeatherRepositoryProtocol {
 
     func fetchWeather(cityId: Int, cityName: String) -> AnyPublisher<WeatherModel, ClientError>
 
 }
 
-class WeatherRepository: WeatherRepositoryProtocol {
+public class WeatherRepository: WeatherRepositoryProtocol {
 
     let weatherService: WeatherServiceProtocol
     let locationService: LocationServiceProtocol
     let realmService: RealmServiceProtocol
 
-    init(
+    public init(
         weatherService: WeatherServiceProtocol,
         locationService: LocationServiceProtocol,
         realmService: RealmServiceProtocol
@@ -23,7 +23,7 @@ class WeatherRepository: WeatherRepositoryProtocol {
         self.realmService = realmService
     }
 
-    func fetchWeather(cityId: Int, cityName: String) -> AnyPublisher<WeatherModel, ClientError> {
+    public func fetchWeather(cityId: Int, cityName: String) -> AnyPublisher<WeatherModel, ClientError> {
         locationService
             .fetchLocation(for: cityName)
             .flatMap { [weak self] locationResponse -> AnyPublisher<ExtraWeatherResponse, ClientError> in

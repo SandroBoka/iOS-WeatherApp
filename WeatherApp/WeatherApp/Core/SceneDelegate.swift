@@ -1,5 +1,6 @@
 import SwiftUI
 import UserNotifications
+import WeatherFramework
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate, UNUserNotificationCenterDelegate {
 

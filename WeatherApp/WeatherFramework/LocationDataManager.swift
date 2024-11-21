@@ -1,7 +1,7 @@
 import CoreLocation
 import Combine
 
-class LocationDataManager: NSObject, CLLocationManagerDelegate, ObservableObject {
+public class LocationDataManager: NSObject, CLLocationManagerDelegate, ObservableObject {
 
     @Published private(set) var authorizationStatus: CLAuthorizationStatus?
     @Published var currentLocation: CLLocation?
@@ -16,7 +16,7 @@ class LocationDataManager: NSObject, CLLocationManagerDelegate, ObservableObject
             .eraseToAnyPublisher()
     }
 
-    override init() {
+    public override init() {
         super.init()
 
         locationManager.delegate = self
@@ -24,13 +24,13 @@ class LocationDataManager: NSObject, CLLocationManagerDelegate, ObservableObject
         currentLocation = CLLocation()
     }
 
-    func requestLocation() {
+    public func requestLocation() {
         if authorizationStatus == .notDetermined {
             locationManager.requestWhenInUseAuthorization()
         }
     }
 
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+    public func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         switch manager.authorizationStatus {
 
         case .authorizedWhenInUse:
@@ -63,17 +63,17 @@ class LocationDataManager: NSObject, CLLocationManagerDelegate, ObservableObject
         }
     }
 
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.first {
             currentLocation = location
         }
     }
 
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: any Error) {
+    public func locationManager(_ manager: CLLocationManager, didFailWithError error: any Error) {
         print("error: \(error.localizedDescription)")
     }
 
-    func getCityName() {
+    public func getCityName() {
         guard let location = currentLocation else { return }
 
         CLGeocoder().reverseGeocodeLocation(location) { [weak self] placemarks, error in

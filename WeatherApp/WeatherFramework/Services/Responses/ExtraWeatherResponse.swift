@@ -1,6 +1,6 @@
 import Foundation
 
-struct ExtraWeatherResponse: Decodable {
+public struct ExtraWeatherResponse: Decodable {
 
     let latitude: Double
     let longitude: Double

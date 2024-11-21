@@ -1,4 +1,5 @@
 import SwiftUI
+import WeatherFramework
 
 struct CityListItem: View {
 

@@ -1,7 +1,7 @@
 import Foundation
 import Combine
 
-protocol LocationRepositoryProtocol {
+public protocol LocationRepositoryProtocol {
 
     func getLocationsWeather() -> AnyPublisher<[City], Error>
     func removeCityWeather(city: City)
@@ -14,7 +14,7 @@ protocol LocationRepositoryProtocol {
 
 }
 
-class LocationRepository: LocationRepositoryProtocol {
+public class LocationRepository: LocationRepositoryProtocol {
 
     private let defaultCities: [City] = [
         City(id: 3186886, name: "Zagreb"),
@@ -27,12 +27,12 @@ class LocationRepository: LocationRepositoryProtocol {
     let realmService: RealmServiceProtocol
     let locationManager: LocationDataManager
 
-    init(realmService: RealmServiceProtocol, locationManager: LocationDataManager) {
+    public init(realmService: RealmServiceProtocol, locationManager: LocationDataManager) {
         self.realmService = realmService
         self.locationManager = locationManager
     }
 
-    func getLocationsWeather() -> AnyPublisher<[City], Error> {
+    public func getLocationsWeather() -> AnyPublisher<[City], Error> {
         realmService
             .getLocationWeathers()
             .map { [weak self] weatherModelObjects in
@@ -52,7 +52,7 @@ class LocationRepository: LocationRepositoryProtocol {
             .eraseToAnyPublisher()
     }
 
-    func removeCityWeather(city: City) {
+    public func removeCityWeather(city: City) {
         do {
             try realmService.removeWeather(cityId: city.id)
         } catch {
@@ -60,7 +60,7 @@ class LocationRepository: LocationRepositoryProtocol {
         }
     }
 
-    func saveWeather(weather: WeatherModel, cityId: Int, cityName: String) {
+    public func saveWeather(weather: WeatherModel, cityId: Int, cityName: String) {
         do {
             try realmService.saveWeather(
                 weather: weather,
@@ -72,7 +72,7 @@ class LocationRepository: LocationRepositoryProtocol {
         }
     }
 
-    func getSuggestions(prefix: String) -> AnyPublisher<[SuggestedCity], Error> {
+    public func getSuggestions(prefix: String) -> AnyPublisher<[SuggestedCity], Error> {
         realmService
             .getCitiesByPrefix(prefix: prefix)
             .map { cityObjects in
@@ -86,23 +86,23 @@ class LocationRepository: LocationRepositoryProtocol {
             .eraseToAnyPublisher()
     }
 
-    func getCityId(cityName: String) -> AnyPublisher<Int, Error> {
+    public func getCityId(cityName: String) -> AnyPublisher<Int, Error> {
         realmService.getCityId(cityName: cityName)
     }
 
-    func getCurrentCity() -> AnyPublisher<String, Error> {
+    public func getCurrentCity() -> AnyPublisher<String, Error> {
         locationManager
             .$currentCityName
             .setFailureType(to: Error.self)
             .eraseToAnyPublisher()
     }
 
-    func isLocationEnabled() -> AnyPublisher<Bool, Never> {
+    public func isLocationEnabled() -> AnyPublisher<Bool, Never> {
         locationManager
             .authorizationEnabled
     }
 
-    func requestLocation() {
+    public func requestLocation() {
         locationManager.requestLocation()
     }
 

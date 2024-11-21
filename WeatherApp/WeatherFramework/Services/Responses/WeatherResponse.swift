@@ -1,4 +1,4 @@
-struct CurrentWeatherResponse: Decodable {
+public struct CurrentWeatherResponse: Decodable {
 
     let coordinates: CoordinatesResponse
     let weather: [WeatherResponse]

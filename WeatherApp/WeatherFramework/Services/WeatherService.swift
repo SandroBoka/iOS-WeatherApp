@@ -1,19 +1,19 @@
 import Foundation
 import Combine
 
-protocol WeatherServiceProtocol {
+public protocol WeatherServiceProtocol {
 
     func fetchWeather(cityName: String) -> AnyPublisher<CurrentWeatherResponse, ClientError>
     func fetchExtraWeather(latitude: Double, longitude: Double) -> AnyPublisher<ExtraWeatherResponse, ClientError>
 
 }
 
-class WeatherService: WeatherServiceProtocol {
+public class WeatherService: WeatherServiceProtocol {
 
     private let client: BaseApiClientProtocol
     private let endpointFactory: WeatherEndpointFactory
 
-    init(client: BaseApiClientProtocol) {
+    public init(client: BaseApiClientProtocol) {
         self.client = client
 
         guard let apiKey = InfoConstants.openWeatherMapApiKey else { fatalError("API Key not found") }
@@ -21,14 +21,16 @@ class WeatherService: WeatherServiceProtocol {
         endpointFactory = WeatherEndpointFactory(apiKey: apiKey)
     }
 
-    func fetchWeather(cityName: String) -> AnyPublisher<CurrentWeatherResponse, ClientError> {
+    public func fetchWeather(cityName: String) -> AnyPublisher<CurrentWeatherResponse, ClientError> {
         let endpoint = endpointFactory.makeCurrentWeather(cityName: cityName)
 
         return client.get(endpoint: endpoint)
             .eraseToAnyPublisher()
     }
 
-    func fetchExtraWeather(latitude: Double, longitude: Double) -> AnyPublisher<ExtraWeatherResponse, ClientError> {
+    public func fetchExtraWeather(
+        latitude: Double,
+        longitude: Double) -> AnyPublisher<ExtraWeatherResponse, ClientError> {
         let endpoint = endpointFactory.makeExtraWeather(latitude: latitude, longitude: longitude)
 
         return client.get(endpoint: endpoint)

@@ -1,35 +1,42 @@
 import Foundation
 
-struct WeatherModel {
+public struct WeatherModel {
 
-    let temperature: Double
-    let feelsLike: Double
-    let description: String
-    let humidity: Int
-    let speed: Double
-    let degrees: Int
-    let sunrise: Int
-    let sunset: Int
-    let minTemperature: Double
-    let maxTemperature: Double
-    let statusId: Int
-    let hourlyForecast: [HourlyForecast]
+    public let temperature: Double
+    public let feelsLike: Double
+    public let description: String
+    public let humidity: Int
+    public let speed: Double
+    public let degrees: Int
+    public let sunrise: Int
+    public let sunset: Int
+    public let minTemperature: Double
+    public let maxTemperature: Double
+    public let statusId: Int
+    public let hourlyForecast: [HourlyForecast]
 
 }
 
-struct HourlyForecast {
+public struct HourlyForecast {
 
-    let id = UUID()
-    let temperature: Double
-    let uvIndex: Double
-    let percipation: Double
-    let hour: Int
+    public init(temperature: Double, uvIndex: Double, percipation: Double, hour: Int) {
+        self.temperature = temperature
+        self.uvIndex = uvIndex
+        self.percipation = percipation
+        self.hour = hour
+    }
+
+    public let id = UUID()
+    public let temperature: Double
+    public let uvIndex: Double
+    public let percipation: Double
+    public let hour: Int
 
 }
 
 extension WeatherModel {
 
-    init(from weatherModelObject: WeatherModelObject) {
+    public init(from weatherModelObject: WeatherModelObject) {
         let hourlyForecasts = Array(
             weatherModelObject.hourlyForecasts.map {
                 HourlyForecast(
@@ -53,7 +60,7 @@ extension WeatherModel {
         self.hourlyForecast = hourlyForecasts
     }
 
-    init(response: CurrentWeatherResponse, extraResponse: ExtraWeatherResponse) {
+    public init(response: CurrentWeatherResponse, extraResponse: ExtraWeatherResponse) {
         let hourly: [HourlyForecast] = extraResponse.hourly.prefix(24).map { hourlyWeather in
             HourlyForecast(
                 temperature: hourlyWeather.temperature,

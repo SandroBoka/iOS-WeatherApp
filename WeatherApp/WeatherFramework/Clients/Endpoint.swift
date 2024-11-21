@@ -1,6 +1,6 @@
 import Foundation
 
-protocol Endpoint {
+public protocol Endpoint {
 
     var path: String { get }
     var queryItems: [URLQueryItem] { get }
@@ -8,7 +8,7 @@ protocol Endpoint {
 
 }
 
-extension Endpoint {
+public extension Endpoint {
 
     func buildRequest() -> URLRequest? {
         var urlComponents = URLComponents(string: baseURL + path)

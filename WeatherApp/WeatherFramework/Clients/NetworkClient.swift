@@ -1,7 +1,7 @@
 import Combine
 import Foundation
 
-enum ClientError: Error {
+public enum ClientError: Error {
 
     case badURL
     case decodingError(Error)
@@ -12,15 +12,19 @@ enum ClientError: Error {
 
 }
 
-protocol BaseApiClientProtocol {
+public protocol BaseApiClientProtocol {
 
     func get<T: Decodable>(endpoint: Endpoint) -> AnyPublisher<T, ClientError>
 
 }
 
-class NetworkClient: BaseApiClientProtocol {
+public class NetworkClient: BaseApiClientProtocol {
 
-    func get<T>(endpoint: any Endpoint) -> AnyPublisher<T, ClientError> where T: Decodable {
+    public init() {
+
+    }
+
+    public func get<T>(endpoint: any Endpoint) -> AnyPublisher<T, ClientError> where T: Decodable {
         guard let request = endpoint.buildRequest() else {
             return Fail(error: ClientError.badURL)
                 .eraseToAnyPublisher()
