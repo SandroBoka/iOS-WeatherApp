@@ -4,7 +4,7 @@ import Weather
 
 import Combine
 
-struct Provider: TimelineProvider {
+class Provider: TimelineProvider {
 
     private let viewModel = WeatherWidgetViewModel(
         getLocationUseCase: GetCurrentLocationUseCase(
@@ -21,27 +21,61 @@ struct Provider: TimelineProvider {
     private var cancellables = Set<AnyCancellable>()
 
     func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date())
+        SimpleEntry(date: Date(), weatherModel: WeatherModel(dummyData: true), cityName: "Zagreb")
     }
 
     func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> Void) {
-        let entry = SimpleEntry(date: Date())
+        let entry = SimpleEntry(date: Date(), weatherModel: WeatherModel(dummyData: true), cityName: "Zagreb")
         completion(entry)
     }
 
-    func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> Void) {
-        let currentDate = Date()
+    func getTimeline(in context: Context, completion: @escaping (Timeline<SimpleEntry>) -> Void) {
+        viewModel.fetchWeather()
+                    .sink(receiveCompletion: { completion in
+                        switch completion {
+                        case .finished:
+                            return
+                        case .failure(let error):
+                            print("Error fetching weather with Combine: \(error)")
+                        }
+                    }, receiveValue: { [weak self] weatherModel in
+                        guard let self else { return }
 
-        var entries: [SimpleEntry] = []
+                        let currentDate = Date()
+                        let refreshDate = Calendar.current.date(byAdding: .hour, value: 1, to: currentDate)!
 
-        for hoursOffset in 0..<5 {
-            let entryDate = Calendar.current.date(byAdding: .hour, value: hoursOffset, to: currentDate)!
-            let entry = SimpleEntry(date: entryDate)
-            entries.append(entry)
-        }
+                        let cityName = self.viewModel.currentCityName != "" ? self.viewModel.currentCityName: "Unknown"
 
-        let timeline = Timeline(entries: entries, policy: .atEnd)
-        completion(timeline)
+                        let entry = SimpleEntry(
+                            date: currentDate,
+                            weatherModel: weatherModel,
+                            cityName: cityName
+                        )
+
+                        let timeline = Timeline(entries: [entry], policy: .after(refreshDate))
+                        completion(timeline)
+                    })
+                    .store(in: &cancellables)
+
+//        Publishers.CombineLatest(viewModel.$currentCityName, viewModel.$weather)
+//            .first()
+//            .sink { currentCityName, weather in
+//                let currentDate = Date()
+//                let refreshDate = Calendar.current.date(byAdding: .hour, value: 1, to: currentDate)!
+//
+//                let weatherModel = weather ?? WeatherModel(dummyData: true)
+//                let cityName = currentCityName.isEmpty ? "Unknown" : currentCityName
+//
+//                let entry = SimpleEntry(
+//                    date: currentDate,
+//                    weatherModel: weatherModel,
+//                    cityName: cityName
+//                )
+//
+//                let timeline = Timeline(entries: [entry], policy: .after(refreshDate))
+//                completion(timeline)
+//            }
+//            .store(in: &cancellables)
     }
 
 }
@@ -49,6 +83,8 @@ struct Provider: TimelineProvider {
 struct SimpleEntry: TimelineEntry {
 
     let date: Date
+    let weatherModel: WeatherModel
+    let cityName: String
 
 }
 
@@ -59,25 +95,25 @@ struct WeatherWidgetEntryView: View {
 
     var body: some View {
         VStack(spacing: 10) {
-            Text("Zagreb")
+            Text(entry.cityName)
                 .font(.notoSansFontWidget(size: 20))
 
-            Text("7.6°C")
+            Text(String(entry.weatherModel.temperature))
                 .font(.dottedFontWidget(size: 20))
 
             if widgetFamily == .systemLarge {
 
-                Text("Humidity: 80%")
+                Text("Humidity: \(entry.weatherModel.humidity)%")
                     .font(.dottedFontWidget(size: 15))
                     .padding(.top)
 
-                Image(.sunny)
+                Image(entry.weatherModel.weatherImage)
                     .resizable()
                     .renderingMode(.template)
                     .scaledToFit()
             }
 
-            Text("Light Rain")
+            Text(entry.weatherModel.description)
                 .font(.dottedFontWidget(size: 15))
         }
         .containerBackground(.gray.gradient.opacity(0.8), for: .widget)
@@ -103,9 +139,10 @@ struct WeatherWidget: Widget {
 struct WeatherWidget_Previews: PreviewProvider {
 
     static var previews: some View {
-        WeatherWidgetEntryView(entry: SimpleEntry(date: Date()))
-            .previewContext(WidgetPreviewContext(family: .systemMedium))
-            .previewContext(WidgetPreviewContext(family: .systemLarge))
+        WeatherWidgetEntryView(
+            entry: SimpleEntry(date: Date(), weatherModel: WeatherModel(dummyData: true), cityName: "Zagreb"))
+        .previewContext(WidgetPreviewContext(family: .systemMedium))
+        .previewContext(WidgetPreviewContext(family: .systemLarge))
     }
 
 }

@@ -36,6 +36,26 @@ public struct HourlyForecast {
 
 extension WeatherModel {
 
+    public init(dummyData: Bool = false) {
+        self.temperature = 20.5
+        self.feelsLike = 19.8
+        self.description = "Partly Cloudy"
+        self.humidity = 60
+        self.speed = 5.5
+        self.degrees = 180
+        self.sunrise = Int(Date().addingTimeInterval(-3600).timeIntervalSince1970)
+        self.sunset = Int(Date().addingTimeInterval(3600 * 16).timeIntervalSince1970)
+        self.minTemperature = 18.0
+        self.maxTemperature = 22.0
+        self.statusId = 801
+        self.hourlyForecast = [
+            HourlyForecast(temperature: 18.5, uvIndex: 2.0, percipation: 0.1, hour: 9),
+            HourlyForecast(temperature: 20.0, uvIndex: 5.0, percipation: 0.0, hour: 12),
+            HourlyForecast(temperature: 21.5, uvIndex: 3.0, percipation: 0.0, hour: 15),
+            HourlyForecast(temperature: 19.0, uvIndex: 1.0, percipation: 0.0, hour: 18)
+        ]
+    }
+
     public init(from weatherModelObject: WeatherModelObject) {
         let hourlyForecasts = Array(
             weatherModelObject.hourlyForecasts.map {

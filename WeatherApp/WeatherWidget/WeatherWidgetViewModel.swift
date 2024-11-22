@@ -3,9 +3,9 @@ import Combine
 import Weather
 import SwiftUI
 
-class WeatherWidgetViewModel {
+class WeatherWidgetViewModel: ObservableObject {
 
-    @Published private(set) var currentCityName = ""
+    @Published private(set) var currentCityName = "London"
     @Published private(set) var locationEnabled: Bool = false
     @Published private(set) var weather: WeatherModel?
 
@@ -33,29 +33,45 @@ class WeatherWidgetViewModel {
             .getCurrentCity()
             .catch { _ in Just("") }
             .receive(on: DispatchQueue.main)
-            .assign(to: &$currentCityName)
+            .sink { [weak self] currentCity in
+                guard let self else { return }
+
+                print(locationEnabled)
+                print(currentCity)
+                self.currentCityName = currentCity
+//                if locationEnabled {
+//                    fetchWeather()
+//                }
+            }
+            .store(in: &cancellables)
+
+//        fetchWeather()
     }
 
-    func fetchWeather() {
-        getWeatherUseCase.getWeather(cityId: getIdUseCase.getId(), cityName: currentCityName)
-            .sink(receiveCompletion: { completion in
-                switch completion {
-                case .finished:
-                    return
-                case .failure(let error):
-                    print("Error fetching weather with Combine: \(error)")
-                }
-            }, receiveValue: { weatherModel in
-                DispatchQueue.main.async { [weak self] in
-                    self?.weather = weatherModel
-                }
-            })
-            .store(in: &cancellables)
+//    func fetchWeather() {
+//        getWeatherUseCase.getWeather(cityId: 4119617, cityName: "London")
+//            .sink(receiveCompletion: { completion in
+//                switch completion {
+//                case .finished:
+//                    return
+//                case .failure(let error):
+//                    print("Error fetching weather with Combine: \(error)")
+//                }
+//            }, receiveValue: { weatherModel in
+//                DispatchQueue.main.async { [weak self] in
+//                    self?.weather = weatherModel
+//                }
+//            })
+//            .store(in: &cancellables)
+//    }
+
+    func fetchWeather() -> AnyPublisher<WeatherModel, ClientError> {
+        getWeatherUseCase.getWeather(cityId: 4119617, cityName: "London")
     }
 
 }
 
-private extension WeatherModel {
+extension WeatherModel {
 
     var isNightTime: Bool {
         let currentTime = Int(Date().timeIntervalSince1970)
