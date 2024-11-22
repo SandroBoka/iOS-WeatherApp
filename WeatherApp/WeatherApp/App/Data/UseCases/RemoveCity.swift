@@ -1,5 +1,5 @@
 import Foundation
-import WeatherFramework
+import Weather
 
 protocol RemoveCityUseCaseProtocol {
 

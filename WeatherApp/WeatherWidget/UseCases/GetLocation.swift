@@ -2,15 +2,14 @@ import Foundation
 import Combine
 import Weather
 
-protocol GetLocationUseCaseProtocol {
+protocol GetCurrentLocationUseCaseProtocol {
 
     func getCurrentCity() -> AnyPublisher<String, Error>
     func isLocationEnabled() -> AnyPublisher<Bool, Never>
-    func requestLocation()
 
 }
 
-class GetLocationUseCase: GetLocationUseCaseProtocol {
+class GetCurrentLocationUseCase: GetCurrentLocationUseCaseProtocol {
 
     private let locationRepository: LocationRepositoryProtocol
 
@@ -24,10 +23,6 @@ class GetLocationUseCase: GetLocationUseCaseProtocol {
 
     func isLocationEnabled() -> AnyPublisher<Bool, Never> {
         locationRepository.isLocationEnabled()
-    }
-
-    func requestLocation() {
-        locationRepository.requestLocation()
     }
 
 }

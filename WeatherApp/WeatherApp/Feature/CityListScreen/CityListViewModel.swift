@@ -2,7 +2,7 @@ import SwiftUI
 import Combine
 import CoreLocation
 import UserNotifications
-import WeatherFramework
+import Weather
 
 class CityListViewModel: ObservableObject {
 

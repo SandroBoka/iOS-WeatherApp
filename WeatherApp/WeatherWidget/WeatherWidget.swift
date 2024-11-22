@@ -1,7 +1,24 @@
 import WidgetKit
 import SwiftUI
+import Weather
+
+import Combine
 
 struct Provider: TimelineProvider {
+
+    private let viewModel = WeatherWidgetViewModel(
+        getLocationUseCase: GetCurrentLocationUseCase(
+            locationRepository: LocationRepository(
+                realmService: RealmService(),
+                locationManager: LocationDataManager())),
+        getWeatherUseCase: GetCurrentWeatherUseCase(
+            weatherRepository: WeatherRepository(
+                weatherService: WeatherService(client: NetworkClient()),
+                locationService: LocationService(client: NetworkClient()),
+                realmService: RealmService())),
+        getIdUseCase: GetCurrentLocationId())
+
+    private var cancellables = Set<AnyCancellable>()
 
     func placeholder(in context: Context) -> SimpleEntry {
         SimpleEntry(date: Date())

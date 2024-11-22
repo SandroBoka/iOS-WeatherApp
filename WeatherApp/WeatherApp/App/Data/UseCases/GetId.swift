@@ -1,6 +1,6 @@
 import Foundation
 import Combine
-import WeatherFramework
+import Weather
 
 protocol GetIdUseCaseProtocol {
 

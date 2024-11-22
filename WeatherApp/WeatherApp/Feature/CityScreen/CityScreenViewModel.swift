@@ -1,7 +1,7 @@
 import SwiftUI
 import RealmSwift
 import Combine
-import WeatherFramework
+import Weather
 
 class CityScreenViewModel: ObservableObject {
 

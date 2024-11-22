@@ -2,13 +2,13 @@ import Foundation
 import Combine
 import Weather
 
-protocol GetWeatherUseCaseProtocol {
+protocol GetCurrentWeatherUseCaseProtocol {
 
     func getWeather(cityId: Int, cityName: String) -> AnyPublisher<WeatherModel, ClientError>
 
 }
 
-class GetWeatherUseCase: GetWeatherUseCaseProtocol {
+class GetCurrentWeatherUseCase: GetCurrentWeatherUseCaseProtocol {
 
     private let weatherRepository: WeatherRepositoryProtocol
 

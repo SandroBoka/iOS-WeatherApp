@@ -1,5 +1,5 @@
 import SwiftUI
-import WeatherFramework
+import Weather
 
 struct CityScreenView: View {
 
