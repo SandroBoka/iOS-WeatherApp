@@ -2,6 +2,7 @@ import Foundation
 import Combine
 import Weather
 import SwiftUI
+import CoreLocation
 
 class WeatherWidgetViewModel: ObservableObject {
 
@@ -29,21 +30,21 @@ class WeatherWidgetViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .assign(to: &$locationEnabled)
 
-        getLocationUseCase
-            .getCurrentCity()
-            .catch { _ in Just("") }
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] currentCity in
-                guard let self else { return }
-
-                print(locationEnabled)
-                print(currentCity)
-                self.currentCityName = currentCity
+//        getLocationUseCase
+//            .getCurrentCity()
+//            .catch { _ in Just("") }
+//            .receive(on: DispatchQueue.main)
+//            .sink { [weak self] currentCity in
+//                guard let self else { return }
+//
+//                print(locationEnabled)
+//                print(currentCity)
+//                self.currentCityName = currentCity
 //                if locationEnabled {
 //                    fetchWeather()
 //                }
-            }
-            .store(in: &cancellables)
+//            }
+//            .store(in: &cancellables)
 
 //        fetchWeather()
     }

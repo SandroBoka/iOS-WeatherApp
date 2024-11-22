@@ -31,51 +31,51 @@ class Provider: TimelineProvider {
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<SimpleEntry>) -> Void) {
         viewModel.fetchWeather()
-                    .sink(receiveCompletion: { completion in
-                        switch completion {
-                        case .finished:
-                            return
-                        case .failure(let error):
-                            print("Error fetching weather with Combine: \(error)")
-                        }
-                    }, receiveValue: { [weak self] weatherModel in
-                        guard let self else { return }
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    return
+                case .failure(let error):
+                    print("Error fetching weather with Combine: \(error)")
+                }
+            }, receiveValue: { [weak self] weatherModel in
+                guard let self else { return }
 
-                        let currentDate = Date()
-                        let refreshDate = Calendar.current.date(byAdding: .hour, value: 1, to: currentDate)!
+                let currentDate = Date()
+                let refreshDate = Calendar.current.date(byAdding: .hour, value: 1, to: currentDate)!
 
-                        let cityName = self.viewModel.currentCityName != "" ? self.viewModel.currentCityName: "Unknown"
+                let cityName = self.viewModel.currentCityName != "" ? self.viewModel.currentCityName: "Unknown"
 
-                        let entry = SimpleEntry(
-                            date: currentDate,
-                            weatherModel: weatherModel,
-                            cityName: cityName
-                        )
+                let entry = SimpleEntry(
+                    date: currentDate,
+                    weatherModel: weatherModel,
+                    cityName: cityName
+                )
 
-                        let timeline = Timeline(entries: [entry], policy: .after(refreshDate))
-                        completion(timeline)
-                    })
-                    .store(in: &cancellables)
+                let timeline = Timeline(entries: [entry], policy: .after(refreshDate))
+                completion(timeline)
+            })
+            .store(in: &cancellables)
 
-//        Publishers.CombineLatest(viewModel.$currentCityName, viewModel.$weather)
-//            .first()
-//            .sink { currentCityName, weather in
-//                let currentDate = Date()
-//                let refreshDate = Calendar.current.date(byAdding: .hour, value: 1, to: currentDate)!
-//
-//                let weatherModel = weather ?? WeatherModel(dummyData: true)
-//                let cityName = currentCityName.isEmpty ? "Unknown" : currentCityName
-//
-//                let entry = SimpleEntry(
-//                    date: currentDate,
-//                    weatherModel: weatherModel,
-//                    cityName: cityName
-//                )
-//
-//                let timeline = Timeline(entries: [entry], policy: .after(refreshDate))
-//                completion(timeline)
-//            }
-//            .store(in: &cancellables)
+        //        Publishers.CombineLatest(viewModel.$currentCityName, viewModel.$weather)
+        //            .first()
+        //            .sink { currentCityName, weather in
+        //                let currentDate = Date()
+        //                let refreshDate = Calendar.current.date(byAdding: .hour, value: 1, to: currentDate)!
+        //
+        //                let weatherModel = weather ?? WeatherModel(dummyData: true)
+        //                let cityName = currentCityName.isEmpty ? "Unknown" : currentCityName
+        //
+        //                let entry = SimpleEntry(
+        //                    date: currentDate,
+        //                    weatherModel: weatherModel,
+        //                    cityName: cityName
+        //                )
+        //
+        //                let timeline = Timeline(entries: [entry], policy: .after(refreshDate))
+        //                completion(timeline)
+        //            }
+        //            .store(in: &cancellables)
     }
 
 }
@@ -95,13 +95,13 @@ struct WeatherWidgetEntryView: View {
 
     var body: some View {
         VStack(spacing: 10) {
-            Text(entry.cityName)
-                .font(.notoSansFontWidget(size: 20))
-
-            Text(String(entry.weatherModel.temperature))
-                .font(.dottedFontWidget(size: 20))
-
             if widgetFamily == .systemLarge {
+
+                Text(entry.cityName)
+                    .font(.notoSansFontWidget(size: 20))
+
+                Text(String(format: "%.1f °C", entry.weatherModel.temperature))
+                    .font(.dottedFontWidget(size: 20))
 
                 Text("Humidity: \(entry.weatherModel.humidity)%")
                     .font(.dottedFontWidget(size: 15))
@@ -111,8 +111,24 @@ struct WeatherWidgetEntryView: View {
                     .resizable()
                     .renderingMode(.template)
                     .scaledToFit()
-            }
+            } else if widgetFamily == .systemMedium {
+                HStack(spacing: 30) {
+                    VStack(spacing: 10) {
+                        Text(entry.cityName)
+                            .font(.notoSansFontWidget(size: 20))
 
+                        Text(String(format: "%.1f °C", entry.weatherModel.temperature))
+                            .font(.dottedFontWidget(size: 20))
+                    }
+
+                    Divider()
+
+                    Image(entry.weatherModel.weatherImage)
+                        .resizable()
+                        .renderingMode(.template)
+                        .scaledToFit()
+                }
+            }
             Text(entry.weatherModel.description)
                 .font(.dottedFontWidget(size: 15))
         }
