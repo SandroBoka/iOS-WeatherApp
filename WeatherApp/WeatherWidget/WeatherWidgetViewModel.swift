@@ -12,62 +12,82 @@ class WeatherWidgetViewModel: ObservableObject {
 
     private let getLocationUseCase: GetCurrentLocationUseCaseProtocol
     private let getWeatherUseCase: GetCurrentWeatherUseCaseProtocol
-    private let getIdUseCase: GetCurrentLocationIdProtocol
+    private let getIdUseCase: GetCurrentLocationIdUseCaseProtocol
 
     private var cancellables = Set<AnyCancellable>()
+
+    var currentTempratureModel: LargeTemperatureInfo.Model {
+        LargeTemperatureInfo.Model(title: String(localized: "current_string"), temperature: weather?.temperature ?? 0.0)
+    }
+
+    var feelsLikeTempratureModel: LargeTemperatureInfo.Model {
+        LargeTemperatureInfo.Model(title: String(localized: "feels_like"), temperature: weather?.feelsLike ?? 0.0)
+    }
 
     init(
         getLocationUseCase: GetCurrentLocationUseCaseProtocol,
         getWeatherUseCase: GetCurrentWeatherUseCaseProtocol,
-        getIdUseCase: GetCurrentLocationIdProtocol
+        getIdUseCase: GetCurrentLocationIdUseCaseProtocol
     ) {
         self.getLocationUseCase = getLocationUseCase
         self.getWeatherUseCase = getWeatherUseCase
         self.getIdUseCase = getIdUseCase
+
+        getLocationUseCase.requestLocation()
 
         getLocationUseCase
             .isLocationEnabled()
             .receive(on: DispatchQueue.main)
             .assign(to: &$locationEnabled)
 
-//        getLocationUseCase
-//            .getCurrentCity()
-//            .catch { _ in Just("") }
-//            .receive(on: DispatchQueue.main)
-//            .sink { [weak self] currentCity in
-//                guard let self else { return }
-//
-//                print(locationEnabled)
-//                print(currentCity)
-//                self.currentCityName = currentCity
-//                if locationEnabled {
-//                    fetchWeather()
-//                }
-//            }
-//            .store(in: &cancellables)
+        getLocationUseCase
+            .getCurrentCity()
+            .catch { _ in Just("") }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] currentCity in
+                guard let self else { return }
 
-//        fetchWeather()
+                self.currentCityName = currentCity
+                if locationEnabled {
+                    fetchWeather()
+                }
+            }
+            .store(in: &cancellables)
+
+        fetchWeather()
     }
 
-//    func fetchWeather() {
-//        getWeatherUseCase.getWeather(cityId: 4119617, cityName: "London")
-//            .sink(receiveCompletion: { completion in
-//                switch completion {
-//                case .finished:
-//                    return
-//                case .failure(let error):
-//                    print("Error fetching weather with Combine: \(error)")
-//                }
-//            }, receiveValue: { weatherModel in
-//                DispatchQueue.main.async { [weak self] in
-//                    self?.weather = weatherModel
-//                }
-//            })
-//            .store(in: &cancellables)
-//    }
+    func fetchWeather() {
+        getIdUseCase
+            .getId(cityName: currentCityName)
+            .flatMap { [weak self] id -> AnyPublisher<WeatherModel, Error> in
+                guard let self else {
+                    return Fail(
+                        error: NSError(
+                            domain: "WeatherWidgetViewModel",
+                            code: 0,
+                            userInfo: [NSLocalizedDescriptionKey: "Self is nil"]
+                        )
+                    ).eraseToAnyPublisher()
+                }
 
-    func fetchWeather() -> AnyPublisher<WeatherModel, ClientError> {
-        getWeatherUseCase.getWeather(cityId: 4119617, cityName: "London")
+                return self.getWeatherUseCase
+                    .getWeather(cityId: id, cityName: self.currentCityName)
+                    .mapError { $0 as Error }
+                    .eraseToAnyPublisher()
+            }
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print("Error fetching weather: \(error)")
+                }
+            }, receiveValue: { [weak self] weatherModel in
+                self?.weather = weatherModel
+            })
+            .store(in: &cancellables)
     }
 
 }

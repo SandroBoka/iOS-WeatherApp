@@ -76,6 +76,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		907A20052CF47BB2005D93B8 /* Exceptions for "WeatherWidget" folder in "WeatherApp" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Components/LargeTemperatureInfo.swift,
+			);
+			target = 901CC5382CC13D07002E1508 /* WeatherApp */;
+		};
 		90DC38BA2CC291D2006720E3 /* Exceptions for "WeatherApp" folder in "WeatherApp" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -114,6 +121,7 @@
 		90DC40C32CEF2ED200EA92E2 /* WeatherWidget */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
+				907A20052CF47BB2005D93B8 /* Exceptions for "WeatherWidget" folder in "WeatherApp" target */,
 				90DC40D82CEF2EE400EA92E2 /* Exceptions for "WeatherWidget" folder in "WeatherWidgetExtension" target */,
 			);
 			path = WeatherWidget;

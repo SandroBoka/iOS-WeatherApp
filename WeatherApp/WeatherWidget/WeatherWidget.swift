@@ -16,66 +16,56 @@ class Provider: TimelineProvider {
                 weatherService: WeatherService(client: NetworkClient()),
                 locationService: LocationService(client: NetworkClient()),
                 realmService: RealmService())),
-        getIdUseCase: GetCurrentLocationId())
+        getIdUseCase: GetCurrentLocationIdUseCase(locationRepository: LocationRepository(
+            realmService: RealmService(),
+            locationManager: LocationDataManager())))
 
     private var cancellables = Set<AnyCancellable>()
 
     func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), weatherModel: WeatherModel(dummyData: true), cityName: "Zagreb")
+        SimpleEntry(
+            date: Date(),
+            weatherModel: WeatherModel(dummyData: true),
+            cityName: "Zagreb",
+            currentTemperatureModel: LargeTemperatureInfo.Model(title: "Current", temperature: 20),
+            feelsLikeTemperatureModel: LargeTemperatureInfo.Model(title: "Feels Like", temperature: 19))
     }
 
     func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> Void) {
-        let entry = SimpleEntry(date: Date(), weatherModel: WeatherModel(dummyData: true), cityName: "Zagreb")
+        let entry = SimpleEntry(
+            date: Date(),
+            weatherModel: WeatherModel(dummyData: true),
+            cityName: "Zagreb",
+            currentTemperatureModel: LargeTemperatureInfo.Model(title: "Current", temperature: 20),
+            feelsLikeTemperatureModel: LargeTemperatureInfo.Model(title: "Feels Like", temperature: 19))
+
         completion(entry)
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<SimpleEntry>) -> Void) {
-        viewModel.fetchWeather()
-            .sink(receiveCompletion: { completion in
-                switch completion {
-                case .finished:
-                    return
-                case .failure(let error):
-                    print("Error fetching weather with Combine: \(error)")
-                }
-            }, receiveValue: { [weak self] weatherModel in
+        Publishers.CombineLatest(viewModel.$currentCityName, viewModel.$weather)
+            .first()
+            .sink { [weak self] currentCityName, weather in
                 guard let self else { return }
 
                 let currentDate = Date()
                 let refreshDate = Calendar.current.date(byAdding: .hour, value: 1, to: currentDate)!
 
-                let cityName = self.viewModel.currentCityName != "" ? self.viewModel.currentCityName: "Unknown"
+                let weatherModel = weather ?? WeatherModel(dummyData: true)
+                let cityName = currentCityName.isEmpty ? "Unknown" : currentCityName
 
                 let entry = SimpleEntry(
                     date: currentDate,
                     weatherModel: weatherModel,
-                    cityName: cityName
+                    cityName: cityName,
+                    currentTemperatureModel: self.viewModel.currentTempratureModel,
+                    feelsLikeTemperatureModel: self.viewModel.feelsLikeTempratureModel
                 )
 
                 let timeline = Timeline(entries: [entry], policy: .after(refreshDate))
                 completion(timeline)
-            })
+            }
             .store(in: &cancellables)
-
-        //        Publishers.CombineLatest(viewModel.$currentCityName, viewModel.$weather)
-        //            .first()
-        //            .sink { currentCityName, weather in
-        //                let currentDate = Date()
-        //                let refreshDate = Calendar.current.date(byAdding: .hour, value: 1, to: currentDate)!
-        //
-        //                let weatherModel = weather ?? WeatherModel(dummyData: true)
-        //                let cityName = currentCityName.isEmpty ? "Unknown" : currentCityName
-        //
-        //                let entry = SimpleEntry(
-        //                    date: currentDate,
-        //                    weatherModel: weatherModel,
-        //                    cityName: cityName
-        //                )
-        //
-        //                let timeline = Timeline(entries: [entry], policy: .after(refreshDate))
-        //                completion(timeline)
-        //            }
-        //            .store(in: &cancellables)
     }
 
 }
@@ -85,6 +75,8 @@ struct SimpleEntry: TimelineEntry {
     let date: Date
     let weatherModel: WeatherModel
     let cityName: String
+    let currentTemperatureModel: LargeTemperatureInfo.Model
+    let feelsLikeTemperatureModel: LargeTemperatureInfo.Model
 
 }
 
@@ -94,23 +86,30 @@ struct WeatherWidgetEntryView: View {
     @Environment(\.widgetFamily) var widgetFamily
 
     var body: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: 15) {
             if widgetFamily == .systemLarge {
+                HStack(alignment: .center, spacing: 50) {
+                    Text(entry.cityName)
+                        .font(.notoSansFontWidget(size: 20))
 
-                Text(entry.cityName)
-                    .font(.notoSansFontWidget(size: 20))
+                    Image(entry.weatherModel.weatherImage)
+                        .resizable()
+                        .renderingMode(.template)
+                        .scaledToFit()
+                }
 
-                Text(String(format: "%.1f °C", entry.weatherModel.temperature))
-                    .font(.dottedFontWidget(size: 20))
+                Divider()
+
+                temperatureInfo
+
+                Divider()
 
                 Text("Humidity: \(entry.weatherModel.humidity)%")
                     .font(.dottedFontWidget(size: 15))
                     .padding(.top)
 
-                Image(entry.weatherModel.weatherImage)
-                    .resizable()
-                    .renderingMode(.template)
-                    .scaledToFit()
+                Text(String(format: "Rain: %.1f%%", entry.weatherModel.hourlyForecast[0].percipation))
+                    .font(.dottedFontWidget(size: 15))
             } else if widgetFamily == .systemMedium {
                 HStack(spacing: 30) {
                     VStack(spacing: 10) {
@@ -132,8 +131,18 @@ struct WeatherWidgetEntryView: View {
             Text(entry.weatherModel.description)
                 .font(.dottedFontWidget(size: 15))
         }
-        .containerBackground(.gray.gradient.opacity(0.8), for: .widget)
+        .foregroundStyle(.primaryForeground)
+        .containerBackground(.widgetGray.gradient, for: .widget)
     }
+
+    private var temperatureInfo: some View {
+        HStack(spacing: 30) {
+            LargeTemperatureInfo(model: entry.currentTemperatureModel)
+
+            LargeTemperatureInfo(model: entry.feelsLikeTemperatureModel)
+        }
+    }
+
 }
 
 @main
@@ -156,21 +165,14 @@ struct WeatherWidget_Previews: PreviewProvider {
 
     static var previews: some View {
         WeatherWidgetEntryView(
-            entry: SimpleEntry(date: Date(), weatherModel: WeatherModel(dummyData: true), cityName: "Zagreb"))
+            entry: SimpleEntry(
+                date: Date(),
+                weatherModel: WeatherModel(dummyData: true),
+                cityName: "Zagreb",
+                currentTemperatureModel: LargeTemperatureInfo.Model(title: "Current", temperature: 20),
+                feelsLikeTemperatureModel: LargeTemperatureInfo.Model(title: "Feels Like", temperature: 19)))
         .previewContext(WidgetPreviewContext(family: .systemMedium))
         .previewContext(WidgetPreviewContext(family: .systemLarge))
-    }
-
-}
-
-extension Font {
-
-    static func dottedFontWidget(size: Double) -> Font {
-        Font.custom("NDOT45inspiredbyNOTHING", size: size)
-    }
-
-    static func notoSansFontWidget(size: Double) -> Font {
-        Font.custom("Noto Sans Mono", size: size)
     }
 
 }

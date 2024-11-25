@@ -6,6 +6,7 @@ protocol GetCurrentLocationUseCaseProtocol {
 
     func getCurrentCity() -> AnyPublisher<String, Error>
     func isLocationEnabled() -> AnyPublisher<Bool, Never>
+    func requestLocation()
 
 }
 
@@ -23,6 +24,10 @@ class GetCurrentLocationUseCase: GetCurrentLocationUseCaseProtocol {
 
     func isLocationEnabled() -> AnyPublisher<Bool, Never> {
         locationRepository.isLocationEnabled()
+    }
+
+    func requestLocation() {
+        locationRepository.requestLocation()
     }
 
 }

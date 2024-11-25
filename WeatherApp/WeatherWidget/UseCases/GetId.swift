@@ -1,19 +1,23 @@
 import Foundation
+import Combine
+import Weather
 
-protocol GetCurrentLocationIdProtocol {
+protocol GetCurrentLocationIdUseCaseProtocol {
 
-    func getId() -> Int
+    func getId(cityName: String) -> AnyPublisher<Int, Error>
 
 }
 
-class GetCurrentLocationId: GetCurrentLocationIdProtocol {
+class GetCurrentLocationIdUseCase: GetCurrentLocationIdUseCaseProtocol {
 
-    private let currentIdKey: String = "currentIdKey"
+    private let locationRepository: LocationRepositoryProtocol
 
-    func getId() -> Int {
-        let id = UserDefaults.standard.integer(forKey: currentIdKey)
-        print(id)
-        return id
+    init(locationRepository: LocationRepositoryProtocol) {
+        self.locationRepository = locationRepository
+    }
+
+    func getId(cityName: String) -> AnyPublisher<Int, Error> {
+        locationRepository.getCityId(cityName: cityName)
     }
 
 }
