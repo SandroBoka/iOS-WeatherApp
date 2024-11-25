@@ -21,7 +21,7 @@ extension LargeTemperatureInfo {
     struct Model {
 
         let title: String
-        let temperature: Double
+        var temperature: Double
 
     }
 

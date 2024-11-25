@@ -16,13 +16,13 @@ class WeatherWidgetViewModel: ObservableObject {
 
     private var cancellables = Set<AnyCancellable>()
 
-    var currentTempratureModel: LargeTemperatureInfo.Model {
-        LargeTemperatureInfo.Model(title: String(localized: "current_string"), temperature: weather?.temperature ?? 0.0)
-    }
+    var currentTempratureModel: LargeTemperatureInfo.Model = LargeTemperatureInfo.Model(
+        title: String(localized: "current_string"),
+        temperature: 1.0)
 
-    var feelsLikeTempratureModel: LargeTemperatureInfo.Model {
-        LargeTemperatureInfo.Model(title: String(localized: "feels_like"), temperature: weather?.feelsLike ?? 0.0)
-    }
+    var feelsLikeTempratureModel: LargeTemperatureInfo.Model = LargeTemperatureInfo.Model(
+        title: String(localized: "feels_like"),
+        temperature: 2.0)
 
     init(
         getLocationUseCase: GetCurrentLocationUseCaseProtocol,
@@ -86,6 +86,8 @@ class WeatherWidgetViewModel: ObservableObject {
                 }
             }, receiveValue: { [weak self] weatherModel in
                 self?.weather = weatherModel
+                self?.currentTempratureModel.temperature = weatherModel.temperature
+                self?.feelsLikeTempratureModel.temperature = weatherModel.feelsLike
             })
             .store(in: &cancellables)
     }
