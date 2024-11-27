@@ -3,7 +3,6 @@ import Combine
 import Weather
 import SwiftUI
 import CoreLocation
-import WidgetKit
 
 class WeatherWidgetViewModel: ObservableObject {
 
@@ -54,8 +53,6 @@ class WeatherWidgetViewModel: ObservableObject {
                 }
             }
             .store(in: &cancellables)
-
-        fetchWeather()
     }
 
     func fetchWeather() {
@@ -108,13 +105,10 @@ class WeatherWidgetViewModel: ObservableObject {
                     }
                 }
                 .store(in: &cancellables)
-
+        } else {
+            currentCityName = cityName
             fetchWeather()
-            return
         }
-
-        currentCityName = cityName
-        fetchWeather()
     }
 
 }
