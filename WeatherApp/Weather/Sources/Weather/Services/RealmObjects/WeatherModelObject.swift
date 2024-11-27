@@ -40,6 +40,7 @@ public class WeatherModelObject: Object {
             hourlyForecastObject.uvIndex = $0.uvIndex
             hourlyForecastObject.percipation = $0.percipation
             hourlyForecastObject.hour = $0.hour
+            hourlyForecastObject.hourlyDescription = $0.hourlyDescription
             return hourlyForecastObject
         })
     }
@@ -56,5 +57,6 @@ public class HourlyForecastObject: Object {
     @Persisted var uvIndex: Double
     @Persisted var percipation: Double
     @Persisted var hour: Int
+    @Persisted var hourlyDescription: String
 
 }

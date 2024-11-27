@@ -46,5 +46,11 @@ private extension HourlyForecast {
 }
 
 #Preview {
-    HourlyForecastWidget(forecast: HourlyForecast(temperature: 24, uvIndex: 3, percipation: 0.33, hour: 1684929490))
+    HourlyForecastWidget(
+        forecast: HourlyForecast(
+            temperature: 24,
+            uvIndex: 3,
+            percipation: 0.33,
+            hour: 1684929490,
+            description: "Cloudy"))
 }

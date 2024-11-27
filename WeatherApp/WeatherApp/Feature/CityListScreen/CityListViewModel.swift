@@ -217,11 +217,14 @@ extension CityListViewModel {
 
                 let content = UNMutableNotificationContent()
                 content.title = "Weather Update for \(self.currentCityName)"
-                content.body = "Temperature: \(weather.temperature)°C, \(weather.description.capitalized)"
+                content.body = """
+                Temperature: \(weather.hourlyForecast[1].temperature)°C
+                \(weather.hourlyForecast[1].hourlyDescription.capitalized)
+                """
                 content.sound = UNNotificationSound.default
                 content.userInfo = ["cityId": currentCityId, "cityName": currentCityName]
 
-                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 120, repeats: false)
+                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 3600, repeats: false)
                 let request = UNNotificationRequest(
                     identifier: UUID().uuidString,
                     content: content,
@@ -231,8 +234,6 @@ extension CityListViewModel {
                 UNUserNotificationCenter.current().add(request) { error in
                     if let error = error {
                         print("Error scheduling notification: \(error.localizedDescription)")
-                    } else {
-                        print("Weather notification scheduled successfully.")
                     }
                 }
             })

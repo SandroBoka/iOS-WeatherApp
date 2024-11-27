@@ -19,11 +19,12 @@ public struct WeatherModel {
 
 public struct HourlyForecast {
 
-    public init(temperature: Double, uvIndex: Double, percipation: Double, hour: Int) {
+    public init(temperature: Double, uvIndex: Double, percipation: Double, hour: Int, description: String) {
         self.temperature = temperature
         self.uvIndex = uvIndex
         self.percipation = percipation
         self.hour = hour
+        self.hourlyDescription = description
     }
 
     public let id = UUID()
@@ -31,6 +32,7 @@ public struct HourlyForecast {
     public let uvIndex: Double
     public let percipation: Double
     public let hour: Int
+    public let hourlyDescription: String
 
 }
 
@@ -49,10 +51,10 @@ extension WeatherModel {
         self.maxTemperature = 22.0
         self.statusId = 801
         self.hourlyForecast = [
-            HourlyForecast(temperature: 18.5, uvIndex: 2.0, percipation: 0.1, hour: 9),
-            HourlyForecast(temperature: 20.0, uvIndex: 5.0, percipation: 0.0, hour: 12),
-            HourlyForecast(temperature: 21.5, uvIndex: 3.0, percipation: 0.0, hour: 15),
-            HourlyForecast(temperature: 19.0, uvIndex: 1.0, percipation: 0.0, hour: 18)
+            HourlyForecast(temperature: 18.5, uvIndex: 2.0, percipation: 0.1, hour: 9, description: "Cloudy"),
+            HourlyForecast(temperature: 20.0, uvIndex: 5.0, percipation: 0.0, hour: 12, description: "Cloudy"),
+            HourlyForecast(temperature: 21.5, uvIndex: 3.0, percipation: 0.0, hour: 15, description: "Cloudy"),
+            HourlyForecast(temperature: 19.0, uvIndex: 1.0, percipation: 0.0, hour: 18, description: "Cloudy")
         ]
     }
 
@@ -63,7 +65,8 @@ extension WeatherModel {
                     temperature: $0.temperature,
                     uvIndex: $0.uvIndex,
                     percipation: $0.percipation,
-                    hour: $0.hour)
+                    hour: $0.hour,
+                    description: $0.hourlyDescription)
             })
 
         self.temperature = weatherModelObject.temperature
@@ -86,7 +89,8 @@ extension WeatherModel {
                 temperature: hourlyWeather.temperature,
                 uvIndex: hourlyWeather.uvIndex,
                 percipation: hourlyWeather.percipation,
-                hour: hourlyWeather.dateTime)
+                hour: hourlyWeather.dateTime,
+                description: hourlyWeather.weather[0].description)
         }
 
         self.temperature = response.main.temperature
