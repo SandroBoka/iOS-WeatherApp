@@ -1,10 +1,10 @@
 import WidgetKit
 import SwiftUI
 import Weather
-
 import Combine
+import Intents
 
-class Provider: TimelineProvider {
+class Provider: IntentTimelineProvider {
 
     private let viewModel = WeatherWidgetViewModel(
         getLocationUseCase: GetCurrentLocationUseCase(
@@ -31,7 +31,11 @@ class Provider: TimelineProvider {
             feelsLikeTemperatureModel: LargeTemperatureInfo.Model(title: "Feels Like", temperature: 19))
     }
 
-    func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> Void) {
+    func getSnapshot(
+        for configuration: CityNameIntent,
+        in context: Context,
+        completion: @escaping (SimpleEntry) -> Void
+    ) {
         let entry = SimpleEntry(
             date: Date(),
             weatherModel: WeatherModel(dummyData: true),
@@ -42,14 +46,20 @@ class Provider: TimelineProvider {
         completion(entry)
     }
 
-    func getTimeline(in context: Context, completion: @escaping (Timeline<SimpleEntry>) -> Void) {
+    func getTimeline(
+        for configuration: CityNameIntent,
+        in context: Context,
+        completion: @escaping (Timeline<SimpleEntry>) -> Void
+    ) {
         Publishers.CombineLatest(viewModel.$currentCityName, viewModel.$weather)
             .first()
             .sink { [weak self] currentCityName, weather in
                 guard let self else { return }
 
                 let currentDate = Date()
-                let refreshDate = Calendar.current.date(byAdding: .hour, value: 1, to: currentDate)!
+                let refreshDate = Calendar.current.date(byAdding: .minute, value: 30, to: currentDate)!
+
+                viewModel.cityNameChanger(cityName: configuration.cityName ?? "")
 
                 let weatherModel = weather ?? WeatherModel(dummyData: true)
                 let cityName = currentCityName.isEmpty ? "Unknown" : currentCityName
@@ -151,7 +161,7 @@ struct WeatherWidget: Widget {
     let kind: String = "WeatherWidget"
 
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: kind, provider: Provider()) { entry in
+        IntentConfiguration(kind: kind, intent: CityNameIntent.self, provider: Provider()) { entry in
             WeatherWidgetEntryView(entry: entry)
         }
         .configurationDisplayName("Weather Forecast Widget")

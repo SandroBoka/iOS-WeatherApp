@@ -3,6 +3,7 @@ import Combine
 import Weather
 import SwiftUI
 import CoreLocation
+import WidgetKit
 
 class WeatherWidgetViewModel: ObservableObject {
 
@@ -90,6 +91,30 @@ class WeatherWidgetViewModel: ObservableObject {
                 self?.feelsLikeTempratureModel.temperature = weatherModel.feelsLike
             })
             .store(in: &cancellables)
+    }
+
+    func cityNameChanger(cityName: String) {
+        if cityName == "" {
+            getLocationUseCase
+                .getCurrentCity()
+                .catch { _ in Just("") }
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] currentCity in
+                    guard let self else { return }
+
+                    self.currentCityName = currentCity
+                    if locationEnabled {
+                        fetchWeather()
+                    }
+                }
+                .store(in: &cancellables)
+
+            fetchWeather()
+            return
+        }
+
+        currentCityName = cityName
+        fetchWeather()
     }
 
 }
