@@ -96,47 +96,11 @@ struct WeatherWidgetEntryView: View {
     @Environment(\.widgetFamily) var widgetFamily
 
     var body: some View {
-        VStack(spacing: 15) {
+        VStack(spacing: 0) {
             if widgetFamily == .systemLarge {
-                HStack(alignment: .center, spacing: 50) {
-                    Text(entry.cityName)
-                        .font(.notoSansFontWidget(size: 20))
-
-                    Image(entry.weatherModel.weatherImage)
-                        .resizable()
-                        .renderingMode(.template)
-                        .scaledToFit()
-                }
-
-                Divider()
-
-                temperatureInfo
-
-                Divider()
-
-                Text("Humidity: \(entry.weatherModel.humidity)%")
-                    .font(.dottedFontWidget(size: 15))
-                    .padding(.top)
-
-                Text(String(format: "Rain: %.1f%%", entry.weatherModel.hourlyForecast[0].percipation))
-                    .font(.dottedFontWidget(size: 15))
+                largeWidget
             } else if widgetFamily == .systemMedium {
-                HStack(spacing: 30) {
-                    VStack(spacing: 10) {
-                        Text(entry.cityName)
-                            .font(.notoSansFontWidget(size: 20))
-
-                        Text(String(format: "%.1f °C", entry.weatherModel.temperature))
-                            .font(.dottedFontWidget(size: 20))
-                    }
-
-                    Divider()
-
-                    Image(entry.weatherModel.weatherImage)
-                        .resizable()
-                        .renderingMode(.template)
-                        .scaledToFit()
-                }
+                mediumWidget
             }
             Text(entry.weatherModel.description)
                 .font(.dottedFontWidget(size: 15))
@@ -145,11 +109,59 @@ struct WeatherWidgetEntryView: View {
         .containerBackground(.widgetGray.gradient, for: .widget)
     }
 
+    private var largeWidget: some View {
+        VStack(spacing: 15) {
+            HStack(alignment: .center, spacing: 50) {
+                Text(entry.cityName)
+                    .font(.notoSansFontWidget(size: 20))
+
+                Image(entry.weatherModel.weatherImage)
+                    .resizable()
+                    .renderingMode(.template)
+                    .scaledToFit()
+            }
+
+            Divider()
+
+            temperatureInfo
+
+            Divider()
+
+            Text("Humidity: \(entry.weatherModel.humidity)%")
+                .font(.dottedFontWidget(size: 15))
+                .padding(.top)
+
+            Text(String(format: "Rain: %.1f%%", entry.weatherModel.hourlyForecast[0].percipation))
+                .font(.dottedFontWidget(size: 15))
+        }
+    }
+
     private var temperatureInfo: some View {
         HStack(spacing: 30) {
             LargeTemperatureInfo(model: entry.currentTemperatureModel)
 
             LargeTemperatureInfo(model: entry.feelsLikeTemperatureModel)
+        }
+    }
+
+    private var mediumWidget: some View {
+        VStack(spacing: 15) {
+            HStack(spacing: 30) {
+                VStack(spacing: 10) {
+                    Text(entry.cityName)
+                        .font(.notoSansFontWidget(size: 20))
+
+                    Text(String(format: "%.1f °C", entry.weatherModel.temperature))
+                        .font(.dottedFontWidget(size: 20))
+                }
+
+                Divider()
+
+                Image(entry.weatherModel.weatherImage)
+                    .resizable()
+                    .renderingMode(.template)
+                    .scaledToFit()
+            }
         }
     }
 
