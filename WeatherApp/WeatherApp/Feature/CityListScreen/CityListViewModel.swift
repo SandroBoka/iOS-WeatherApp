@@ -180,7 +180,9 @@ class CityListViewModel: ObservableObject {
                     city1.name < city2.name
                 }
 
-                self?.filteredCities = cities.filter({ $0.id != self?.getCurrentCityId() })
+                self?.filteredCities = cities.filter({ $0.id != self?.getCurrentCityId() }).sorted { city1, city2 in
+                    city1.name < city2.name
+                }
             })
             .store(in: &cancellables)
     }
