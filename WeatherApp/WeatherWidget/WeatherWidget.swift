@@ -27,8 +27,10 @@ class Provider: IntentTimelineProvider {
             date: Date(),
             weatherModel: WeatherModel(dummyData: true),
             cityName: "Zagreb",
-            currentTemperatureModel: LargeTemperatureInfo.Model(title: "Current", temperature: 20),
-            feelsLikeTemperatureModel: LargeTemperatureInfo.Model(title: "Feels Like", temperature: 19))
+            currentTemperatureModel: LargeTemperatureInfo.Model(title: String(localized: "current"), temperature: 20),
+            feelsLikeTemperatureModel: LargeTemperatureInfo.Model(
+                title: String(localized: "feelsLike"),
+                temperature: 19))
     }
 
     func getSnapshot(
@@ -40,8 +42,10 @@ class Provider: IntentTimelineProvider {
             date: Date(),
             weatherModel: WeatherModel(dummyData: true),
             cityName: "Zagreb",
-            currentTemperatureModel: LargeTemperatureInfo.Model(title: "Current", temperature: 20),
-            feelsLikeTemperatureModel: LargeTemperatureInfo.Model(title: "Feels Like", temperature: 19))
+            currentTemperatureModel: LargeTemperatureInfo.Model(title: String(localized: "current"), temperature: 20),
+            feelsLikeTemperatureModel: LargeTemperatureInfo.Model(
+                title: String(localized: "feelsLike"),
+                temperature: 19))
 
         completion(entry)
     }
@@ -127,12 +131,13 @@ struct WeatherWidgetEntryView: View {
 
             Divider()
 
-            Text("Humidity: \(entry.weatherModel.humidity)%")
+            Text("\(String(localized: "humidity"))\(entry.weatherModel.humidity)%")
                 .font(.dottedFontWidget(size: 15))
                 .padding(.top)
 
-            Text(String(format: "Rain: %.1f%%", entry.weatherModel.hourlyForecast[0].percipation))
+            Text(String(format: "\(String(localized: "rain"))%.1f%%", entry.weatherModel.hourlyForecast[0].percipation))
                 .font(.dottedFontWidget(size: 15))
+                .padding(.bottom)
         }
     }
 
@@ -151,7 +156,7 @@ struct WeatherWidgetEntryView: View {
                     Text(entry.cityName)
                         .font(.notoSansFontWidget(size: 20))
 
-                    Text(String(format: "%.1f °C", entry.weatherModel.temperature))
+                    Text(String(format: "%.1f \(String(localized: "degree"))", entry.weatherModel.temperature))
                         .font(.dottedFontWidget(size: 20))
                 }
 
@@ -177,7 +182,7 @@ struct WeatherWidget: Widget {
             WeatherWidgetEntryView(entry: entry)
         }
         .configurationDisplayName("Weather Forecast Widget")
-        .description("Widget that displays Weather Forecast with Style.")
+        .description(.description)
         .supportedFamilies([.systemMedium, .systemLarge])
     }
 

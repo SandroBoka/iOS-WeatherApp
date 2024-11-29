@@ -9,7 +9,7 @@ struct LargeTemperatureInfo: View {
             Text(model.title.uppercased())
                 .font(.notoSansFontWidget(size: 14))
 
-            Text(String(format: "%.1f °C", model.temperature))
+            Text(String(format: "%.1f \(String(localized: "degree"))", model.temperature))
                 .font(.dottedFontWidget(size: 24))
         }
     }

@@ -1,6 +1,16 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@%lld%%" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@%2$lld%%"
+          }
+        }
+      }
+    },
     "add_city" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -23,7 +33,7 @@
         }
       }
     },
-    "current_string" : {
+    "current" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -41,6 +51,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "°C"
+          }
+        }
+      }
+    },
+    "description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widget that displays Weather Forecast with Style."
           }
         }
       }
@@ -67,6 +88,9 @@
         }
       }
     },
+    "feelsLike" : {
+
+    },
     "hourly_forecast" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -84,13 +108,10 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Humidity"
+            "value" : "Humidity : "
           }
         }
       }
-    },
-    "Humidity: %lld%%" : {
-
     },
     "kmPerHour" : {
       "extractionState" : "manual",
@@ -148,9 +169,6 @@
       }
     },
     "Weather Forecast Widget" : {
-
-    },
-    "Widget that displays Weather Forecast with Style." : {
 
     },
     "wind" : {

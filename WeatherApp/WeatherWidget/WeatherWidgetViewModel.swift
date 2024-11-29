@@ -17,11 +17,11 @@ class WeatherWidgetViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
 
     var currentTempratureModel: LargeTemperatureInfo.Model = LargeTemperatureInfo.Model(
-        title: String(localized: "current_string"),
+        title: String(localized: "current"),
         temperature: 1.0)
 
     var feelsLikeTempratureModel: LargeTemperatureInfo.Model = LargeTemperatureInfo.Model(
-        title: String(localized: "feels_like"),
+        title: String(localized: "feelsLike"),
         temperature: 2.0)
 
     init(
