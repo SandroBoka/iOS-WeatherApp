@@ -113,7 +113,6 @@ class CityListViewModel: ObservableObject {
         guard !currentCityName.isEmpty else { return }
 
         print(currentCityName)
-
         getCityId(cityName: currentCityName)
             .sink { [weak self] id in
                 guard let self else { return }

@@ -27,7 +27,7 @@ class RealmService: RealmServiceProtocol {
     }
 
     func getWeather(cityId: Int) -> AnyPublisher<WeatherModelObject, Error> {
-       Future<WeatherModelObject, Error> { promise in
+        Future<WeatherModelObject, Error> { promise in
             do {
                 let realm = try Realm()
                 guard let savedWeather = realm.object(ofType: WeatherModelObject.self, forPrimaryKey: cityId) else {
