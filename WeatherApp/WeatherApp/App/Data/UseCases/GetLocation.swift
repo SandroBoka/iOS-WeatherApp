@@ -1,0 +1,32 @@
+import Foundation
+import Combine
+
+protocol GetLocationUseCaseProtocol {
+
+    func getCurrentCity() -> AnyPublisher<String, Error>
+    func isLocationEnabled() -> AnyPublisher<Bool, Never>
+    func requestLocation()
+
+}
+
+class GetLocationUseCase: GetLocationUseCaseProtocol {
+
+    private let locationRepository: LocationRepositoryProtocol
+
+    init(locationRepository: LocationRepositoryProtocol) {
+        self.locationRepository = locationRepository
+    }
+
+    func getCurrentCity() -> AnyPublisher<String, Error> {
+        locationRepository.getCurrentCity()
+    }
+
+    func isLocationEnabled() -> AnyPublisher<Bool, Never> {
+        locationRepository.isLocationEnabled()
+    }
+
+    func requestLocation() {
+        locationRepository.requestLocation()
+    }
+
+}

@@ -8,6 +8,9 @@ protocol LocationRepositoryProtocol {
     func saveWeather(weather: WeatherModel, cityId: Int, cityName: String)
     func getSuggestions(prefix: String) -> AnyPublisher<[SuggestedCity], Error>
     func getCityId(cityName: String) -> AnyPublisher<Int, Error>
+    func getCurrentCity() -> AnyPublisher<String, Error>
+    func isLocationEnabled() -> AnyPublisher<Bool, Never>
+    func requestLocation()
 
 }
 
@@ -22,9 +25,11 @@ class LocationRepository: LocationRepositoryProtocol {
         City(id: 5368361, name: "Los Angeles")]
 
     let realmService: RealmServiceProtocol
+    let locationManager: LocationDataManager
 
-    init(realmService: RealmServiceProtocol) {
+    init(realmService: RealmServiceProtocol, locationManager: LocationDataManager) {
         self.realmService = realmService
+        self.locationManager = locationManager
     }
 
     func getLocationsWeather() -> AnyPublisher<[City], Error> {
@@ -83,6 +88,22 @@ class LocationRepository: LocationRepositoryProtocol {
 
     func getCityId(cityName: String) -> AnyPublisher<Int, Error> {
         realmService.getCityId(cityName: cityName)
+    }
+
+    func getCurrentCity() -> AnyPublisher<String, Error> {
+        locationManager
+            .$currentCityName
+            .setFailureType(to: Error.self)
+            .eraseToAnyPublisher()
+    }
+
+    func isLocationEnabled() -> AnyPublisher<Bool, Never> {
+        locationManager
+            .authorizationEnabled
+    }
+
+    func requestLocation() {
+        locationManager.requestLocation()
     }
 
 }

@@ -39,8 +39,16 @@ class Dependencies: SceneDelegateDependenciesProtocol {
         GetSuggestionsUseCase(locationRepository: locationRepository)
     }()
 
-    lazy var getIdUseCase: GetIdUseCase = {
+    lazy var getIdUseCase: GetIdUseCaseProtocol = {
         GetIdUseCase(locationRepository: locationRepository)
+    }()
+
+    lazy var getLocationUseCase: GetLocationUseCaseProtocol = {
+        GetLocationUseCase(locationRepository: locationRepository)
+    }()
+
+    lazy var userDefaultsUseCase: UserDefaultsUseCaseProtocol = {
+        UserDefaultsUseCase()
     }()
 
     private lazy var mainNavigationController: UINavigationController = {
@@ -52,6 +60,10 @@ class Dependencies: SceneDelegateDependenciesProtocol {
 
     private lazy var weatherClient: BaseApiClientProtocol = {
         NetworkClient()
+    }()
+
+    private lazy var locationManager: LocationDataManager = {
+        LocationDataManager()
     }()
 
     private lazy var weatherService: WeatherServiceProtocol = {
@@ -70,7 +82,7 @@ class Dependencies: SceneDelegateDependenciesProtocol {
     }()
 
     private lazy var locationRepository: LocationRepositoryProtocol = {
-        LocationRepository(realmService: realmService)
+        LocationRepository(realmService: realmService, locationManager: locationManager)
     }()
 
 }
@@ -84,7 +96,9 @@ extension Dependencies: ViewModelFactoryProtocol {
             getCitiesUseCase: getCitiesUseCase,
             removeCityUseCase: removeCityUseCase,
             getSuggestionsUseCase: getSuggestionsUseCase,
-            getIdUseCase: getIdUseCase)
+            getIdUseCase: getIdUseCase,
+            getLocationUseCase: getLocationUseCase,
+            userDefaultsUseCase: userDefaultsUseCase)
     }
 
     func makeCityScreenViewModel(city: City) -> CityScreenViewModel {

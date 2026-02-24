@@ -29,6 +29,7 @@ struct CityListView: View {
         .onAppear {
             let appearance = UINavigationBarAppearance()
             setNavigationBarAppearance(appearance: appearance)
+            viewModel.requestLocationAccess()
         }
         .foregroundStyle(.primaryForeground)
         .background(.primaryBackground)
@@ -81,7 +82,16 @@ struct CityListView: View {
 
     private var cityList: some View {
         List {
-            ForEach(viewModel.cities) { city in
+            if viewModel.locationEnabled, let currentCity = viewModel.cities.first(
+                where: { $0.id == viewModel.getCurrentCityId()
+                }) {
+                    CurrentListItem(city: currentCity, action: { selectedCity in
+                        viewModel.showDetailsForCity(city: selectedCity)
+                    })
+                    .padding(.vertical, 8)
+                    .listRowBackground(Color.gray.opacity(0.1))
+            }
+            ForEach(viewModel.cities.filter { $0.id != viewModel.getCurrentCityId() }) { city in
                 CityListItem(city: city, action: { selectedCity in
                     viewModel.showDetailsForCity(city: selectedCity) })
                 .padding(.vertical, 8)
@@ -112,13 +122,27 @@ struct CityListView: View {
                     locationService: LocationService(client: NetworkClient()), realmService: RealmService())),
             getCitiesUseCase: GetCitiesUseCase(
                 locationRepository: LocationRepository(
-                    realmService: RealmService()), weatherRepository: WeatherRepository(
-                        weatherService: WeatherService(client: NetworkClient()),
-                        locationService: LocationService(client: NetworkClient()), realmService: RealmService())),
+                    realmService: RealmService(),
+                    locationManager: LocationDataManager()),
+                weatherRepository: WeatherRepository(
+                    weatherService: WeatherService(client: NetworkClient()),
+                    locationService: LocationService(client: NetworkClient()), realmService: RealmService())
+            ),
             removeCityUseCase: RemoveCityUseCase(
-                locationRepository: LocationRepository(realmService: RealmService())),
+                locationRepository: LocationRepository(
+                    realmService: RealmService(),
+                    locationManager: LocationDataManager())),
             getSuggestionsUseCase: GetSuggestionsUseCase(
-                locationRepository: LocationRepository(realmService: RealmService())),
+                locationRepository: LocationRepository(
+                    realmService: RealmService(),
+                    locationManager: LocationDataManager())),
             getIdUseCase: GetIdUseCase(
-                locationRepository: LocationRepository(realmService: RealmService()))))
+                locationRepository: LocationRepository(
+                    realmService: RealmService(),
+                    locationManager: LocationDataManager())),
+            getLocationUseCase: GetLocationUseCase(
+                locationRepository: LocationRepository(
+                    realmService: RealmService(),
+                    locationManager: LocationDataManager())),
+            userDefaultsUseCase: UserDefaultsUseCase()))
 }

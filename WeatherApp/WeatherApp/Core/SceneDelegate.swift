@@ -27,4 +27,5 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             userDefaults.set(true, forKey: hasLoadedCitiesKey)
         }
     }
+
 }
