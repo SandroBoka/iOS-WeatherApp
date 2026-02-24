@@ -13,6 +13,11 @@ class UserDefaultsUseCase: UserDefaultsUseCaseProtocol {
 
     func saveCurrentId(id: Int) {
         UserDefaults.standard.set(id, forKey: currentIdKey)
+<<<<<<< feature/notifications
+=======
+
+        print("saved \(id)")
+>>>>>>> develop
     }
 
     func getCurrentId() -> Int {

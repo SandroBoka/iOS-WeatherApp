@@ -112,11 +112,20 @@ class CityListViewModel: ObservableObject {
     func addLocationCity() {
         guard !currentCityName.isEmpty else { return }
 
+<<<<<<< feature/notifications
+=======
+        print(currentCityName)
+
+>>>>>>> develop
         getCityId(cityName: currentCityName)
             .sink { [weak self] id in
                 guard let self else { return }
 
                 guard id > 0 else { return }
+<<<<<<< feature/notifications
+=======
+                print(id)
+>>>>>>> develop
 
                 let newCity = City(id: id, name: self.currentCityName)
                 userDefaultsUseCase.saveCurrentId(id: id)
@@ -158,6 +167,13 @@ class CityListViewModel: ObservableObject {
         return userDefaultsUseCase.getCurrentId()
     }
 
+<<<<<<< feature/notifications
+=======
+    func requestLocationAccess() {
+        getLocationUseCase.requestLocation()
+    }
+
+>>>>>>> develop
     private func updateCityList() {
         getCitiesUseCase.getCities()
             .receive(on: DispatchQueue.main)

@@ -116,7 +116,11 @@ class RealmService: RealmServiceProtocol {
                     .filter("cityName ==[c] %@", cityName)
                     .first
 
+<<<<<<< feature/notifications
                 promise(.success(city?.id ?? 11))
+=======
+                promise(.success(city?.id ?? 0))
+>>>>>>> develop
             } catch {
                 promise(.failure(error))
             }

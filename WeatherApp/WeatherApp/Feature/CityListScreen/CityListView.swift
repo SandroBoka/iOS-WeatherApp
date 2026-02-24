@@ -29,7 +29,7 @@ struct CityListView: View {
         .onAppear {
             let appearance = UINavigationBarAppearance()
             setNavigationBarAppearance(appearance: appearance)
-
+            viewModel.requestLocationAccess()
         }
         .foregroundStyle(.primaryForeground)
         .background(.primaryBackground)
@@ -80,18 +80,37 @@ struct CityListView: View {
         .cornerRadius(10)
     }
 
+    private var suggestedCityList: some View {
+        VStack(alignment: .leading) {
+            ForEach(viewModel.suggestedCities, id: \.id) { city in
+                Button(action: {
+                    viewModel.newCityName = city.cityName
+                    viewModel.suggestedCities = []
+                }, label: {
+                    Text(city.cityName)
+                        .font(.notoSansFont(size: 15))
+                        .padding(12)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                })
+                .buttonStyle(.bordered)
+                .tint(Color.gray.opacity(0.5))
+            }
+        }
+        .cornerRadius(10)
+    }
+
     private var cityList: some View {
         List {
             if viewModel.locationEnabled, let currentCity = viewModel.cities.first(
                 where: { $0.id == viewModel.getCurrentCityId()
                 }) {
-                CurrentListItem(city: currentCity, action: { selectedCity in
-                    viewModel.showDetailsForCity(city: selectedCity)
-                })
-                .padding(.vertical, 8)
-                .listRowBackground(Color.gray.opacity(0.1))
+                    CurrentListItem(city: currentCity, action: { selectedCity in
+                        viewModel.showDetailsForCity(city: selectedCity)
+                    })
+                    .padding(.vertical, 8)
+                    .listRowBackground(Color.gray.opacity(0.1))
             }
-            ForEach(viewModel.locationEnabled ? viewModel.filteredCities : viewModel.cities) { city in
+            ForEach(viewModel.cities.filter { $0.id != viewModel.getCurrentCityId() }) { city in
                 CityListItem(city: city, action: { selectedCity in
                     viewModel.showDetailsForCity(city: selectedCity) })
                 .padding(.vertical, 8)
