@@ -10,6 +10,9 @@
     "--->" : {
 
     },
+    "%.1f°C" : {
+
+    },
     "%@ %@" : {
       "localizations" : {
         "en" : {
@@ -20,11 +23,15 @@
         }
       }
     },
-    "%@ %%" : {
-
-    },
-    "%@ km/h" : {
-
+    "%@%lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@%2$lld"
+          }
+        }
+      }
     },
     "%@%lld%%" : {
       "localizations" : {
@@ -36,10 +43,13 @@
         }
       }
     },
-    "%lld" : {
+    "%lld %%" : {
 
     },
     "<" : {
+
+    },
+    "Add City" : {
 
     },
     "add_city" : {
@@ -86,6 +96,9 @@
         }
       }
     },
+    "Enter city name" : {
+
+    },
     "enter_city_name" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -126,6 +139,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Humidity"
+          }
+        }
+      }
+    },
+    "kmPerHour" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "km/h"
           }
         }
       }

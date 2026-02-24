@@ -15,7 +15,7 @@ class LocationService: LocationServiceProtocol {
     init(client: BaseApiClientProtocol) {
         self.client = client
 
-        guard let apiKey = Bundle.main.infoDictionary?["API_KEY"] as? String else { fatalError("API Key not found") }
+        guard let apiKey = InfoConstants.openWeatherMapApiKey else { fatalError("API Key not found") }
 
         endPointFactory = LocationEndpointFactory(apiKey: apiKey)
     }
@@ -23,17 +23,8 @@ class LocationService: LocationServiceProtocol {
     func fetchLocation(for cityName: String) -> AnyPublisher<[LocationResponse], ClientError> {
         let endpoint = endPointFactory.makeLocationEndpoint(cityName: cityName)
 
-        return Future<[LocationResponse], ClientError> { [weak self] promise in
-            self?.client.get(endpoint: endpoint) { (result: Result<[LocationResponse], ClientError>) in
-                switch result {
-                case .success(let locationResponse):
-                    promise(.success(locationResponse))
-                case .failure(let error):
-                    promise(.failure(error))
-                }
-            }
-        }
-        .eraseToAnyPublisher()
+        return client.get(endpoint: endpoint)
+            .eraseToAnyPublisher()
     }
 
 }

@@ -3,7 +3,7 @@ import UIKit
 protocol ViewModelFactoryProtocol {
 
     func makeCityListViewModel() -> CityListViewModel
-    func makeCityScreenViewModel(cityName: String) -> CityScreenViewModel
+    func makeCityScreenViewModel(city: City) -> CityScreenViewModel
 
 }
 
@@ -17,6 +17,30 @@ class Dependencies: SceneDelegateDependenciesProtocol {
 
     lazy var router: RouterProtocol = {
         Router(navigationController: mainNavigationController, viewModelFactory: self)
+    }()
+
+    lazy var realmService: RealmServiceProtocol = {
+         RealmService()
+     }()
+
+    lazy var getWeatherUseCase: GetWeatherUseCaseProtocol = {
+        GetWeatherUseCase(weatherRepository: weatherRepository)
+    }()
+
+    lazy var getCitiesUseCase: GetCitiesUseCaseProtocol = {
+        GetCitiesUseCase(locationRepository: locationRepository, weatherRepository: weatherRepository)
+    }()
+
+    lazy var removeCityUseCase: RemoveCityUseCaseProtocol = {
+        RemoveCityUseCase(locationRepository: locationRepository)
+    }()
+
+    lazy var getSuggestionsUseCase: GetSuggestionsUseCase = {
+        GetSuggestionsUseCase(locationRepository: locationRepository)
+    }()
+
+    lazy var getIdUseCase: GetIdUseCase = {
+        GetIdUseCase(locationRepository: locationRepository)
     }()
 
     private lazy var mainNavigationController: UINavigationController = {
@@ -38,10 +62,6 @@ class Dependencies: SceneDelegateDependenciesProtocol {
         LocationService(client: weatherClient)
     }()
 
-    private lazy var realmService: RealmServiceProtocol = {
-        RealmService()
-    }()
-
     private lazy var weatherRepository: WeatherRepositoryProtocol = {
         return WeatherRepository(
             weatherService: weatherService,
@@ -49,20 +69,8 @@ class Dependencies: SceneDelegateDependenciesProtocol {
             realmService: realmService)
     }()
 
-    private lazy var dataRepository: DataRepositoryProtocol = {
-        DataRepository(realmService: realmService)
-    }()
-
-    lazy var getWeatherUseCase: GetWeatherUseCaseProtocol = {
-        GetWeatherUseCase(weatherRepository: weatherRepository)
-    }()
-
-    lazy var getCitiesUseCase: GetCitiesUseCaseProtocol = {
-        GetCitiesUseCase(dataRepository: dataRepository)
-    }()
-
-    lazy var storeCitiesUseCase: StoreCitiesUseCaseProtocol = {
-        StoreCitiesUseCase(dataRepository: dataRepository)
+    private lazy var locationRepository: LocationRepositoryProtocol = {
+        LocationRepository(realmService: realmService)
     }()
 
 }
@@ -74,11 +82,13 @@ extension Dependencies: ViewModelFactoryProtocol {
             router: router,
             getWeatherUseCase: getWeatherUseCase,
             getCitiesUseCase: getCitiesUseCase,
-            storeCitiesUseCase: storeCitiesUseCase)
+            removeCityUseCase: removeCityUseCase,
+            getSuggestionsUseCase: getSuggestionsUseCase,
+            getIdUseCase: getIdUseCase)
     }
 
-    func makeCityScreenViewModel(cityName: String) -> CityScreenViewModel {
-        CityScreenViewModel(router: router, getWeatherUseCase: getWeatherUseCase, city: cityName)
+    func makeCityScreenViewModel(city: City) -> CityScreenViewModel {
+        CityScreenViewModel(router: router, getWeatherUseCase: getWeatherUseCase, city: city)
     }
 
 }

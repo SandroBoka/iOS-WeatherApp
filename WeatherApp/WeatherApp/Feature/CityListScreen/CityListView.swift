@@ -3,14 +3,9 @@ import SwiftUI
 struct CityListView: View {
 
     @ObservedObject var viewModel: CityListViewModel
-    @State private var newCityName: String = ""
 
     init(viewModel: CityListViewModel) {
-        let appearance = UINavigationBarAppearance()
-
         self.viewModel = viewModel
-
-        setNavigationBarAppearance(appearance: appearance)
     }
 
     var body: some View {
@@ -22,8 +17,18 @@ struct CityListView: View {
             searchBar
                 .padding(.horizontal)
 
+            if !viewModel.suggestedCities.isEmpty {
+                suggestedCityList
+                    .padding(.horizontal, 15)
+                    .padding(.top, 5)
+            }
+
             cityList
                 .scrollContentBackground(.hidden)
+        }
+        .onAppear {
+            let appearance = UINavigationBarAppearance()
+            setNavigationBarAppearance(appearance: appearance)
         }
         .foregroundStyle(.primaryForeground)
         .background(.primaryBackground)
@@ -43,39 +48,42 @@ struct CityListView: View {
         HStack {
             TextField(
                 "",
-                text: $newCityName,
-                prompt: Text(.enterCityName).foregroundColor(.primaryForeground.opacity(0.5)))
+                text: $viewModel.newCityName,
+                prompt: Text("Enter city name").foregroundColor(.primaryForeground.opacity(0.5))
+            )
             .padding(8)
             .background(RoundedRectangle(cornerRadius: 10).fill(Color.gray.opacity(0.1)))
 
-            Button(.addCity) {
-                guard !newCityName.isEmpty else { return }
-                viewModel.addCity(cityName: newCityName)
-                newCityName = ""
+            Button("Add City") {
+                viewModel.addCity()
             }
         }
+    }
+
+    private var suggestedCityList: some View {
+        VStack(alignment: .leading) {
+            ForEach(viewModel.suggestedCities, id: \.id) { city in
+                Button(action: {
+                    viewModel.newCityName = city.cityName
+                    viewModel.suggestedCities = []
+                }, label: {
+                    Text(city.cityName)
+                        .font(.notoSansFont(size: 15))
+                        .padding(12)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                })
+                .buttonStyle(.bordered)
+                .tint(Color.gray.opacity(0.5))
+            }
+        }
+        .cornerRadius(10)
     }
 
     private var cityList: some View {
         List {
             ForEach(viewModel.cities) { city in
-                Button {
-                    viewModel.showDetailsForCity(city: city)
-                } label: {
-                    HStack {
-                        Text(city.name.uppercased())
-                            .font(.notoSansFont(size: 15))
-
-                        Spacer()
-
-                        if let temperature = city.temperature {
-                            Text("\(temperature, specifier: "%.1f")°C")
-                                .font(.dottedFont(size: 20))
-                        } else {
-                            ProgressView()
-                        }
-                    }
-                }
+                CityListItem(city: city, action: { selectedCity in
+                    viewModel.showDetailsForCity(city: selectedCity) })
                 .padding(.vertical, 8)
                 .listRowBackground(Color.gray.opacity(0.1))
             }
@@ -102,6 +110,15 @@ struct CityListView: View {
                 weatherRepository: WeatherRepository(
                     weatherService: WeatherService(client: NetworkClient()),
                     locationService: LocationService(client: NetworkClient()), realmService: RealmService())),
-            getCitiesUseCase: GetCitiesUseCase(dataRepository: DataRepository(realmService: RealmService())),
-            storeCitiesUseCase: StoreCitiesUseCase(dataRepository: DataRepository(realmService: RealmService()))))
+            getCitiesUseCase: GetCitiesUseCase(
+                locationRepository: LocationRepository(
+                    realmService: RealmService()), weatherRepository: WeatherRepository(
+                        weatherService: WeatherService(client: NetworkClient()),
+                        locationService: LocationService(client: NetworkClient()), realmService: RealmService())),
+            removeCityUseCase: RemoveCityUseCase(
+                locationRepository: LocationRepository(realmService: RealmService())),
+            getSuggestionsUseCase: GetSuggestionsUseCase(
+                locationRepository: LocationRepository(realmService: RealmService())),
+            getIdUseCase: GetIdUseCase(
+                locationRepository: LocationRepository(realmService: RealmService()))))
 }

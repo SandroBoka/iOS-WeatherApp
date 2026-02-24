@@ -12,46 +12,53 @@ struct CityScreenView: View {
         VStack {
             NavigationBar(backAction: viewModel.goBack)
                 .padding(.horizontal)
-                .foregroundColor(.white)
 
             ScrollView {
-                if viewModel.weather != nil {
-
-                    mainInfo
-                        .padding(.bottom)
-
-                    temperatureInfo
-
-                    Divider()
-                        .overlay(.primaryForeground)
-                        .padding()
-
-                    widgets
-                        .padding()
-
-                    Divider()
-                        .overlay(.primaryForeground)
-                        .padding()
-
-                    hourly
+                VStack(spacing: 0) {
+                    if viewModel.weather != nil {
+                        scrollContent
+                    } else {
+                        ProgressView()
+                    }
                 }
             }
         }
         .background {
-            Color.primaryBackground
+            Color
+                .primaryBackground
                 .ignoresSafeArea()
         }
         .foregroundStyle(.primaryForeground)
     }
 
+    private var scrollContent: some View {
+        VStack(spacing: 0) {
+            mainInfo
+                .padding(.bottom)
+
+            temperatureInfo
+
+            Divider()
+                .overlay(.primaryForeground)
+                .padding()
+
+            widgets
+                .padding()
+
+            Divider()
+                .overlay(.primaryForeground)
+                .padding()
+
+            hourly
+        }
+    }
+
     private var mainInfo: some View {
         VStack(spacing: 10) {
-            Text(viewModel.city)
+            Text(viewModel.city.name)
                 .font(.dottedFont(size: 25))
 
-            viewModel
-                .weatherImage
-                .image
+            Image(viewModel.weatherImage)
                 .resizable()
                 .renderingMode(.template)
                 .scaledToFit()
@@ -66,12 +73,11 @@ struct CityScreenView: View {
         HStack(spacing: 24) {
             Spacer()
 
-            TemperatureInfo(model: TemperatureInfo.Model(title: "Current", temperature: viewModel.weather!.temperature))
+            TemperatureInfo(model: viewModel.currentTempratureModel)
 
             Spacer()
 
-            TemperatureInfo(
-                model: TemperatureInfo.Model(title: "Feels Like", temperature: viewModel.weather!.feelsLike))
+            TemperatureInfo(model: viewModel.feelsLikeTempratureModel)
 
             Spacer()
         }
@@ -79,26 +85,13 @@ struct CityScreenView: View {
 
     private var widgets: some View {
         LazyVGrid(columns: columns, spacing: 18) {
-            SunriseWidget(
-                model: SunriseWidget.Model(
-                    title: String(localized: "sunrise"),
-                    value: "\(viewModel.formatTimeFromUnix(viewModel.weather!.sunrise, timeZoneOffset: 0))"))
+            SunriseWidget(model: viewModel.sunriseModel)
 
-            WindWidget(
-                model: WindWidget.Model(
-                    title: String(localized: "wind"),
-                    value: "\(viewModel.weather!.speed)",
-                    degree: Double(viewModel.weather!.degrees)))
+            WindWidget(model: viewModel.windModel)
 
-            HumidityWidget(
-                model: HumidityWidget.Model(
-                    title: String(localized: "humidity"),
-                    value: "\(viewModel.weather!.humidity)"))
+            HumidityWidget(model: viewModel.humidityModel)
 
-            SunsetWidget(
-                model: SunsetWidget.Model(
-                    title: String(localized: "sunset"),
-                    value: "\(viewModel.formatTimeFromUnix(viewModel.weather!.sunset, timeZoneOffset: 0))"))
+            SunsetWidget(model: viewModel.sunsetModel)
         }
     }
 
@@ -110,12 +103,7 @@ struct CityScreenView: View {
             ScrollView(.horizontal) {
                 HStack(spacing: 16) {
                     ForEach(viewModel.weather!.hourlyForecast, id: \.id) { hourly in
-                        VStack {
-                            Text(viewModel.formatTimeFromUnix(hourly.hour, timeZoneOffset: 0))
-                                .font(.dottedFont(size: 18))
-
-                            HourlyForecastView(forecast: hourly)
-                        }
+                        HourlyForecastWidget(forecast: hourly)
                     }
                 }
                 .padding()
@@ -133,5 +121,5 @@ struct CityScreenView: View {
                 weatherRepository: WeatherRepository(
                     weatherService: WeatherService(client: NetworkClient()),
                     locationService: LocationService(client: NetworkClient()), realmService: RealmService())),
-            city: "Zagreb"))
+            city: City(id: 3186886, name: "Zagreb")))
 }

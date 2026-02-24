@@ -1,8 +1,8 @@
 import SwiftUI
 
-struct SunriseWidget: View {
+struct SunsetWidget: View {
 
-    var model: Model
+    let model: Model
 
     @State private var isAnimating = false
 
@@ -13,10 +13,12 @@ struct SunriseWidget: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
 
-            animatedSunriseImage
+            animatedSunsetImage
                 .padding(.top)
                 .onAppear {
-                    isAnimating = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        isAnimating = true
+                    }
                 }
 
             Text(model.value)
@@ -31,27 +33,27 @@ struct SunriseWidget: View {
         }
     }
 
-    private var animatedSunriseImage: some View {
+    private var animatedSunsetImage: some View {
         ZStack {
             Circle()
                 .trim(from: 0, to: 0.5)
-                .stroke(.primaryForeground.opacity(0.5), lineWidth: 2)
+                .stroke(.primaryForeground, lineWidth: 1)
                 .frame(width: 110, height: isAnimating ? 110 : 100)
                 .offset(y: 10)
                 .rotationEffect(Angle(degrees: 180))
 
             Circle()
                 .trim(from: 0, to: 0.5)
-                .stroke(.primaryForeground, lineWidth: 1)
-                .frame(width: 80, height: isAnimating ? 80 : 85)
-                .offset(y: 10)
+                .stroke(.primaryForeground.opacity(0.5), lineWidth: 2)
+                .frame(width: 80, height: isAnimating ? 70 : 75)
+                .offset(y: 5)
                 .rotationEffect(Angle(degrees: 180))
                 .animation(Animation.easeInOut(duration: 1.5).repeatForever(autoreverses: true), value: isAnimating)
 
             Text("--->")
                 .font(.dottedFont(size: 12))
-                .offset(x: 21)
-                .rotationEffect(Angle(degrees: 270))
+                .offset(x: -18)
+                .rotationEffect(Angle(degrees: 90))
                 .animation(Animation.easeInOut(duration: 1.5).repeatForever(autoreverses: true), value: isAnimating)
 
             Rectangle()
@@ -75,18 +77,17 @@ struct SunriseWidget: View {
     }
 
 }
-
-extension SunriseWidget {
+extension SunsetWidget {
 
     struct Model {
 
-        var title: String
-        var value: String
+        let title: String
+        let value: String
 
     }
 
 }
 
 #Preview {
-    SunriseWidget(model: SunriseWidget.Model(title: "Sunrise", value: "07:45"))
+    SunsetWidget(model: SunsetWidget.Model(title: "Sunset", value: "17:45"))
 }

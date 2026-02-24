@@ -1,66 +1,138 @@
 import SwiftUI
+import Combine
 
 class CityListViewModel: ObservableObject {
 
     @Published private(set) var cities: [City] = []
+    @Published var suggestedCities: [SuggestedCity] = []
+    @Published var newCityName: String = ""
 
     private let router: RouterProtocol
     private let getWeatherUseCase: GetWeatherUseCaseProtocol
     private let getCitiesUseCase: GetCitiesUseCaseProtocol
-    private let storeCitiesUseCase: StoreCitiesUseCaseProtocol
+    private let removeCityUseCase: RemoveCityUseCaseProtocol
+    private let getSuggestionsUseCase: GetSuggestionsUseCaseProtocol
+    private let getIdUseCase: GetIdUseCaseProtocol
+
+    private var cancellables = Set<AnyCancellable>()
 
     init(
         router: RouterProtocol,
         getWeatherUseCase: GetWeatherUseCaseProtocol,
         getCitiesUseCase: GetCitiesUseCaseProtocol,
-        storeCitiesUseCase: StoreCitiesUseCaseProtocol
+        removeCityUseCase: RemoveCityUseCaseProtocol,
+        getSuggestionsUseCase: GetSuggestionsUseCaseProtocol,
+        getIdUseCase: GetIdUseCaseProtocol
     ) {
         self.router = router
         self.getWeatherUseCase = getWeatherUseCase
         self.getCitiesUseCase = getCitiesUseCase
-        self.storeCitiesUseCase = storeCitiesUseCase
+        self.removeCityUseCase = removeCityUseCase
+        self.getSuggestionsUseCase = getSuggestionsUseCase
+        self.getIdUseCase = getIdUseCase
 
-        cities = getCitiesUseCase.getCities()
-        fetchWeatherForAllCities()
-    }
+        updateCityList()
 
-    func fetchTemperature(for city: City) {
-        getWeatherUseCase.getWeather(cityName: city.name) { [weak self] result in
-            guard let self else { return }
-
-            switch result {
-            case .success(let weatherModel):
-                if let index = self.cities.firstIndex(where: { $0.id == city.id }) {
-                    DispatchQueue.main.async { [weak self] in
-                        self?.cities[index].temperature = weatherModel.temperature
-                    }
-                }
-            case .failure(let error):
-                print("Error fetching temperature for \(city.name): \(error)")
+        $newCityName
+            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
+            .removeDuplicates()
+            .sink { [weak self] newValue in
+                self?.getSuggestions(withPrefix: newValue)
             }
-        }
+            .store(in: &cancellables)
     }
 
-    func fetchWeatherForAllCities() {
-        for city in cities {
-            fetchTemperature(for: city)
-        }
+    func fetchTemperature(city: City) {
+        getWeatherUseCase.getWeather(cityId: city.id, cityName: city.name)
+            .sink(receiveCompletion: { [weak self] completion in
+                guard let self else { return }
+
+                switch completion {
+                case .finished:
+                    self.updateCityList()
+                    return
+                case .failure(let error):
+                    print("Error fetching weather with Combine: \(error)")
+                }
+            }, receiveValue: { _ in
+                })
+            .store(in: &cancellables)
     }
 
     func showDetailsForCity(city: City) {
         router.showCityWeather(city: city)
     }
 
-    func addCity(cityName: String) {
-        let newCity = City(name: cityName)
-        cities.append(newCity)
-        storeCitiesUseCase.storeCities(cities: cities)
-        fetchTemperature(for: newCity)
+    func addCity() {
+        guard !newCityName.isEmpty else { return }
+
+        let id = getCityId(cityName: newCityName)
+        let newCity = City(id: id, name: newCityName)
+        fetchTemperature(city: newCity)
+        newCityName = ""
     }
 
     func removeCity(at offsets: IndexSet) {
-        cities.remove(atOffsets: offsets)
-        storeCitiesUseCase.storeCities(cities: cities)
+        offsets.forEach { index in
+            if let cityToRemove = cities.at(index) {
+                removeCityUseCase.removeCityWeather(city: cityToRemove)
+            }
+        }
+        updateCityList()
+    }
+
+    func getSuggestions(withPrefix prefix: String) {
+        getSuggestionsUseCase.getSuggestedCities(prefix: prefix)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print("Error getting suggestions: \(error)")
+                }
+            }, receiveValue: { [weak self] suggestions in
+                self?.suggestedCities = suggestions
+            })
+            .store(in: &cancellables)
+    }
+
+    private func updateCityList() {
+        getCitiesUseCase.getCities()
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print("Error fetching cities: \(error)")
+                }
+            }, receiveValue: { [weak self] cities in
+                self?.cities = cities.sorted { city1, city2 in
+                    city1.name < city2.name
+                }
+            })
+            .store(in: &cancellables)
+    }
+
+    private func getCityId(cityName: String) -> Int {
+        var cityId = 0
+
+        getIdUseCase.getCityId(cityName: cityName)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print("Error fetching city id: \(error)")
+                }
+            }, receiveValue: { id in
+                cityId = id
+            })
+            .store(in: &cancellables)
+
+        return cityId
     }
 
 }

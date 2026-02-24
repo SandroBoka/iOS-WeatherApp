@@ -2,7 +2,7 @@ import SwiftUI
 
 struct HumidityWidget: View {
 
-    var model: Model
+    let model: Model
 
     @State private var animateHumidity = false
 
@@ -30,8 +30,8 @@ struct HumidityWidget: View {
 
     private var waterLevel: some View {
         Rectangle()
-            .frame(height: (Double(model.value) ?? 0) / 100 * 100 + (animateHumidity ? 2 : -2))
-            .offset(y: 50 - ((Double(model.value) ?? 0) / 100 * 100) / 2)
+            .frame(height: (Double(model.value)) + (animateHumidity ? 2 : -2))
+            .offset(y: 50 - ((Double(model.value))) / 2)
     }
 
     private var animatedHumidityImage: some View {
@@ -63,13 +63,13 @@ extension HumidityWidget {
 
     struct Model {
 
-        var title: String
-        var value: String
+        let title: String
+        let value: Int
 
     }
 
 }
 
 #Preview {
-    HumidityWidget(model: HumidityWidget.Model(title: "Humidity", value: "45"))
+    HumidityWidget(model: HumidityWidget.Model(title: "Humidity", value: 45))
 }

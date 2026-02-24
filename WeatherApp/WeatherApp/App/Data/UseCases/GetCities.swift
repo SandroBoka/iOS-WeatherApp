@@ -1,21 +1,44 @@
 import Foundation
+import Combine
 
 protocol GetCitiesUseCaseProtocol {
 
-    func getCities() -> [City]
+    func getCities() -> AnyPublisher<[City], Never>
 
 }
 
 class GetCitiesUseCase: GetCitiesUseCaseProtocol {
 
-    private let dataRepository: DataRepositoryProtocol
+    private let locationRepository: LocationRepositoryProtocol
+    private let weatherRepository: WeatherRepositoryProtocol
 
-    init(dataRepository: DataRepositoryProtocol) {
-        self.dataRepository = dataRepository
+    init(locationRepository: LocationRepositoryProtocol, weatherRepository: WeatherRepositoryProtocol) {
+        self.locationRepository = locationRepository
+        self.weatherRepository = weatherRepository
     }
 
-    func getCities() -> [City] {
-        dataRepository.getCities()
+    func getCities() -> AnyPublisher<[City], Never> {
+        locationRepository.getLocationsWeather()
+            .flatMap { cities in
+                Publishers.MergeMany(
+                    cities.map { [weak self] city in
+                        guard let self else {
+                            return Just(city).eraseToAnyPublisher()
+                        }
+
+                        return self.weatherRepository.fetchWeather(cityId: city.id, cityName: city.name)
+                            .map { weatherModel -> City in
+                                var updatedCity = city
+                                updatedCity.temperature = weatherModel.temperature
+                                return updatedCity
+                            }
+                            .catch { _ in Just(city) }
+                            .eraseToAnyPublisher()
+                    })
+                .collect()
+            }
+            .replaceError(with: [])
+            .eraseToAnyPublisher()
     }
 
 }
