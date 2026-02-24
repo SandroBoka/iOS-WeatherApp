@@ -1,5 +1,6 @@
 import SwiftUI
 import UserNotifications
+import Weather
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate, UNUserNotificationCenterDelegate {
 
@@ -32,23 +33,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, UNUserNotificationCente
         }
     }
 
-    private func requestNotificationPermission() {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
-            if let error = error {
-                print("Error requesting notification authorization: \(error)")
-            }
-            if granted {
-                print("Notification authorization granted")
-            } else {
-                print("Notification authorization denied")
-            }
-        }
-    }
-
-    private func setupNotificationDelegate() {
-        let center = UNUserNotificationCenter.current()
-        center.delegate = self
-    }
 }
 
 extension SceneDelegate {
@@ -69,6 +53,24 @@ extension SceneDelegate {
             )
         }
         completionHandler()
+    }
+
+    private func requestNotificationPermission() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            if let error = error {
+                print("Error requesting notification authorization: \(error)")
+            }
+            if granted {
+                return
+            } else {
+                print("Notification authorization denied")
+            }
+        }
+    }
+
+    private func setupNotificationDelegate() {
+        let center = UNUserNotificationCenter.current()
+        center.delegate = self
     }
 
 }

@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import Weather
 
 protocol GetWeatherUseCaseProtocol {
 

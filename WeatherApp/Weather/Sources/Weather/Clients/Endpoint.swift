@@ -1,0 +1,22 @@
+import Foundation
+
+public protocol Endpoint {
+
+    var path: String { get }
+    var queryItems: [URLQueryItem] { get }
+    var baseURL: String { get }
+
+}
+
+public extension Endpoint {
+
+    func buildRequest() -> URLRequest? {
+        var urlComponents = URLComponents(string: baseURL + path)
+        urlComponents?.queryItems = queryItems
+
+        guard let url = urlComponents?.url else { return nil }
+
+        return URLRequest(url: url)
+    }
+
+}
